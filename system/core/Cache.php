@@ -52,13 +52,14 @@ class Cache
     {
         $file_path = self::getPath($dir);
 
-        if (file_exists($file_path)) {
-            return file_get_contents($file_path);
-        } else {
+        if (!file_exists($file_path)) {
             Log::error("Cache '$dir' doesn't exists");
 
             return false;
         }
+
+        return file_get_contents($file_path);
+
     }
 
 

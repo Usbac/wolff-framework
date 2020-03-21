@@ -117,7 +117,9 @@ class Session
     {
         if (!isset($key)) {
             return $_SESSION;
-        } elseif (!self::has($key)) {
+        }
+
+        if (!self::has($key)) {
             return null;
         }
 

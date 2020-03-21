@@ -104,7 +104,7 @@ class Language
      * @param  string  $dir  the language directory
      * @param  string  $language  the language selected
      *
-     * @return string true if the specified language exists,
+     * @return bool true if the specified language exists,
      * false otherwise
      */
     public static function exists(string $dir, string $language = CONFIG['language'])

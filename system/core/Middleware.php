@@ -112,7 +112,7 @@ class Middleware
                 return true;
             }
 
-            if ($url[$i] != $dir[$i] && !empty($dir[$i]) && !Route::isGetVar($dir[$i])) {
+            if ($url[$i] !== $dir[$i] && !empty($dir[$i]) && !Route::isGetVar($dir[$i])) {
                 return false;
             }
 

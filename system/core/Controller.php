@@ -129,10 +129,11 @@ class Controller
     /**
      * Returns true if the controller's method exists, false otherwise
      *
-     * @param  string  $controller_name  the controller name
-     * @param  string  $method  the controller method name
+     * @param string $controller_name the controller name
+     * @param string $method the controller method name
      *
      * @return boolean true if the controller's method exists, false otherwise
+     * @throws \ReflectionException
      */
     public static function methodExists(string $controller_name, string $method)
     {
@@ -144,11 +145,7 @@ class Controller
 
         $class = new \ReflectionClass($class);
 
-        if (!$class->hasMethod($method)) {
-            return false;
-        }
-
-        return true;
+        return $class->hasMethod($method);
     }
 
 }

@@ -145,7 +145,7 @@ namespace {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
                 $directory = str_replace('\\', '/', getProjectDir());
 
-                if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+                if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
                     $directory .= '/';
                 }
 
@@ -227,7 +227,7 @@ namespace {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
             $directory = str_replace('\\', '/', getProjectDir());
 
-            if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+            if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
                 $directory .= '/';
             }
 
@@ -454,7 +454,6 @@ namespace {
     }
 
     if (!function_exists('isBool')) {
-
         /**
          * Returns true if the given variable complies with an boolean,
          * false otherwise

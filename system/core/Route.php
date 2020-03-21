@@ -125,7 +125,7 @@ class Route
             $route_length = count($route) - 1;
 
             for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
-                if ($current[$i] != $route[$i] && !empty($route[$i]) &&
+                if ($current[$i] !== $route[$i] && !empty($route[$i]) &&
                     !self::isGetVar($route[$i])) {
                     break;
                 }
@@ -182,7 +182,7 @@ class Route
         for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
             if (self::isOptionalGetVar($route[$i])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
-            } else if (self::isGetVar($route[$i])) {
+            } elseif (self::isGetVar($route[$i])) {
                 self::setGetVar($route[$i], $current[$i]);
             }
 

@@ -167,11 +167,11 @@ class Cache
     /**
      * Delete all the cache files
      *
-     * @return bool true if the item was successfully removed, false otherwise
+     * @return void
      */
     public static function clear()
     {
-        return deleteFilesInDir(getCacheDir());
+        deleteFilesInDir(getCacheDir());
     }
 
 

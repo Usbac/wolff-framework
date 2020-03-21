@@ -189,7 +189,7 @@ class Middleware
      *
      * @param  string the middlewares filename
      *
-     * @return array the middlewares list if the name is empty or the specified middleware otherwise
+     * @return array|bool the middlewares list if the name is empty or the specified middleware otherwise
      */
     public static function get(string $name = null)
     {

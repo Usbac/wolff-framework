@@ -99,6 +99,7 @@ class Route
 
         if (isset(self::$codes[$code]) &&
             is_callable(self::$codes[$code])) {
+            /** @var callable $codes */
             self::$codes[$code]();
         }
     }

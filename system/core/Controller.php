@@ -32,7 +32,7 @@ class Controller
      *
      * @param  string  $dir  the controller name
      *
-     * @return \Core\Controller the controller
+     * @return Controller|bool the controller
      */
     public static function call(string $dir)
     {

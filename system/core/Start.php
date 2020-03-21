@@ -49,6 +49,7 @@ class Start
 
     /**
      * Start the loading of the page
+     * @throws \ReflectionException
      */
     public function load()
     {
@@ -74,6 +75,7 @@ class Start
      * Load the requested page
      *
      * @return  mixed  the method return value
+     * @throws \ReflectionException
      */
     private function loadPage()
     {
@@ -98,6 +100,7 @@ class Start
      * Returns true if the current route exists, false otherwise
      *
      * @return  bool  true if the current route exists, false otherwise
+     * @throws \ReflectionException
      */
     private function exists()
     {

@@ -7,8 +7,6 @@ use Wolff\Utils\Str;
 class Kernel
 {
 
-    const HEADER_404 = 'HTTP/1.0 404 Not Found';
-
     /**
      * The current url.
      *
@@ -54,8 +52,8 @@ class Kernel
             $this->controller = $path[0];
             $this->method = empty($path[1]) ? 'index' : $path[1];
         } else {
-            $this->controller = Str::before($this->url, '/');
-            $this->method = Str::after($this->url, '/');
+            $this->controller = substr($this->url, 0, strpos($this->url, '/'));
+            $this->method = substr($this->url, strpos($this->url, '/') + 1);
         }
     }
 
@@ -70,6 +68,11 @@ class Kernel
             Maintenance::call();
         }
 
+        if (!$this->isAccessible()) {
+            http_response_code(404);
+            return;
+        }
+
         $this->load();
         Route::execCode();
     }
@@ -80,11 +83,6 @@ class Kernel
      */
     private function load()
     {
-        if (!$this->isAccessible()) {
-            header(self::HEADER_404);
-            return;
-        }
-
         $req = $this->getRequest();
         Middleware::loadBefore($this->url, $req);
         $this->loadPage($req);
@@ -146,11 +144,31 @@ class Kernel
      */
     private function getUrl()
     {
-        $url = isset($_GET['url']) ?
-            Str::sanitizeUrl($_GET['url']) :
-            (CONFIG['main_page'] ?? '');
+        $url = $_SERVER['REQUEST_URI'];
 
-        return Route::getRedirection($url) ?? $url;
+        //Remove possible project folder from url
+        if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            $url = substr($url, strlen($project_dir));
+        }
+
+        $url = ltrim($url, '/');
+
+        //Remove parameters
+        if (($query_index = strpos($url, '?')) !== false) {
+            $url = substr($url, 0, $query_index);
+        }
+
+        $url = Str::sanitizeUrl($url);
+
+        //Redirection
+        $redirect = Route::getRedirection($url);
+        if (isset($redirect)) {
+            http_response_code($redirect['code']);
+            return $redirect['destiny'];
+        }
+
+        return $url;
     }
 
 }

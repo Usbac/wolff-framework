@@ -10,7 +10,6 @@ class Controller
     const NAMESPACE = 'Controller\\';
     const EXISTS_ERROR = 'The controller class \'%s\' doesn\'t exists';
     const METHOD_EXISTS_ERROR = 'The controller class \'%s\' doesn\'t have a \'%s\' method';
-    const PATH_FORMAT = '%s/' . CORE_CONFIG['controllers_dir'] . '/%s.php';
 
 
     /**
@@ -66,7 +65,7 @@ class Controller
      */
     public static function exists(string $path)
     {
-        return class_exists(self::NAMESPACE . str_replace('/', '\\', $path));
+        return class_exists(self::getClassname($path));
     }
 
 
@@ -80,13 +79,22 @@ class Controller
      */
     public static function hasMethod(string $path, string $method)
     {
-        $class = self::NAMESPACE . str_replace('/', '\\', $path);
-
-        if (!self::exists($class)) {
+        if (!self::exists($path)) {
             return false;
         }
 
-        return (new \ReflectionClass($class))->hasMethod($method);
+        return \method_exists(self::getClassname($path), $method);
+    }
+
+
+    /**
+     * Returns the controller classname of the given path
+     *
+     * @return string The controller classname of the given path
+     */
+    private static function getClassname(string $path)
+    {
+        return self::NAMESPACE . str_replace('/', '\\', $path);
     }
 
 }

@@ -8,7 +8,7 @@ class Language
 {
 
     const BAD_FILE_ERROR = 'The %s language file for \'%s\' doesn\'t return an associative array';
-    const PATH_FORMAT = '%s/' . CORE_CONFIG['languages_dir'] . '/%s/%s.php';
+    const PATH_FORMAT = CONFIG['root_dir'] . CONFIG['app_dir'] . 'languages/%s/%s.php';
 
 
     /**
@@ -27,9 +27,9 @@ class Language
             $language = CONFIG['language'];
         }
 
-        if (strpos($dir, '.') !== false) {
-            $key = Str::after($dir, '.');
-            $dir = Str::before($dir, '.');
+        if (($dot_pos = strpos($dir, '.')) !== false) {
+            $dir = substr($dir, 0, $dot_pos);
+            $key = substr($dir, $dot_pos + 1);
         }
 
         $data = [];
@@ -62,7 +62,7 @@ class Language
      */
     private static function getPath(string $dir, string $language)
     {
-        return sprintf(self::PATH_FORMAT, CONFIG['app_dir'], $language, $dir);
+        return sprintf(self::PATH_FORMAT, $language, $dir);
     }
 
 

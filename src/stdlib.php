@@ -47,7 +47,12 @@ namespace {
          */
         function getPublic(string $path = '')
         {
-            return substr(CONFIG['public_dir'], strlen($_SERVER['DOCUMENT_ROOT'])) . '/' . $path;
+            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) !== 0) {
+                return $path;
+            }
+
+            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            return $project_dir . CONFIG['public_dir'] . $path;
         }
     }
 
@@ -76,7 +81,7 @@ namespace {
          */
         function isAssoc(array $arr)
         {
-            return (array_keys($arr) !== range(0, count($arr) -1));
+            return (array_keys($arr) !== range(0, count($arr) - 1));
         }
     }
 
@@ -118,9 +123,8 @@ namespace {
         /**
          * Print a string and die
          */
-        function echod()
+        function echod(...$args)
         {
-            $args = func_get_args();
             foreach ($args as $arg) {
                 echo $arg;
             }
@@ -132,34 +136,26 @@ namespace {
     if (!function_exists('printr')) {
 
         /**
-         * Print the given arrays in a nice looking way
+         * Print the given values in a nice looking way
          */
-        function printr()
+        function printr(...$args)
         {
-            $args = func_get_args();
-
-            echo "<pre>";
-            foreach ($args as $arg) {
-                print_r($arg);
-            }
-            echo "</pre>";
+            echo '<pre>';
+            array_map('print_r', $args);
+            echo '</pre>';
         }
     }
 
     if (!function_exists('printrd')) {
 
         /**
-         * Print the given arrays in a nice looking way and die
+         * Print the given values in a nice looking way and die
          */
-        function printrd()
+        function printrd(...$args)
         {
-            $args = func_get_args();
-
-            echo "<pre>";
-            foreach ($args as $arg) {
-                print_r($arg);
-            }
-            echo "</pre>";
+            echo '<pre>';
+            array_map('print_r', $args);
+            echo '</pre>';
 
             die();
         }
@@ -168,15 +164,11 @@ namespace {
     if (!function_exists('dumpd')) {
 
         /**
-         * Var dump a variable and die
+         * Var dump the given values and die
          */
-        function dumpd()
+        function dumpd(...$args)
         {
-            $args = func_get_args();
-            foreach ($args as $arg) {
-                var_dump($arg);
-            }
-
+            array_map('var_dump', $args);
             die();
         }
     }
@@ -227,7 +219,8 @@ namespace {
     if (!function_exists('isJson')) {
 
         /**
-         * Returns true if the given string is a Json, false otherwise
+         * Returns true if the given string is a Json, false otherwise.
+         * Notice: This function modifies the 'json_last_error' value
          *
          * @param  string  $str  the string
          *
@@ -235,8 +228,7 @@ namespace {
          */
         function isJson(string $str)
         {
-            $str = json_decode($str);
-
+            json_decode($str);
             return json_last_error() === JSON_ERROR_NONE;
         }
     }
@@ -292,10 +284,15 @@ namespace {
         function url(string $url = '')
         {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
-            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+
+            $project_dir = '';
+            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            }
+
             $directory = str_replace('\\', '/', $project_dir);
 
-            if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+            if (substr($directory, -1) !== '/') {
                 $directory .= '/';
             }
 
@@ -396,18 +393,6 @@ namespace {
         function getBenchmark()
         {
             return microtime(true) - CORE_CONFIG['start'];
-        }
-    }
-
-    if (!function_exists('inCli')) {
-
-        /**
-         * Returns true if running from command line interface, false otherwise
-         * @return bool true if running from command line interface, false otherwise
-         */
-        function inCli()
-        {
-            return (php_sapi_name() === 'cli');
         }
     }
 

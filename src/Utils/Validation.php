@@ -30,7 +30,7 @@ class Validation
 
 
     /**
-     * Set the data array to validate
+     * Sets the data array to validate
      *
      * @param  array  $data  the data array
      *
@@ -44,18 +44,7 @@ class Validation
 
 
     /**
-     * Returns the data array to validate
-     *
-     * @return array the data array to validate
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-
-    /**
-     * Set the fields rules
+     * Sets the fields rules
      *
      * @param  array  $fields  the associative array
      * with the fields rules
@@ -83,7 +72,7 @@ class Validation
 
 
     /**
-     * Add an invalid value
+     * Adds an invalid value
      *
      * @param  string  $key  the value key
      * @param  string  $field  the field that the value doesn't complies
@@ -122,9 +111,9 @@ class Validation
 
             //Complies type
             if ($rule == 'type') {
-                if (($val == 'email' && !Str::isEmail($field)) ||
-                    ($val == 'alphanumeric' && !Str::isAlphanumeric($field)) ||
-                    ($val == 'alpha' && !Str::isAlpha($field)) ||
+                if (($val == 'email' && filter_var($email, FILTER_VALIDATE_EMAIL) === false) ||
+                    ($val == 'alphanumeric' && !preg_match('/[A-Za-z0-9 ]+$/', $str)) ||
+                    ($val == 'alpha' && !preg_match('/[A-Za-z ]+$/', $str)) ||
                     ($val == 'int' && !isInt($field)) ||
                     ($val == 'float' && !isFloat($field)) ||
                     ($val == 'bool' && !isBool($field))) {
@@ -167,7 +156,9 @@ class Validation
      */
     public function check($fields, $data)
     {
-        return $this->setFields($fields)->setData($data)->isValid();
+        return $this->setFields($fields)
+                    ->setData($data)
+                    ->isValid();
     }
 
 }

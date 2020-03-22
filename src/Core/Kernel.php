@@ -51,9 +51,12 @@ class Kernel
             $path = explode('@', $this->function);
             $this->controller = $path[0];
             $this->method = empty($path[1]) ? 'index' : $path[1];
+        } elseif (($last_slash = strrpos($this->url, '/')) > 0) {
+            $this->controller = substr($this->url, 0, $last_slash);
+            $this->method = substr($this->url, $last_slash + 1);
         } else {
-            $this->controller = substr($this->url, 0, strpos($this->url, '/'));
-            $this->method = substr($this->url, strpos($this->url, '/') + 1);
+            $this->controller = $this->url;
+            $this->method = 'index';
         }
     }
 
@@ -70,6 +73,7 @@ class Kernel
 
         if (!$this->isAccessible()) {
             http_response_code(404);
+            Route::execCode();
             return;
         }
 

@@ -57,7 +57,7 @@ class Config
      */
     public static function mapEnv()
     {
-        if (($content = \file_get_contents(self::$env_path)) === false) {
+        if (($content = file_get_contents(self::$env_path)) === false) {
             return [];
         }
 
@@ -72,7 +72,24 @@ class Config
             $val = trim(substr($line, $index_equal + 1));
             // Anything between or not single/double quotes, excluding the hashtag character after it
             $val = preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
-            $val = trim($matches[0] ?? '', '\'" ');
+            $val = trim($matches[0] ?? 'null');
+
+            switch ($val) {
+                case 'true': $val = true;
+                    break;
+                case 'false': $val = false;
+                    break;
+                case 'null': $val = null;
+                    break;
+                case 'empty': $val = '';
+                    break;
+                default:
+                    $len = strlen($val) - 1;
+                    if (($val[0] === '\'' && $val[$len] === '\'') ||
+                        ($val[0] === '"' && $val[$len] === '"')) {
+                        $val = substr($val, 1, $len - 1);
+                    }
+            }
 
             putenv("$key=$val");
             $_ENV[$key] = $val;

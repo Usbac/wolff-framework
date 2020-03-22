@@ -106,8 +106,9 @@ namespace {
                 return $arr;
             }
 
-            foreach($keys as $key) {
-                if (!is_array($arr) || !array_key_exists($key, $arr)) {
+            foreach ($keys as $key) {
+                if (!is_array($arr) ||
+                    !array_key_exists($key, $arr)) {
                     return null;
                 }
 
@@ -261,7 +262,7 @@ namespace {
 
             //Array
             if (is_array($obj)) {
-                foreach($obj as $key => $val) {
+                foreach ($obj as $key => $val) {
                     $new[$key] = toArray($val);
                 }
             } else {

@@ -69,14 +69,12 @@ namespace {
     }
 
     if (!function_exists('printr')) {
-
         /**
          * Print the given arrays in a nice looking way
+         * @param array $args
          */
-        function printr()
+        function printr(...$args)
         {
-            $args = func_get_args();
-
             echo "<pre>";
             foreach ($args as $arg) {
                 print_r($arg);
@@ -86,14 +84,12 @@ namespace {
     }
 
     if (!function_exists('printrd')) {
-
         /**
          * Print the given arrays in a nice looking way and die
+         * @param array $args
          */
-        function printrd()
+        function printrd(...$args)
         {
-            $args = func_get_args();
-
             echo "<pre>";
             foreach ($args as $arg) {
                 print_r($arg);
@@ -105,13 +101,12 @@ namespace {
     }
 
     if (!function_exists('dumpd')) {
-
         /**
          * Var dump a variable and die
+         * @param array $args
          */
-        function dumpd()
+        function dumpd(...$args)
         {
-            $args = func_get_args();
             foreach ($args as $arg) {
                 var_dump($arg);
             }
@@ -150,7 +145,7 @@ namespace {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
                 $directory = str_replace('\\', '/', getProjectDir());
 
-                if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+                if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
                     $directory .= '/';
                 }
 
@@ -232,7 +227,7 @@ namespace {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
             $directory = str_replace('\\', '/', getProjectDir());
 
-            if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+            if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
                 $directory .= '/';
             }
 
@@ -459,7 +454,6 @@ namespace {
     }
 
     if (!function_exists('isBool')) {
-
         /**
          * Returns true if the given variable complies with an boolean,
          * false otherwise

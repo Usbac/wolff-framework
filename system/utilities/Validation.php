@@ -142,16 +142,16 @@ class Validation
             $rule = trim(strtolower($rule));
 
             //Complies min length, max length, min value, max value and regex
-            if (($rule == 'minlen' && strlen($field) < $val) ||
-                ($rule == 'maxlen' && strlen($field) > $val) ||
-                ($rule == 'minval' && $field < $val) ||
-                ($rule == 'maxval' && $field > $val) ||
-                ($rule == 'regex' && !preg_match($val, $field))) {
+            if (($rule === 'minlen' && strlen($field) < $val) ||
+                ($rule === 'maxlen' && strlen($field) > $val) ||
+                ($rule === 'minval' && $field < $val) ||
+                ($rule === 'maxval' && $field > $val) ||
+                ($rule === 'regex' && !preg_match($val, $field))) {
                 $this->addInvalidValue($key, $rule);
             }
 
             //Complies type
-            if ($rule == 'type') {
+            if ($rule === 'type') {
                 if (($val == 'email' && !Str::isEmail($field)) ||
                     ($val == 'alphanumeric' && !Str::isAlphanumeric($field)) ||
                     ($val == 'alpha' && !Str::isAlpha($field)) ||

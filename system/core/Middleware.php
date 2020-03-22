@@ -112,7 +112,7 @@ class Middleware
                 return true;
             }
 
-            if ($url[$i] != $dir[$i] && !empty($dir[$i]) && !Route::isGetVar($dir[$i])) {
+            if ($url[$i] !== $dir[$i] && !empty($dir[$i]) && !Route::isGetVar($dir[$i])) {
                 return false;
             }
 
@@ -189,7 +189,7 @@ class Middleware
      *
      * @param  string the middlewares filename
      *
-     * @return array the middlewares list if the name is empty or the specified middleware otherwise
+     * @return array|bool the middlewares list if the name is empty or the specified middleware otherwise
      */
     public static function get(string $name = null)
     {

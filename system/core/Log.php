@@ -4,6 +4,16 @@ namespace Core;
 
 use Utilities\Str;
 
+/**
+ * @method static emergency(string $message, array $values = [])
+ * @method static alert(string $message, array $values = [])
+ * @method static critical(string $message, array $values = [])
+ * @method static error(string $message, array $values = [])
+ * @method static warning(string $message, array $values = [])
+ * @method static notice(string $message, array $values = [])
+ * @method static info(string $message, array $values = [])
+ * @method static debug(string $message, array $values = [])
+ */
 class Log
 {
 

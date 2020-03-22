@@ -73,7 +73,7 @@ class Query
         $result = $this->get();
 
         //Only one column to pick
-        if (count($columns) == 1) {
+        if (count($columns) === 1) {
             return array_column($result, $columns[0]);
         }
 

@@ -42,7 +42,7 @@ class Maintenance
 
     /**
      * Returns an array of the IPs in the whitelist
-     * @return array An array of the IPs in the whitelist, false in case of errors
+     * @return array|false An array of the IPs in the whitelist, false in case of errors
      */
     public static function getAllowedIPs()
     {

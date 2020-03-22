@@ -52,13 +52,14 @@ class Cache
     {
         $file_path = self::getPath($dir);
 
-        if (file_exists($file_path)) {
-            return file_get_contents($file_path);
-        } else {
+        if (!file_exists($file_path)) {
             Log::error("Cache '$dir' doesn't exists");
 
             return false;
         }
+
+        return file_get_contents($file_path);
+
     }
 
 
@@ -166,11 +167,11 @@ class Cache
     /**
      * Delete all the cache files
      *
-     * @return bool true if the item was successfully removed, false otherwise
+     * @return void
      */
     public static function clear()
     {
-        return deleteFilesInDir(getCacheDir());
+        deleteFilesInDir(getCacheDir());
     }
 
 

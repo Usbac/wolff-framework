@@ -21,7 +21,9 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    "ext-pdo": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "files": [

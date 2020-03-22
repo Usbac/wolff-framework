@@ -162,7 +162,7 @@ class Request
      */
     public static function put(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_PUT);
+        parse_str(file_get_contents(self::PHP_INPUT), $_PUT);
 
         if (!isset($key)) {
             return $_PUT;
@@ -181,7 +181,7 @@ class Request
      */
     public static function hasPut(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_PUT);
+        parse_str(file_get_contents(self::PHP_INPUT), $_PUT);
         return array_key_exists($key, $_POST);
     }
 
@@ -195,7 +195,7 @@ class Request
      */
     public static function patch(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_PATCH);
+        parse_str(file_get_contents(self::PHP_INPUT), $_PATCH);
 
         if (!isset($key)) {
             return $_PATCH;
@@ -214,7 +214,7 @@ class Request
      */
     public static function hasPatch(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_PATCH);
+        parse_str(file_get_contents(self::PHP_INPUT), $_PATCH);
         return array_key_exists($key, $_PATCH);
     }
 
@@ -228,7 +228,7 @@ class Request
      */
     public static function delete(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_DELETE);
+        parse_str(file_get_contents(self::PHP_INPUT), $_DELETE);
 
         if (!isset($key)) {
             return $_DELETE;
@@ -247,7 +247,7 @@ class Request
      */
     public static function hasDelete(string $key = null)
     {
-        parse_str(file_get_contents(Self::PHP_INPUT), $_DELETE);
+        parse_str(file_get_contents(self::PHP_INPUT), $_DELETE);
         return array_key_exists($key, $_DELETE);
     }
 

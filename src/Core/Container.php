@@ -49,7 +49,7 @@ class Container implements ContainerInterface
     private static function addService(string $class, $value, bool $singleton)
     {
         if (is_null($value)) {
-            $value = function() use ($class) {
+            $value = function () use ($class) {
                 return new $class;
             };
         }
@@ -101,5 +101,4 @@ class Container implements ContainerInterface
     {
         return array_key_exists($key, self::$services);
     }
-
 }

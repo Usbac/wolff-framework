@@ -96,5 +96,4 @@ class Controller
     {
         return self::NAMESPACE . str_replace('/', '\\', $path);
     }
-
 }

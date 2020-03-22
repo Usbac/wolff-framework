@@ -61,9 +61,7 @@ class Config
             return [];
         }
 
-        $lines = explode(PHP_EOL, $content);
-
-        foreach ($lines as $line) {
+        foreach ((explode(PHP_EOL, $content)) as $line) {
             if (!($index_equal = strpos($line, '='))) {
                 continue;
             }
@@ -75,13 +73,17 @@ class Config
             $val = trim($matches[0] ?? 'null');
 
             switch ($val) {
-                case 'true': $val = true;
+                case 'true':
+                    $val = true;
                     break;
-                case 'false': $val = false;
+                case 'false':
+                    $val = false;
                     break;
-                case 'null': $val = null;
+                case 'null':
+                    $val = null;
                     break;
-                case 'empty': $val = '';
+                case 'empty':
+                    $val = '';
                     break;
                 default:
                     $len = strlen($val) - 1;
@@ -95,5 +97,4 @@ class Config
             $_ENV[$key] = $val;
         }
     }
-
 }

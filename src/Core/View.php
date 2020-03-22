@@ -118,5 +118,4 @@ class View
     {
         return file_exists(self::getPath($dir));
     }
-
 }

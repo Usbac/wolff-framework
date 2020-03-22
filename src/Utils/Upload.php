@@ -124,5 +124,4 @@ class Upload
     {
         return $this->last_file;
     }
-
 }

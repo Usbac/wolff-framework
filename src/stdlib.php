@@ -405,7 +405,8 @@ namespace {
          *
          * @param  mixed  $int  the variable
          */
-        function isInt($int) {
+        function isInt($int)
+        {
             return filter_var($int, FILTER_VALIDATE_INT) !== false;
         }
     }
@@ -418,7 +419,8 @@ namespace {
          *
          * @param  mixed  $float  the variable
          */
-        function isFloat($float) {
+        function isFloat($float)
+        {
             return filter_var($float, FILTER_VALIDATE_FLOAT) !== false;
         }
     }
@@ -433,7 +435,8 @@ namespace {
          *
          * @param  mixed  $bool  the variable
          */
-        function isBool($bool) {
+        function isBool($bool)
+        {
             return in_array(strval($bool), ['true', 'false', '1', '0']);
         }
     }

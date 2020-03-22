@@ -26,7 +26,8 @@ class Template
         'endfor' => '/' . self::NOT_RAW . '\{( ?){1,}endfor( ?){1,}\}/',
 
         'extends'      => '/' . self::NOT_RAW . '@extends\(\'(.*)\'\)/',
-        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
+        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?)
+            {\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
         'parent_block' => '/' . self::NOT_RAW . '{\[[ ?]{1,}parent[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}/'
     ];
 
@@ -222,7 +223,8 @@ class Template
      *
      * @param  mixed  $function  the function with the custom template
      */
-    public static function custom($function) {
+    public static function custom($function)
+    {
         if (!is_callable($function)) {
             return;
         }
@@ -238,12 +240,13 @@ class Template
      *
      * @return string the view content with the custom templates formatted
      */
-    private static function replaceCustom(string $content) {
+    private static function replaceCustom(string $content)
+    {
         if (empty(self::$templates)) {
             return $content;
         }
 
-        foreach(self::$templates as $template) {
+        foreach (self::$templates as $template) {
             $content = $template($content);
         }
 
@@ -300,8 +303,7 @@ class Template
         $func = '(.*)';
 
         //Escape
-        $content = preg_replace(str_replace($func, 'e', self::FORMAT['function']), 'htmlspecialchars(strip_tags($2))',
-            $content);
+        $content = preg_replace(str_replace($func, 'e', self::FORMAT['function']), 'htmlspecialchars(strip_tags($2))', $content);
         //Uppercase
         $content = preg_replace(str_replace($func, 'upper', self::FORMAT['function']), 'strtoupper($2)', $content);
         //Lowercase

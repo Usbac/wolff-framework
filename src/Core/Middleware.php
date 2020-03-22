@@ -61,7 +61,7 @@ class Middleware
 
                 if ($middleware[$i] === '*' ||
                     ($i === $url_length && $i === $middleware_length)) {
-                    $val['function']($req, function() {
+                    $val['function']($req, function () {
                         self::$next = true;
                     });
                     break;
@@ -117,5 +117,4 @@ class Middleware
             'function' => $args[1]
         ]);
     }
-
 }

@@ -160,5 +160,4 @@ class Validation
                     ->setData($data)
                     ->isValid();
     }
-
 }

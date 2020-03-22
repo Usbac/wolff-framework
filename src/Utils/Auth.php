@@ -245,5 +245,4 @@ class Auth extends \Wolff\Core\DB
 
         return $stmt->execute($data);
     }
-
 }

@@ -60,12 +60,13 @@ class Pagination
      * @param  int  $side_pages_n  the number of pages that will
      * be beside the current page
      */
-    public function __construct(int $total = 0,
-                                int $per_page = 0,
-                                int $page = 0,
-                                int $side_pages_n = 5,
-                                string $url_format)
-    {
+    public function __construct(
+        int $total = 0,
+        int $per_page = 0,
+        int $page = 0,
+        int $side_pages_n = 5,
+        string $url_format = '{page}'
+    ) {
         $this->total = $total;
         $this->per_page = $per_page;
         $this->page = $page;
@@ -234,5 +235,4 @@ class Pagination
             'url'          => \str_replace(self::PLACEHOLDER, $index, $this->url_format)
         ];
     }
-
 }

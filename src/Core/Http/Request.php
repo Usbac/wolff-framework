@@ -42,11 +42,12 @@ class Request
      * @param  array  $files  the files
      * @param  array  $server  the superglobal server
      */
-    public function __construct(array $params,
-                                array $body,
-                                array $files,
-                                array $server)
-    {
+    public function __construct(
+        array $params,
+        array $body,
+        array $files,
+        array $server
+    ) {
         $this->params = $_GET;
         $this->body = $_POST;
         $this->files = $_FILES;
@@ -216,5 +217,4 @@ class Request
     {
         return $this->server['REQUEST_URI'];
     }
-
 }

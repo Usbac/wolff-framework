@@ -237,7 +237,8 @@ class Str
      *
      * @return string the string encoded in UTF-8
      */
-    public static function toUtf8($str) {
+    public static function toUtf8($str)
+    {
         $encoding = mb_detect_encoding($str, mb_detect_order(), true);
         $encoded = iconv($encoding, 'UTF-8', $str);
 
@@ -425,5 +426,4 @@ class Str
         //Other
         return strval($var);
     }
-
 }

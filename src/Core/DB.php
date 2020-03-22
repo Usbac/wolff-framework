@@ -343,7 +343,8 @@ class DB
         $dest_table = $this->escape($dest_table);
 
         try {
-            $insert_stat = $this->connection->prepare("INSERT INTO $dest_table SELECT * FROM $ori_table WHERE $conditions");
+            $insert_stat = $this->connection->prepare("INSERT INTO $dest_table
+                SELECT * FROM $ori_table WHERE $conditions");
             $delete_stat = $this->connection->prepare("DELETE FROM $ori_table WHERE $conditions");
 
             $this->connection->beginTransaction();
@@ -394,5 +395,4 @@ class DB
     {
         return preg_replace('/[^A-Za-z0-9_]+/', '', $str);
     }
-
 }

@@ -4,6 +4,13 @@ namespace Wolff\Core;
 
 use Wolff\Utils\Str;
 
+/**
+ * @method static get(string $url, $function, int $status = null)
+ * @method static post(string $url, $function, int $status = null)
+ * @method static put(string $url, $function, int $status = null)
+ * @method static patch(string $url, $function, int $status = null)
+ * @method static delete(string $url, $function, int $status = null)
+ */
 class Route
 {
 
@@ -191,7 +198,7 @@ class Route
         for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
             if (self::isOptionalGet($route[$i])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
-            } else if (self::isGet($route[$i])) {
+            } elseif (self::isGet($route[$i])) {
                 self::setGet($route[$i], $current[$i]);
             }
 
@@ -257,7 +264,8 @@ class Route
      * @param  mixed  $function  the url function or controller name
      * @param  int  $status  the HTTP response code
      */
-    private static function addRoute($url, string $method, $function, $status) {
+    private static function addRoute($url, string $method, $function, $status)
+    {
         $content_type = 'text/html';
 
         //Remove content-type prefix from route

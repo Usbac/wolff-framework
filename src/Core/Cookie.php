@@ -80,5 +80,4 @@ class Cookie
         unset($_COOKIE[$key]);
         setCookie($key, '', time() - self::HOUR_TIME);
     }
-
 }

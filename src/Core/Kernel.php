@@ -117,9 +117,9 @@ class Kernel
     {
         if ($this->function instanceof \Closure) {
             ($this->function)($req);
-        } else if (Controller::hasMethod($this->controller, $this->method)) {
+        } elseif (Controller::hasMethod($this->controller, $this->method)) {
             Controller::method($this->controller, $this->method, [ $req ]);
-        } else if (Controller::exists($this->url)) {
+        } elseif (Controller::exists($this->url)) {
             Controller::method($this->url, 'index', [ $req ]);
         }
     }
@@ -174,5 +174,4 @@ class Kernel
 
         return $url;
     }
-
 }

@@ -3,7 +3,8 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
-use PDO, PDOException;
+use PDO;
+use PDOException;
 
 class Factory
 {
@@ -96,5 +97,4 @@ class Factory
     {
         return new Query($results);
     }
-
 }

@@ -46,5 +46,4 @@ interface ContainerInterface
      * false otherwise
      */
     public static function has(string $key);
-
 }

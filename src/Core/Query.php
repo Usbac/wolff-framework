@@ -78,7 +78,7 @@ class Query
         }
 
         //Multiple columns to pick
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $new_row = [];
             foreach ($columns as $column) {
                 if (array_key_exists($column, $row)) {
@@ -152,5 +152,4 @@ class Query
     {
         printrd($this->get());
     }
-
 }

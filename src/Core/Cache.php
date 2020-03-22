@@ -184,5 +184,4 @@ class Cache
     {
         return CONFIG['cache_dir'] . '/' . $path;
     }
-
 }

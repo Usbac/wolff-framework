@@ -56,13 +56,13 @@ class File
      */
     public function upload(string $name = null)
     {
-        if (!$this->complies()) {
+        $path = $this->options['dir'] . '/' . ($name ?? $this->data['name']);
+
+        if (!$this->complies($path)) {
             return false;
         }
 
-        $name = $name ?? $this->data['name'];
-
-        return move_uploaded_file($this->data['tmp_name'], $this->options['dir'] . '/' . $name);
+        return move_uploaded_file($this->data['tmp_name'], $path);
     }
 
 
@@ -70,10 +70,12 @@ class File
      * Returns true if the current file complies
      * with the current options, false otherwise
      *
+     * @param string $path the path of the file
+     *
      * @return bool True if the current file complies
      * with the current options, false otherwise
      */
-    private function complies()
+    private function complies(string $path)
     {
         $extension = pathinfo($this->data['name'], PATHINFO_EXTENSION);
 
@@ -84,6 +86,10 @@ class File
 
         if ($this->options['max_size'] > 0 &&
             $this->options['max_size'] < $this->data['size']) {
+            return false;
+        }
+
+        if ($this->option['override'] && file_exists($path)) {
             return false;
         }
 

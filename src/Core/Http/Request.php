@@ -5,6 +5,13 @@ namespace Wolff\Core\Http;
 class Request
 {
 
+    const DEFAULT_FILE_OPTIONS = [
+        'dir'        => '',
+        'extensions' => [],
+        'max_size'   => 0,
+        'override'   => true
+    ];
+
     /**
      * List of parameters
      *
@@ -58,11 +65,7 @@ class Request
         $this->body = $_POST;
         $this->server = $_SERVER;
         $this->headers = $this->parseHeaders($_SERVER);
-        $this->file_options = [
-            'dir'      => '',
-            'max_size' => 0,
-            'formats'  => []
-        ];
+        $this->file_options = self::DEFAULT_FILE_OPTIONS;
         $this->files = $this->getFiles($files, $this->file_options);
     }
 
@@ -144,8 +147,9 @@ class Request
 
         $this->file_options = [
             'dir'        => $dir,
+            'extensions' => $extensions,
             'max_size'   => ($arr['max_size'] ?? 0) * 1024,
-            'extensions' => $extensions
+            'override'   => boolval($arr['override'] ?? true)
         ];
     }
 

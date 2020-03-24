@@ -33,6 +33,12 @@ class Request
      */
     private $server;
 
+    /**
+     * List of options for uploading files
+     * @var array
+     */
+    private $file_options;
+
 
     /**
      * Default constructor
@@ -50,9 +56,14 @@ class Request
     ) {
         $this->params = $_GET;
         $this->body = $_POST;
-        $this->files = $_FILES;
         $this->server = $_SERVER;
         $this->headers = $this->parseHeaders($_SERVER);
+        $this->file_options = [
+            'dir'      => '',
+            'max_size' => 0,
+            'formats'  => []
+        ];
+        $this->files = $this->getFiles($files, $this->file_options);
     }
 
 
@@ -77,6 +88,65 @@ class Request
         }
 
         return $headers;
+    }
+
+
+    /**
+     * Returns an array of files instances based on the
+     * given files array
+     *
+     * @param array $arr the array of files
+     * @param array $options the array with the file options
+     *
+     * @return array The array of files instances based on the
+     * given files array
+     */
+    private function getFiles(array $arr, array &$options)
+    {
+        $files = [];
+
+        foreach ($arr as $key => $val) {
+            $files[$key] = new \Wolff\Core\File($val, $options);
+        }
+
+        return $files;
+    }
+
+
+    /**
+     * Sets the options for uploading the files.
+     *
+     * @param array $arr the array with the options
+     * (dir, extensions, max_size)
+     */
+    public function fileOptions(array $arr = [])
+    {
+        if (isset($arr['dir']) && !is_string($arr['dir'])) {
+            throw new InvalidArgumentException('dir', 'a string');
+        }
+
+        $dir = CONFIG['root_dir'] . '/' . ($arr['dir'] ?? '');
+        if (isset($arr['dir']) && !is_dir($dir)) {
+            throw new FileNotFoundException($dir);
+        }
+
+        if (isset($arr['extensions']) && !is_string($arr['extensions'])) {
+            throw new InvalidArgumentException('extensions', 'a string');
+        }
+
+        if (isset($arr['max_size']) && !is_numeric($arr['max_size'])) {
+            throw new InvalidArgumentException('max_size', 'a numeric value');
+        }
+
+        $extensions = isset($arr['extensions']) ?
+            array_map('trim', explode(',', $arr['extensions'])) :
+            [];
+
+        $this->file_options = [
+            'dir'        => $dir,
+            'max_size'   => ($arr['max_size'] ?? 0) * 1024,
+            'extensions' => $extensions
+        ];
     }
 
 

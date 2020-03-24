@@ -39,40 +39,8 @@ class Response
 
 
     /**
-     * Returns the HTTP headers
-     *
-     * @return array the HTTP headers
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-
-    /**
-     * Returns the HTTP status code
-     *
-     * @return int the HTTP status code
-     */
-    public function getCode()
-    {
-        return $this->status_code;
-    }
-
-
-    /**
-     * Returns the header location
-     *
-     * @return string the header location
-     */
-    public function getRedirect()
-    {
-        return $this->url;
-    }
-
-
-    /**
-     * Sets the value of an existent or new header
+     * Sets the value of a header
+     * If the header exists, it will be overwritten
      *
      * @param  string  $key  the header key
      * @param  string  $value  the header value
@@ -96,7 +64,7 @@ class Response
      */
     public function remove(string $key)
     {
-        if (key_exists($key, $this->headers)) {
+        if (array_key_exists($key, $this->headers)) {
             unset($this->headers[$key]);
         }
 
@@ -130,7 +98,7 @@ class Response
     public function redirect(string $url, int $status = null)
     {
         if (isset($status)) {
-            $this->setCode($status);
+            $this->status_code = $status;
         }
 
         $this->url = $url;
@@ -144,8 +112,8 @@ class Response
      */
     public function go()
     {
-        foreach ($this->headers as $key => $header) {
-            header("$key: $header");
+        foreach ($this->headers as $key => $val) {
+            header("$key: $val");
         }
 
         redirect($this->url, $this->status_code);

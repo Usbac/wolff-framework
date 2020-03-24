@@ -376,12 +376,11 @@ namespace {
         {
             $host = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 
-            if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
+            if (($question_index = strpos($_SERVER['REQUEST_URI'], '?')) === false) {
                 return $host . $_SERVER['REQUEST_URI'];
             }
 
-            $page = explode('?', $_SERVER['REQUEST_URI']);
-            return $host . $page[0];
+            return $host . substr($_SERVER['REQUEST_URI'], 0, $question_index);
         }
     }
 

@@ -2,9 +2,12 @@
 
 namespace Wolff\Core;
 
-class Cache
+use \Wolff\Exception\FileNotFoundException;
+
+final class Cache
 {
 
+    const EXISTS_ERROR = 'Cache file \'%s\' doesn\'t exists';
     const FILENAME_FORMAT = 'tmp_%s.php';
     const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
@@ -42,11 +45,13 @@ class Cache
     /**
      * Returns the content of the cache file
      *
+     * @throws \Wolff\Exception\FileNotFoundException
+     *
      * @param  string  $dir  the cache filename
      *
      * @return string return the content of the cache file
      */
-    public static function getContent(string $dir)
+    public static function get(string $dir)
     {
         $file_path = self::getDir(self::getFilename($dir));
 
@@ -54,7 +59,9 @@ class Cache
             return file_get_contents($file_path);
         }
 
-        throw new \Error("Cache '$dir' doesn't exists");
+        throw new FileNotFoundException(
+            sprintf(self::EXISTS_ERROR, $file_path)
+        );
     }
 
 
@@ -182,6 +189,6 @@ class Cache
      */
     private static function getDir(string $path = '')
     {
-        return CONFIG['cache_dir'] . '/' . $path;
+        return CONFIG['root_dir'] . '/' . CONFIG['cache_dir'] . '/' . $path;
     }
 }

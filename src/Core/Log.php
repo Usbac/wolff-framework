@@ -14,13 +14,13 @@ use Wolff\Utils\Str;
  * @method static info(string $message, array $values = [])
  * @method static debug(string $message, array $values = [])
  */
-class Log
+final class Log
 {
 
     const FOLDER_PERMISSIONS = 0755;
     const DATE_FORMAT = 'H:i:s';
     const FORMAT = '[%s] [%s] %s: %s';
-    const FOLDER_PATH = CONFIG['root_dir'] . CONFIG['system_dir'] . 'logs';
+    const FOLDER_PATH = CONFIG['root_dir'] . '/' . CONFIG['system_dir'] . '/logs';
     const LEVELS = [
         'emergency',
         'alert',

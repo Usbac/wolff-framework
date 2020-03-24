@@ -4,7 +4,7 @@ namespace Wolff\Core;
 
 use Wolff\Utils\Str;
 
-class Kernel
+final class Kernel
 {
 
     /**

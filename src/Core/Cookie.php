@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-class Cookie
+final class Cookie
 {
 
     const TIME = [

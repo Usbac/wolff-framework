@@ -3,8 +3,13 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use Wolff\Exception\InvalidArgumentException;
 
-class Middleware
+/**
+ * @method static before(string $url, \Closure $function)
+ * @method static after(string $url, \Closure $function)
+ */
+final class Middleware
 {
 
     /**
@@ -103,6 +108,8 @@ class Middleware
      * Proxy to call the middlewares of type
      * before and after
      *
+     * @throws \Wolff\Exception\InvalidArgumentException
+     *
      * @param  string  $type  the type of middlewares to load
      * @param  array  $args  the arguments
      */
@@ -110,6 +117,14 @@ class Middleware
     {
         if (!in_array($type, [ 'before', 'after' ])) {
             return;
+        }
+
+        if (!is_string($args[0])) {
+            throw new InvalidArgumentException('url', 'of type string');
+        }
+
+        if (!($args[1] instanceof \Closure)) {
+            throw new InvalidArgumentException('function', 'an instance of \Closure');
         }
 
         array_push(self::${'middlewares_' . $type}, [

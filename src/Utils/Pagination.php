@@ -2,7 +2,7 @@
 
 namespace Wolff\Utils;
 
-class Pagination
+final class Pagination
 {
 
     const PLACEHOLDER = '{page}';

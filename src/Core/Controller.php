@@ -3,6 +3,7 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use \Wolff\Exception\BadControllerCallException;
 
 class Controller
 {
@@ -25,7 +26,7 @@ class Controller
 
         //load controller default function and return it
         if (($controller = Factory::controller($path)) === false) {
-            throw new \Error(sprintf(self::EXISTS_ERROR, $path, $method));
+            throw new BadControllerCallException(self::EXISTS_ERROR, $path);
         }
 
         return $controller;
@@ -48,7 +49,7 @@ class Controller
         $controller = Factory::controller($path);
 
         if (!method_exists($controller, $method)) {
-            throw new \Error(sprintf(self::METHOD_EXISTS_ERROR, $path, $method));
+            throw new BadControllerCallException(self::METHOD_EXISTS_ERROR, $path, $method);
         }
 
         return call_user_func_array([$controller, $method], $args);

@@ -3,11 +3,10 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use \Wolff\Exception\FileNotReadableException;
 
-class Maintenance
+final class Maintenance
 {
-
-    const NO_READABLE = 'Couldn\'t read the maintenance whitelist file';
 
     /**
      * Filename of the ip whitelist file.
@@ -37,6 +36,9 @@ class Maintenance
 
     /**
      * Returns an array of the IPs in the whitelist
+     *
+     * @throws \Wolff\Exception\FileNotReadableException
+     *
      * @return array An array of the IPs in the whitelist
      */
     public static function getAllowedIPs()
@@ -46,7 +48,7 @@ class Maintenance
         }
 
         if (($content = file_get_contents(self::$file)) === false) {
-            throw new \Error(self::NO_READABLE);
+            throw new FileNotReadableException(self::$file);
         }
 
         return explode(PHP_EOL, $content);
@@ -55,6 +57,8 @@ class Maintenance
 
     /**
      * Adds an IP to the whitelist
+     *
+     * @throws \Wolff\Exception\FileNotReadableException
      *
      * @param  string  $ip  the IP to add
      *
@@ -75,7 +79,7 @@ class Maintenance
                 return true;
             }
 
-            throw new \Error(self::NO_READABLE);
+            throw new FileNotReadableException(self::$file);
         }
 
         if (strpos($content, $ip) !== false) {
@@ -91,6 +95,8 @@ class Maintenance
     /**
      * Removes an IP from the whitelist
      *
+     * @throws \Wolff\Exception\FileNotReadableException
+     *
      * @param  string  $ip  the IP to remove
      *
      * @return bool true if the IP has been removed/doesn't exists in the whitelist, false otherwise
@@ -102,7 +108,7 @@ class Maintenance
         }
 
         if (($content = file_get_contents(self::$file)) === false) {
-            throw new \Error(self::NO_READABLE);
+            throw new FileNotReadableException(self::$file);
         }
 
         if (strpos($content, $ip) === false) {

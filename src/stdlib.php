@@ -52,7 +52,7 @@ namespace {
             }
 
             $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
-            return $project_dir . CONFIG['public_dir'] . $path;
+            return $project_dir . '/' . CONFIG['public_dir'] . '/' . $path;
         }
     }
 

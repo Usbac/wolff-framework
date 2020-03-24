@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-class Container implements ContainerInterface
+final class Container implements ContainerInterface
 {
 
     /**

@@ -3,17 +3,20 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use Wolff\Exception\InvalidLanguageException;
 
-class Language
+final class Language
 {
 
-    const BAD_FILE_ERROR = 'The %s language file for \'%s\' doesn\'t return an associative array';
-    const PATH_FORMAT = CONFIG['root_dir'] . CONFIG['app_dir'] . 'languages/%s/%s.php';
+    const BAD_FILE_ERROR = 'The %s language file for \'%s\' must return an associative array';
+    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/languages/%s/%s.php';
 
 
     /**
      * Returns the content of a language, or false if
      * it doesn't exists
+     *
+     * @throws \Wolff\Exception\InvalidLanguageException.
      *
      * @param  string  $dir  the language directory
      * @param  string  $language  the language selected
@@ -41,7 +44,7 @@ class Language
         }
 
         if (!is_array($data)) {
-            throw new \Error(sprintf(self::BAD_FILE_ERROR, $language, $dir));
+            throw new InvalidLanguageException(self::BAD_FILE_ERROR, $language, $dir);
         }
 
         if (isset($key)) {
@@ -76,14 +79,8 @@ class Language
      * @return string true if the specified language exists,
      * false otherwise
      */
-    public static function exists(string $dir, string $language = null)
+    public static function exists(string $dir, string $language = CONFIG['language'])
     {
-        if (!isset($language)) {
-            $language = CONFIG['language'];
-        }
-
-        $file_path = self::getPath($dir, $language);
-
-        return file_exists($file_path);
+        return file_exists(self::getPath($dir, $language));
     }
 }

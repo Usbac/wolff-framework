@@ -2,7 +2,9 @@
 
 namespace Wolff\Core;
 
-class Config
+use \Wolff\Exception\FileNotReadableException;
+
+final class Config
 {
 
     /**
@@ -16,7 +18,7 @@ class Config
      * Path of the environment file
      * @var string
      */
-    private static $env_path = CONFIG['root_dir'] . '.env';
+    private static $env_path = CONFIG['root_dir'] . '/.env';
 
 
     /**
@@ -25,11 +27,11 @@ class Config
     public static function init()
     {
         if (is_string(CONFIG['env_file'] ?? null)) {
-            self::$env_path = CONFIG['root_dir'] . CONFIG['env_file'];
+            self::$env_path = CONFIG['root_dir'] . '/' . CONFIG['env_file'];
         }
 
         self::$data = CONFIG;
-        self::mapEnv();
+        self::parseEnv();
 
         if (CONFIG['env_override'] ?? false) {
             array_merge(self::$data, $_ENV);
@@ -55,10 +57,10 @@ class Config
      * This is Wolff's own parser, an existing one has not been used
      * because lol
      */
-    public static function mapEnv()
+    public static function parseEnv()
     {
         if (($content = file_get_contents(self::$env_path)) === false) {
-            return [];
+            throw new \FileNotReadableException(self::$env_path);
         }
 
         foreach ((explode(PHP_EOL, $content)) as $line) {

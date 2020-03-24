@@ -2,7 +2,7 @@
 
 namespace Wolff\Utils;
 
-class Auth extends \Wolff\Core\DB
+final class Auth extends \Wolff\Core\DB
 {
 
     const DEFAULT_TABLE = 'user';

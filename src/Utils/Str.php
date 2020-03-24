@@ -2,7 +2,7 @@
 
 namespace Wolff\Utils;
 
-class Str
+final class Str
 {
 
     const DEFAULT_ENCODING = 'UTF-8';

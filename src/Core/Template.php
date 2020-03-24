@@ -4,7 +4,7 @@ namespace Wolff\Core;
 
 use Wolff\Utils\Str;
 
-class Template
+final class Template
 {
 
     const RAW = '~';
@@ -79,7 +79,7 @@ class Template
         //Cache system
         if ($cache && Cache::isEnabled()) {
             $content = Cache::has($dir) ?
-                Cache::getContent($dir) :
+                Cache::get($dir) :
                 self::replaceAll(self::getContent($dir));
 
             include(Cache::set($dir, $content));
@@ -123,7 +123,7 @@ class Template
         }
 
         if ($cache && Cache::isEnabled() && Cache::has($dir)) {
-            return Cache::getContent($dir);
+            return Cache::get($dir);
         }
 
         return self::replaceAll($content);

@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-class Session
+final class Session
 {
 
     const DATE_FORMAT = 'Y-m-d H:i:s';

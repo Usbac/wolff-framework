@@ -4,11 +4,11 @@ namespace Wolff\Core;
 
 use Wolff\Utils\Str;
 
-class View
+final class View
 {
 
     const VIEW_FORMAT = 'wlf';
-    const PATH_FORMAT = CONFIG['root_dir'] . CONFIG['app_dir'] . 'views/%s.' . self::VIEW_FORMAT;
+    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/views/%s.' . self::VIEW_FORMAT;
 
 
     /**

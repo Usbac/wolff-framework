@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-class Query
+final class Query
 {
 
     /**

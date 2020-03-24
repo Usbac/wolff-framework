@@ -3,6 +3,7 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use Wolff\Exception\InvalidArgumentException;
 
 /**
  * @method static get(string $url, $function, int $status = null)
@@ -11,7 +12,7 @@ use Wolff\Utils\Str;
  * @method static patch(string $url, $function, int $status = null)
  * @method static delete(string $url, $function, int $status = null)
  */
-class Route
+final class Route
 {
 
     const STATUS_OK = 200;
@@ -71,6 +72,14 @@ class Route
         $http_method = strtoupper($name);
         if (!in_array($http_method, self::HTTP_METHODS)) {
             return;
+        }
+
+        if (!isset($args[0]) || !is_string($args[0])) {
+            throw new InvalidArgumentException('url', 'of type string');
+        }
+
+        if (!isset($args[1]) || (!is_string($args[1]) && !($args[1] instanceof \Closure))) {
+            throw new InvalidArgumentException('function', 'of type string or an instance of \Closure');
         }
 
         $url = Str::sanitizeURL($args[0]);

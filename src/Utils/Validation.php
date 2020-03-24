@@ -4,7 +4,7 @@ namespace Wolff\Utils;
 
 use Wolff\Utils\Str;
 
-class Validation
+final class Validation
 {
 
     /**

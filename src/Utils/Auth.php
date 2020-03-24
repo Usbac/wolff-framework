@@ -2,6 +2,8 @@
 
 namespace Wolff\Utils;
 
+use Wolff\Exception\InvalidArgumentException;
+
 final class Auth extends \Wolff\Core\DB
 {
 
@@ -24,12 +26,20 @@ final class Auth extends \Wolff\Core\DB
     private $table = self::DEFAULT_TABLE;
 
     /**
+     * The name of the unique column
+     * that cannot be repeated.
+     *
+     * @var string
+     */
+    private $unique_column = null;
+
+    /**
      * The last currently authenticated
      * user's data.
      *
      * @var array
      */
-    private $user = null;
+    private $last_user = null;
 
     /**
      * The last inserted user id.
@@ -40,7 +50,8 @@ final class Auth extends \Wolff\Core\DB
 
 
     /**
-     * Initializes the database connection
+     * Initializes the database connection for
+     * the authentication utility
      *
      * @param  array  $data  The array containing database authentication data
      * @param  array  $options  The PDO connection options
@@ -58,18 +69,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function setTable(string $table = self::DEFAULT_TABLE)
     {
-        self::$table = parent::escape($table);
-    }
-
-
-    /**
-     * Returns the database table to be used
-     *
-     * @return string the database table to be used
-     */
-    public function getTable()
-    {
-        return self::$table;
+        $this->table = $this->escape($table);
     }
 
 
@@ -80,7 +80,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function setOptions(array $options)
     {
-        self::$options = $options;
+        $this->options = $options;
     }
 
 
@@ -91,7 +91,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function getOptions()
     {
-        return self::$options;
+        return $this->options;
     }
 
 
@@ -102,7 +102,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function getId()
     {
-        return self::$last_id;
+        return $this->last_id;
     }
 
 
@@ -115,7 +115,19 @@ final class Auth extends \Wolff\Core\DB
      */
     public function getUser()
     {
-        return self::$user;
+        return $this->last_user;
+    }
+
+
+    /**
+     * Sets the unique column that cannot
+     * be repeated.
+     *
+     * @param string $unique_column the unique column name
+     */
+    public function setUnique(string $unique_column)
+    {
+        $this->unique_column = $unique_column;
     }
 
 
@@ -124,6 +136,8 @@ final class Auth extends \Wolff\Core\DB
      * and is valid, false otherwise.
      * This method updates the current user data array.
      *
+     * @throws \Wolff\Exception\InvalidArgumentException
+     *
      * @param  array  $data  the array containing the user data
      *
      * @return bool true if the given user data exists in the database
@@ -131,31 +145,31 @@ final class Auth extends \Wolff\Core\DB
      */
     public function login(array $data)
     {
-        //Fields validation
-        if (!array_key_exists('password', $data)) {
-            return false;
+        if (empty($data) || !isAssoc($data) || !array_key_exists('password', $data)) {
+            throw new InvalidArgumentException(
+                'data',
+                'a non-empty associative array with at least a \'password\' key'
+            );
         }
 
         $password = $data['password'];
         unset($data['password']);
 
-        $values = [];
+        $conditions = [];
         foreach (array_keys($data) as $key) {
-            $values[] = "$key = :$key";
+            $conditions[] = "$key = :$key";
         }
 
-        $values = implode(' AND ', $values);
-        $table = self::getTable();
-        $user = parent::query("SELECT * from `$table` WHERE $values", $data)->first();
+        $stmt = $this->connection->prepare("SELECT * FROM `{$this->table}` WHERE " . implode(' AND ', $conditions));
+        $stmt->execute($data);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if (array_key_exists('password', $user) &&
-            password_verify($password, $user['password'])) {
-            self::$user = $user;
-            return true;
-        }
+        $valid = is_array($user) &&
+            array_key_exists('password', $user) &&
+            password_verify($password, $user['password']);
 
-        self::$user = null;
-        return false;
+        $this->last_user = $valid ? $user : null;
+        return $valid;
     }
 
 
@@ -164,23 +178,39 @@ final class Auth extends \Wolff\Core\DB
      * The only required values in the given array
      * are 'password' and 'password_confirm'
      *
+     * @throws \Wolff\Exception\InvalidArgumentException
+     *
      * @param  array  $data  the array containing the user data
      *
-     * @return bool true if the registration has been successfully made,
+     * @return bool True if the registration has been successfully made,
      * false otherwise
      */
     public function register(array $data)
     {
-        //Fields validation
-        if (!self::passwordMatches($data)) {
+        if (empty($data) || !isAssoc($data)) {
+            throw new InvalidArgumentException('data', 'a non-empty associative array');
+        }
+
+        if (!$this->passwordMatches($data)) {
             return false;
         }
 
         unset($data['password_confirm']);
-        $data['password'] = self::getPassword($data['password']);
+        $data['password'] = $this->getPassword($data['password']);
 
-        if (self::insert($data)) {
-            self::$last_id = parent::getPdo()->lastInsertId();
+        //Repeated user
+        if (isset($this->unique_column)) {
+            $column = $this->unique_column;
+            $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $column = ?");
+            $stmt->execute([ $data[$column] ]);
+
+            if (!empty($stmt->fetch(\PDO::FETCH_ASSOC))) {
+                return false;
+            }
+        }
+
+        if ($this->insertUser($data)) {
+            $this->last_id = $this->connection->lastInsertId();
             return true;
         }
 
@@ -216,7 +246,7 @@ final class Auth extends \Wolff\Core\DB
      */
     private function getPassword(string $password)
     {
-        return password_hash($password, PASSWORD_BCRYPT, self::$options);
+        return password_hash($password, PASSWORD_BCRYPT, $this->options);
     }
 
 
@@ -228,7 +258,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the insertion has been successfully made,
      * false otherwise
      */
-    private function insert($data)
+    private function insertUser($data)
     {
         $array_keys = array_keys($data);
 
@@ -239,9 +269,8 @@ final class Auth extends \Wolff\Core\DB
 
         $keys = implode(', ', $array_keys);
         $values = implode(', ', $values);
-        $table = self::getTable();
 
-        $stmt = parent::getPdo()->prepare("INSERT INTO `$table` ($keys) VALUES ($values)");
+        $stmt = $this->connection->prepare("INSERT INTO `$this->table` ($keys) VALUES ($values)");
 
         return $stmt->execute($data);
     }

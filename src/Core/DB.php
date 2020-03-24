@@ -209,6 +209,7 @@ class DB
         $column = $this->escape($column);
 
         $result = $this->connection->query("SHOW COLUMNS FROM $table LIKE $column");
+
         if (is_bool($result)) {
             return false;
         }
@@ -222,8 +223,12 @@ class DB
      *
      * @return array|bool the database schema or false if no tables exist in the database
      */
-    public function getSchema()
+    public function getSchema(string $table = null)
     {
+        if (isset($table)) {
+            return $this->getTableSchema($table);
+        }
+
         $tables = $this->connection->query('SHOW TABLES');
 
         if (is_bool($tables)) {
@@ -248,7 +253,7 @@ class DB
      * @return array|bool the table schema from the database,
      * or false if the table columns doesn't exists
      */
-    public function getTableSchema(string $table)
+    private function getTableSchema(string $table)
     {
         $table = $this->escape($table);
         $result = $this->connection->query("SHOW COLUMNS FROM $table");
@@ -265,6 +270,8 @@ class DB
      * Inserts an array into the specified table
      * or null in case of errors
      *
+     * @throws \Wolff\Exception\InvalidArgumentException
+     *
      * @param  string  $table  the table for the query
      * @param  array  $data  the data to insert
      *
@@ -274,7 +281,7 @@ class DB
     public function insert(string $table, array $data)
     {
         if (empty($data) || !isAssoc($data)) {
-            return null;
+            throw new InvalidArgumentException('data', 'a non-empty associative array');
         }
 
         $table = $this->escape($table);

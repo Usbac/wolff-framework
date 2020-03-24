@@ -23,9 +23,10 @@ final class Cache
         }
 
         $files = glob(self::getDir('*.php'));
+        $time = time();
 
         foreach ($files as $file) {
-            if (self::expired($file)) {
+            if ($time - filectime($file) > self::EXPIRATION_TIME) {
                 unlink($file);
             }
         }
@@ -85,23 +86,6 @@ final class Cache
         }
 
         return $file_path;
-    }
-
-
-    /**
-     * Returns true if the cache file has expired, false otherwise
-     *
-     * @param  string  $dir  the cache file directory
-     *
-     * @return bool true if the cache file has expired, false otherwise
-     */
-    private static function expired($dir)
-    {
-        if (!file_exists($dir)) {
-            return false;
-        }
-
-        return (time() - filectime($dir) > self::EXPIRATION_TIME);
     }
 
 

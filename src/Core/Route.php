@@ -287,7 +287,7 @@ final class Route
             }
         }
 
-        self::$routes[$url] = [
+        self::$routes[trim($url, '/')] = [
             'function'     => $function,
             'method'       => $method,
             'status'       => $status,

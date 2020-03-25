@@ -47,21 +47,28 @@ final class Cookie
      * Sets a cookie
      *
      * @param  string  $key  the cookie key
-     * @param  mixed  $value  the cookie value
+     * @param  string  $value  the cookie value
      * @param  mixed  $time  the cookie time
      * @param  string  $path  the path where the cookie will work
+     * @param  string  $domain the cookie domain
+     * @param  bool  $secure  only available through https or not
+     * @param  bool  $http_only  only available through http protocol or not,
+     * this will hide the cookie from scripting languages like JS
      */
-    public static function set(string $key, $value, $time, string $path = '/')
-    {
-        if (is_string($time)) {
-            $time = \strtoupper($time);
-        }
-
+    public static function set(
+        string $key,
+        string $value,
+        $time,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = true,
+        bool $http_only = true
+    ) {
         if (array_key_exists($time, self::TIME)) {
-            $time = self::TIME[$time];
+            $time = self::TIME[strtoupper($time)];
         }
 
-        setCookie($key, $value, time() + $time, $path);
+        setCookie($key, $value, time() + $time, $path, $domain, $secure, $http_only);
     }
 
 

@@ -2,6 +2,9 @@
 
 namespace Wolff\Core\Http;
 
+use Wolff\Exception\InvalidArgumentException;
+use Wolff\Exception\FileNotFoundException;
+
 class Request
 {
 
@@ -34,6 +37,13 @@ class Request
     private $files;
 
     /**
+     * List of headers
+     *
+     * @var array
+     */
+    private $headers;
+
+    /**
      * Current server superglobal
      *
      * @var array
@@ -61,10 +71,10 @@ class Request
         array $files,
         array $server
     ) {
-        $this->params = $_GET;
-        $this->body = $_POST;
-        $this->server = $_SERVER;
-        $this->headers = $this->parseHeaders($_SERVER);
+        $this->params = $params;
+        $this->body = $body;
+        $this->server = $server;
+        $this->headers = $this->parseHeaders($server);
         $this->file_options = self::DEFAULT_FILE_OPTIONS;
         $this->files = $this->getFiles($files, $this->file_options);
     }
@@ -158,7 +168,7 @@ class Request
      * Returns the specified parameter.
      * The key parameter accepts dot notation
      *
-     * @param  string  $key  the parameter key
+     * @param  string|null  $key  the parameter key
      *
      * @return mixed The specified parameter.
      */
@@ -191,7 +201,7 @@ class Request
      * Returns the specified body parameter.
      * The key parameter accepts dot notation
      *
-     * @param  string  $key  the body parameter key
+     * @param  string|null  $key  the body parameter key
      *
      * @return mixed The specified body parameter.
      */
@@ -223,7 +233,7 @@ class Request
     /**
      * Returns the specified file.
      *
-     * @param  string  $key  the file key
+     * @param  string|null  $key  the file key
      *
      * @return mixed The specified file.
      */
@@ -256,7 +266,7 @@ class Request
      * Returns the headers array,
      * or the specified header key
      *
-     * @param  string  $key  the header key to get
+     * @param  string|null  $key  the header key to get
      *
      * @return mixed The headers array,
      * or the specified header key

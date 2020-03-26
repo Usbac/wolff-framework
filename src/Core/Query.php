@@ -45,7 +45,7 @@ final class Query
      * Returns the first element of the query results
      * or only the specified column of the first element
      *
-     * @param  string  $column  the column name to pick
+     * @param  string|null  $column  the column name to pick
      *
      * @return array the first element of the query results,
      * or only the specified column of the first element
@@ -53,7 +53,7 @@ final class Query
     public function first(string $column = null)
     {
         $first = $this->get()[0] ?? [];
-        if (isset($column, $first)) {
+        if (isset($first, $column)) {
             return $first[$column];
         }
 
@@ -66,10 +66,9 @@ final class Query
      *
      * @return array only the specified column/s of the query result
      */
-    public function pick()
+    public function pick(...$columns)
     {
         $rows = [];
-        $columns = func_get_args();
         $result = $this->get();
 
         //Only one column to pick

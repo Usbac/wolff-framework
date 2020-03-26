@@ -25,9 +25,8 @@ final class Template
         'for'    => '/' . self::NOT_RAW . '\{( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}\}/',
         'endfor' => '/' . self::NOT_RAW . '\{( ?){1,}endfor( ?){1,}\}/',
 
-        'extends'      => '/' . self::NOT_RAW . '@extends\(\'(.*)\'\)/',
-        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?)
-            {\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
+        'extends'      => '/' . self::NOT_RAW . '@extends\(((?:\'|").*(?:\'|"))\)/',
+        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
         'parent_block' => '/' . self::NOT_RAW . '{\[[ ?]{1,}parent[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}/'
     ];
 
@@ -57,7 +56,7 @@ final class Template
      * @param  array  $data  the data array present in the view
      * @param  bool  $cache  use or not the cache system
      *
-     * @return string the view content rendered or false in case of errors.
+     * @return string|bool the view content rendered or false in case of errors.
      */
     public static function getRender(string $dir, array $data, bool $cache)
     {
@@ -265,7 +264,7 @@ final class Template
     {
         preg_match_all(self::FORMAT['include'], $content, $matches, PREG_OFFSET_CAPTURE);
 
-        foreach ($matches[1] as $key => $value) {
+        foreach ($matches[1] as $key => $val) {
             $filename = Str::sanitizePath($matches[2][$key][0]);
             $content = str_replace($matches[0][$key][0], self::getContent($filename), $content);
         }

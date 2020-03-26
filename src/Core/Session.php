@@ -92,7 +92,7 @@ final class Session
     /**
      * Returns a session variable
      *
-     * @param  string  $key  the variable key
+     * @param  string|null  $key  the variable key
      *
      * @return mixed the session variable
      */
@@ -111,7 +111,7 @@ final class Session
      *
      * @param  string  $key  the variable key
      * @param  mixed  $value the variable value
-     * @param  int  $time the variable live time in minutes
+     * @param  int|null  $time the variable live time in minutes
      */
     public static function set(string $key, $value, int $time = null)
     {
@@ -155,7 +155,7 @@ final class Session
      * @param  string  $key  the variable key
      * @param  bool  $gmdate  return the time in date format
      *
-     * @return int the variable live time
+     * @return int|string the variable live time
      */
     public static function getVarTime(string $key, bool $gmdate = false)
     {
@@ -192,7 +192,7 @@ final class Session
      * @param  string  $key  the variable key
      * @param  int  $time  the variable time to add
      */
-    public static function addVarTime(string $key, int $time = 1)
+    public static function addVarTime(string $key, int $time)
     {
         $_SESSION['vars_tmp_time'][$key] += ($time * 60);
     }
@@ -217,7 +217,6 @@ final class Session
      */
     public static function setTime(int $time)
     {
-        $_SESSION['live_time'] = ($time * 60);
         $_SESSION['end_time'] = time() + ($time * 60);
     }
 
@@ -229,23 +228,6 @@ final class Session
     public static function getPassedTime()
     {
         return microtime(true) - $_SESSION['start_time'];
-    }
-
-
-    /**
-     * Returns the established session live time (in minutes)
-     *
-     * @param  bool  $gmdate  format the time in H:i:s
-     *
-     * @return mixed the established session live time (in minutes)
-     */
-    public static function getLiveTime(bool $gmdate = false)
-    {
-        if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, $_SESSION['live_time']);
-        }
-
-        return $_SESSION['live_time'];
     }
 
 

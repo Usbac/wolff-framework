@@ -3,13 +3,14 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use Wolff\Exception\FileNotFoundException;
 
 final class View
 {
 
     const VIEW_FORMAT = 'wlf';
     const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/views/%s.' . self::VIEW_FORMAT;
-
+    const EXISTS_ERROR = 'View \'%s\' doesn\'t exists';
 
     /**
      * Load a view
@@ -23,7 +24,9 @@ final class View
         $dir = Str::sanitizePath($dir);
 
         if (!self::exists($dir)) {
-            throw new \Error("View '$dir' doesn't exists");
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $dir)
+            );
         }
 
         echo Template::getRender($dir, $data, $cache);
@@ -42,7 +45,9 @@ final class View
         $dir = Str::sanitizePath($dir);
 
         if (!self::exists($dir)) {
-            throw new \Error("View '$dir' doesn't exists");
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $dir)
+            );
         }
 
         return file_get_contents(self::getPath($dir));
@@ -65,7 +70,9 @@ final class View
         $dir = Str::sanitizePath($dir);
 
         if (!self::exists($dir)) {
-            throw new \Error("View '$dir' doesn't exists");
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $dir)
+            );
         }
 
         return Template::get($dir, $data, $cache);
@@ -86,7 +93,9 @@ final class View
         $dir = Str::sanitizePath($dir);
 
         if (!self::exists($dir)) {
-            throw new \Error("View '$dir' doesn't exists");
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $dir)
+            );
         }
 
         return Template::getRender($dir, $data, $cache);

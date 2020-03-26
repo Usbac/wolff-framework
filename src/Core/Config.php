@@ -60,7 +60,7 @@ final class Config
     public static function parseEnv()
     {
         if (($content = file_get_contents(self::$env_path)) === false) {
-            throw new \FileNotReadableException(self::$env_path);
+            throw new FileNotReadableException(self::$env_path);
         }
 
         foreach ((explode(PHP_EOL, $content)) as $line) {
@@ -71,7 +71,7 @@ final class Config
             $key = trim(substr($line, 0, $index_equal));
             $val = trim(substr($line, $index_equal + 1));
             // Anything between or not single/double quotes, excluding the hashtag character after it
-            $val = preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
+            preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
             $val = trim($matches[0] ?? 'null');
 
             switch ($val) {

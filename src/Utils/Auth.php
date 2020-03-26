@@ -53,8 +53,8 @@ final class Auth extends \Wolff\Core\DB
      * Initializes the database connection for
      * the authentication utility
      *
-     * @param  array  $data  The array containing database authentication data
-     * @param  array  $options  The PDO connection options
+     * @param  array|null  $data  The array containing database authentication data
+     * @param  array|null  $options  The PDO connection options
      */
     public function __construct(array $data = null, array $options = null)
     {
@@ -210,7 +210,7 @@ final class Auth extends \Wolff\Core\DB
         }
 
         if ($this->insertUser($data)) {
-            $this->last_id = $this->connection->lastInsertId();
+            $this->last_id = (int)$this->connection->lastInsertId();
             return true;
         }
 

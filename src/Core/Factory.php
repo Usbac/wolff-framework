@@ -2,7 +2,6 @@
 
 namespace Wolff\Core;
 
-use Wolff\Utils\Str;
 use PDO;
 use PDOException;
 
@@ -20,7 +19,7 @@ final class Factory
      * @param  array  $data  the data to connect to the database
      * @param  array  $options  the connection options
      *
-     * @return PDO a PDO connection
+     * @return PDO|null a PDO connection
      */
     public static function connection(array $data, array $options)
     {
@@ -46,7 +45,7 @@ final class Factory
     /**
      * Returns a controller initialized
      *
-     * @param  string  $dir  the controller directory
+     * @param  string|null  $dir  the controller directory
      *
      * @return object|bool a controller initialized
      */
@@ -76,5 +75,22 @@ final class Factory
     public static function query($results)
     {
         return new Query($results);
+    }
+
+
+    /**
+     * Returns a new request object
+     * based on the current request
+     *
+     * @return  Http\Request  The new request object
+     */
+    public static function request()
+    {
+        return new Http\Request(
+            $_GET,
+            $_POST,
+            $_FILES,
+            $_SERVER
+        );
     }
 }

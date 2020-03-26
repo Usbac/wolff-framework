@@ -8,7 +8,7 @@ class Response
     /**
      * The HTTP status code.
      *
-     * @var int
+     * @var int|null
      */
     private $status_code;
 
@@ -75,7 +75,7 @@ class Response
     /**
      * Sets the HTTP status code
      *
-     * @param  int  $status  the HTTP status code
+     * @param  int|null  $status  the HTTP status code
      *
      * @return Response this
      */
@@ -91,7 +91,7 @@ class Response
      * Sets the header location and HTTP status code
      *
      * @param  string  $url  the header location
-     * @param  int  $status  the HTTP status code
+     * @param  int|null  $status  the HTTP status code
      *
      * @return Response this
      */

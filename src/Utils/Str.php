@@ -75,7 +75,7 @@ final class Str
     /**
      * Returns a friendly url string based on the given string.
      *
-     * @param  string  str the original string
+     * @param  string  $str the original string
      *
      * @return string the url friendly string
      */
@@ -218,10 +218,6 @@ final class Str
      */
     public static function swap(string $str, string $first_str, string $second_str)
     {
-        if (!is_string($str) || !is_string($first_str) || !is_string($second_str)) {
-            return false;
-        }
-
         return strtr($str, [
             $first_str  => $second_str,
             $second_str => $first_str
@@ -237,7 +233,7 @@ final class Str
      *
      * @return string the string encoded in UTF-8
      */
-    public static function toUtf8($str)
+    public static function toUtf8(string $str)
     {
         $encoding = mb_detect_encoding($str, mb_detect_order(), true);
         $encoded = iconv($encoding, 'UTF-8', $str);
@@ -305,7 +301,7 @@ final class Str
     public static function after(string $str, string $needle)
     {
         if (!self::contains($str, $needle)) {
-            return false;
+            return '';
         }
 
         return substr($str, strpos($str, $needle) + strlen($needle));
@@ -325,7 +321,7 @@ final class Str
     public static function before(string $str, string $needle)
     {
         if (!self::contains($str, $needle)) {
-            return false;
+            return '';
         }
 
         return substr($str, 0, strpos($str, $needle));
@@ -353,7 +349,7 @@ final class Str
     /**
      * Returns the given paths concatenated
      *
-     * @param  string|array  $paths  the paths
+     * @param  mixed  ...$paths  the paths
      *
      * @return string the given paths concatenated
      */
@@ -376,7 +372,7 @@ final class Str
     /**
      * Returns all the given strings concatenated into one
      *
-     * @param  string[]  $strings  the strings
+     * @param  mixed  ...$strings  the strings
      *
      * @return string all the given strings concatenated into one
      */

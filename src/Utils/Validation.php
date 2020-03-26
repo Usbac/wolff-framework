@@ -2,8 +2,6 @@
 
 namespace Wolff\Utils;
 
-use Wolff\Utils\Str;
-
 final class Validation
 {
 
@@ -89,9 +87,6 @@ final class Validation
      *
      * @param  string  $key  the data key value to evaluate
      * with the field rules
-     *
-     * @return bool true if the given data key value matches
-     * the current rules, false otherwise
      */
     private function validateField(string $key)
     {
@@ -111,12 +106,12 @@ final class Validation
 
             //Complies type
             if ($rule == 'type') {
-                if (($val == 'email' && filter_var($email, FILTER_VALIDATE_EMAIL) === false) ||
-                    ($val == 'alphanumeric' && !preg_match('/[A-Za-z0-9 ]+$/', $str)) ||
-                    ($val == 'alpha' && !preg_match('/[A-Za-z ]+$/', $str)) ||
-                    ($val == 'int' && !isInt($field)) ||
-                    ($val == 'float' && !isFloat($field)) ||
-                    ($val == 'bool' && !isBool($field))) {
+                if (($val === 'email' && filter_var($field, FILTER_VALIDATE_EMAIL) === false) ||
+                    ($val === 'alphanumeric' && !preg_match('/[A-Za-z0-9 ]+$/', $field)) ||
+                    ($val === 'alpha' && !preg_match('/[A-Za-z ]+$/', $field)) ||
+                    ($val === 'int' && !isInt($field)) ||
+                    ($val === 'float' && !isFloat($field)) ||
+                    ($val === 'bool' && !isBool($field))) {
                     $this->addInvalidValue($key, $rule);
                 }
             }

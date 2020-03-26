@@ -87,26 +87,10 @@ final class Kernel
      */
     private function load()
     {
-        $req = $this->getRequest();
+        $req = Factory::request();
         Middleware::loadBefore($this->url, $req);
         $this->loadPage($req);
         Middleware::loadAfter($this->url, $req);
-    }
-
-
-    /**
-     * Returns a new request object
-     *
-     * @return  Http\Request  The new request object
-     */
-    private function getRequest()
-    {
-        return new Http\Request(
-            $_GET,
-            $_POST,
-            $_FILES,
-            $_SERVER
-        );
     }
 
 

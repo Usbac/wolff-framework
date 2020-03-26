@@ -16,7 +16,7 @@ final class Cookie
     /**
      * Returns the cookies or the specified cookie
      *
-     * @param  string  $key  the key
+     * @param  string|null  $key  the key
      *
      * @return mixed the cookies or the specified cookie
      */
@@ -85,6 +85,6 @@ final class Cookie
         }
 
         unset($_COOKIE[$key]);
-        setCookie($key, '', time() - self::HOUR_TIME);
+        setCookie($key, '', time() - self::TIME['HOUR']);
     }
 }

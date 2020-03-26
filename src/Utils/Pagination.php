@@ -232,7 +232,7 @@ final class Pagination
         return [
             'index'        => $index,
             'current_page' => $index === $this->page,
-            'url'          => \str_replace(self::PLACEHOLDER, $index, $this->url_format)
+            'url'          => str_replace(self::PLACEHOLDER, strval($index), $this->url_format)
         ];
     }
 }

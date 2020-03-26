@@ -97,10 +97,10 @@ final class Route
      * only for a status code
      *
      * @param  string  $code  the status code
-     * @param  mixed  $function  mixed the function that must be executed
+     * @param  \Closure  $function  mixed the function that must be executed
      * when getting the status code
      */
-    public static function code(string $code, $function)
+    public static function code(string $code, \Closure $function)
     {
         self::$codes[trim($code)] = $function;
     }

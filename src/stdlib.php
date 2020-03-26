@@ -9,7 +9,7 @@ namespace {
          * if it does not exists.
          * The key must be in dot syntax. Like 'user.name'.
          *
-         * @param  string  $key  the CONFIG array key
+         * @param  string|null  $key  the CONFIG array key
          *
          * @return mixed the given key of the CONFIG array or null
          * if it does not exists.
@@ -94,7 +94,7 @@ namespace {
          * The key param can use the dot notation.
          *
          * @param  array  $arr  the array
-         * @param  string  $key  the array key to obtain
+         * @param  string|null  $key  the array key to obtain
          *
          * @return mixed the value of the specified key in the array
          */
@@ -194,18 +194,23 @@ namespace {
         /**
          * Make a redirection
          *
-         * @param  string  $url  the url to redirect to
+         * @param  string|null  $url  the url to redirect to
          * @param  int  $status  the HTTP status code
          */
-        function redirect(string $url = null, int $status = null)
+        function redirect(string $url = null, int $status = 200)
         {
             //Set url to the homepage when null
             if (!isset($url)) {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
-                $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+
+                $project_dir = '';
+                if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
+                    $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+                }
+
                 $directory = str_replace('\\', '/', $project_dir);
 
-                if (substr($directory, -1) != '/' && substr($url, 0, 1) != '/') {
+                if (substr($directory, -1) !== '/') {
                     $directory .= '/';
                 }
 
@@ -225,7 +230,7 @@ namespace {
          *
          * @param  string  $str  the string
          *
-         * @return string true if the given string is a Json, false otherwise
+         * @return bool true if the given string is a Json, false otherwise
          */
         function isJson(string $str)
         {
@@ -241,13 +246,13 @@ namespace {
          *
          * @param  string  $obj  the object
          *
-         * @return string the given variable as an associative array
+         * @return mixed the given variable as an associative array
          */
         function toArray($obj)
         {
             //Json
             if (is_string($obj)) {
-                $json = json_decode($obj);
+                json_decode($obj);
                 if (json_last_error() === JSON_ERROR_NONE) {
                     $obj = json_decode($obj);
                 }
@@ -361,8 +366,15 @@ namespace {
          */
         function getCurrentPage()
         {
-            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
-            return substr($_SERVER['REQUEST_URI'], strlen($project_dir));
+            $url = $_SERVER['REQUEST_URI'];
+
+            //Remove possible project folder from url
+            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+                $url = substr($url, strlen($project_dir));
+            }
+
+            return $url;
         }
     }
 

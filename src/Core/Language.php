@@ -2,7 +2,6 @@
 
 namespace Wolff\Core;
 
-use Wolff\Utils\Str;
 use Wolff\Exception\InvalidLanguageException;
 
 final class Language
@@ -16,10 +15,10 @@ final class Language
      * Returns the content of a language, or false if
      * it doesn't exists
      *
-     * @throws \Wolff\Exception\InvalidLanguageException.
+     * @throws \Wolff\Exception\InvalidLanguageException
      *
      * @param  string  $dir  the language directory
-     * @param  string  $language  the language selected
+     * @param  string|null  $language  the language selected
      *
      * @return mixed the content of a language, or false if
      * it doesn't exists
@@ -34,8 +33,6 @@ final class Language
             $dir = substr($dir, 0, $dot_pos);
             $key = substr($dir, $dot_pos + 1);
         }
-
-        $data = [];
 
         if (self::exists($dir, $language)) {
             $data = (include self::getPath($dir, $language));
@@ -76,7 +73,7 @@ final class Language
      * @param  string  $dir  the language directory
      * @param  string  $language  the language selected
      *
-     * @return string true if the specified language exists,
+     * @return bool true if the specified language exists,
      * false otherwise
      */
     public static function exists(string $dir, string $language = CONFIG['language'])

@@ -49,7 +49,7 @@ class File
      * If no path is provided, the file name will be
      * used instead
      *
-     * @param string $name the desired file path
+     * @param string|null $name the desired file path
      *
      * @return bool True if the file has been uploaded,
      * false otherwise
@@ -89,7 +89,7 @@ class File
             return false;
         }
 
-        if ($this->option['override'] && file_exists($path)) {
+        if (!$this->options['override'] && file_exists($path)) {
             return false;
         }
 

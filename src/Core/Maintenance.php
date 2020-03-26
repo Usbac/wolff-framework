@@ -2,7 +2,6 @@
 
 namespace Wolff\Core;
 
-use Wolff\Utils\Str;
 use \Wolff\Exception\FileNotReadableException;
 
 final class Maintenance
@@ -39,7 +38,7 @@ final class Maintenance
      *
      * @throws \Wolff\Exception\FileNotReadableException
      *
-     * @return array An array of the IPs in the whitelist
+     * @return array|false An array of the IPs in the whitelist
      */
     public static function getAllowedIPs()
     {
@@ -155,8 +154,8 @@ final class Maintenance
      */
     public static function call()
     {
-        if (self::$closure !== null) {
-            self::$closure();
+        if (self::$function !== null) {
+            self::$function();
         }
 
         exit;

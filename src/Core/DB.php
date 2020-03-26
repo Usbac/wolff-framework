@@ -3,6 +3,7 @@
 namespace Wolff\Core;
 
 use PDO;
+use Wolff\Exception\InvalidArgumentException;
 
 class DB
 {
@@ -44,8 +45,8 @@ class DB
     /**
      * Initializes the database connection
      *
-     * @param  array  $data  The array containing database authentication data
-     * @param  array  $options  The PDO connection options
+     * @param  array|null  $data  The array containing database authentication data
+     * @param  array|null  $options  The PDO connection options
      */
     public function __construct(array $data = null, array $options = null)
     {
@@ -187,7 +188,7 @@ class DB
 
         try {
             $result = $this->connection->query("SELECT 1 FROM $table LIMIT 1");
-        } catch (\Exception $err) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -317,9 +318,9 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  array  $args the query arguments
+     * @param  array|null  $args the query arguments
      *
-     * @return string the query result
+     * @return int the query result
      */
     public function countAll(string $table, string $conditions = '1', array $args = null)
     {
@@ -363,8 +364,9 @@ class DB
         } catch (\Exception $e) {
             if ($this->connection->inTransaction()) {
                 $this->connection->rollback();
-                return false;
             }
+
+            return false;
         }
 
         return true;
@@ -377,7 +379,7 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  array  $args the query arguments
+     * @param  array|null  $args the query arguments
      *
      * @return array the query result as an assosiative array
      */
@@ -396,7 +398,7 @@ class DB
      *
      * @param  string  $str  the string
      *
-     * @return array the string escaped
+     * @return string the string escaped
      */
     public function escape($str)
     {

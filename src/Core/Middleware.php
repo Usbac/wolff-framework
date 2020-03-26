@@ -44,7 +44,7 @@ final class Middleware
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request  $req  the request object
      */
-    private static function load(string $type, string $url, Http\Request $req)
+    private static function load(string $type, string $url, Http\Request &$req)
     {
         if (empty(self::${'middlewares_' . $type})) {
             return;
@@ -55,7 +55,7 @@ final class Middleware
 
         $url = explode('/', $url);
         $url_length = count($url) - 1;
-        foreach ($middlewares as $key => $val) {
+        foreach ($middlewares as $val) {
             $middleware = explode('/', $val['url']);
             $middleware_length = count($val['url']) - 1;
 

@@ -301,4 +301,20 @@ class Request
     {
         return $this->server['REQUEST_URI'];
     }
+
+
+    /**
+     * Returns true if the current protocol is secure (https),
+     * false otherwise.
+     *
+     * @return bool true if the current protocol is secure (https),
+     * false otherwise.
+     */
+    public function isSecure()
+    {
+        return isset($this->server['HTTPS']) &&
+            ($this->server['HTTPS'] == 'on' || $this->server['HTTPS'] == 1) ||
+            isset($this->server['HTTP_X_FORWARDED_PROTO']) &&
+            $this->server['HTTP_X_FORWARDED_PROTO'] == 'https';
+    }
 }

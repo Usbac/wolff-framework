@@ -96,26 +96,28 @@ final class Route
      * Adds a route that will work
      * only for a status code
      *
-     * @param  string  $code  the status code
+     * @param  int  $code  the status code
      * @param  \Closure  $function  mixed the function that must be executed
      * when getting the status code
      */
-    public static function code(string $code, \Closure $function)
+    public static function code(int $code, \Closure $function)
     {
-        self::$codes[trim($code)] = $function;
+        self::$codes[$code] = $function;
     }
 
 
     /**
      * Executes a code route based on the current status code
+     *
+     * @param \Wolff\Core\Http\Request $req Reference to the current request object
      */
-    public static function execCode()
+    public static function execCode(Http\Request &$req)
     {
         $code = http_response_code();
 
         if (isset(self::$codes[$code]) &&
             is_callable(self::$codes[$code])) {
-            self::$codes[$code]();
+            (self::$codes[$code])($req);
         }
     }
 

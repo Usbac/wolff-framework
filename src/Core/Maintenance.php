@@ -149,15 +149,14 @@ final class Maintenance
 
 
     /**
-     * Load the maintenance page
-     * Warning: This method stops the current script
+     * Loads the maintenance page
+     *
+     * @param \Wolff\Core\Http\Request $req Reference to the current request object
      */
-    public static function call()
+    public static function call(Http\Request &$req)
     {
-        if (self::$function !== null) {
-            self::$function();
+        if (isset(self::$function)) {
+            (self::$function)($req);
         }
-
-        exit;
     }
 }

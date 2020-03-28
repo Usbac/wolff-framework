@@ -1,7 +1,14 @@
 <?php
 
-namespace Wolff\Core;
+namespace Wolff;
 
+use Wolff\Core\Cache;
+use Wolff\Core\Config;
+use Wolff\Core\Controller;
+use Wolff\Core\Factory;
+use Wolff\Core\Route;
+use Wolff\Core\Maintenance;
+use Wolff\Core\Middleware;
 use Wolff\Utils\Str;
 
 final class Kernel
@@ -35,6 +42,13 @@ final class Kernel
      */
     private $method;
 
+    /**
+     * Current request object
+     *
+     * @var \Wolff\Core\Http\Request
+     */
+    private $req;
+
 
     /**
      * Default constructor
@@ -44,8 +58,11 @@ final class Kernel
         Config::init();
         Cache::init();
 
+        $this->setErrors();
+
         $this->url = $this->getUrl();
         $this->function = Route::getVal($this->url);
+        $this->req = Factory::request();
 
         if (is_string($this->function)) {
             $path = explode('@', $this->function);
@@ -62,23 +79,36 @@ final class Kernel
 
 
     /**
+     * Sets the error reporting state
+     * based on the current configuration.
+     */
+    private function setErrors()
+    {
+        error_reporting(CONFIG['development_on'] ? E_ALL : 0);
+        ini_set('display_errors', (int)CONFIG['development_on']);
+    }
+
+
+    /**
      * Starts the loading of the page
      */
     public function start()
     {
+
         if (CONFIG['maintenance_on'] &&
             !Maintenance::hasAccess()) {
-            Maintenance::call();
+            Maintenance::call($this->req);
+            return;
         }
 
         if (!$this->isAccessible()) {
             http_response_code(404);
-            Route::execCode();
+            Route::execCode($this->req);
             return;
         }
 
         $this->load();
-        Route::execCode();
+        Route::execCode($this->req);
     }
 
 
@@ -87,24 +117,23 @@ final class Kernel
      */
     private function load()
     {
-        $req = Factory::request();
-        Middleware::loadBefore($this->url, $req);
-        $this->loadPage($req);
-        Middleware::loadAfter($this->url, $req);
+        Middleware::loadBefore($this->url, $this->req);
+        $this->loadPage();
+        Middleware::loadAfter($this->url, $this->req);
     }
 
 
     /**
      * Loads the requested page
      */
-    private function loadPage(Http\Request $req)
+    private function loadPage()
     {
         if ($this->function instanceof \Closure) {
-            ($this->function)($req);
+            ($this->function)($this->req);
         } elseif (Controller::hasMethod($this->controller, $this->method)) {
-            Controller::method($this->controller, $this->method, [ $req ]);
+            Controller::method($this->controller, $this->method, [ $this->req ]);
         } elseif (Controller::exists($this->url)) {
-            Controller::method($this->url, 'index', [ $req ]);
+            Controller::method($this->url, 'index', [ $this->req ]);
         }
     }
 

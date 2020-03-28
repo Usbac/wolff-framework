@@ -3,17 +3,12 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
-use Wolff\Exception\FileNotFoundException;
 
 final class View
 {
 
-    const VIEW_FORMAT = 'wlf';
-    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/views/%s.' . self::VIEW_FORMAT;
-    const EXISTS_ERROR = 'View \'%s\' doesn\'t exists';
-
     /**
-     * Load a view
+     * Renders a view
      *
      * @param  string  $dir  the view directory
      * @param  array  $data  the view data
@@ -21,15 +16,7 @@ final class View
      */
     public static function render(string $dir, array $data = [], bool $cache = true)
     {
-        $dir = Str::sanitizePath($dir);
-
-        if (!self::exists($dir)) {
-            throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $dir)
-            );
-        }
-
-        echo Template::getRender($dir, $data, $cache);
+        echo self::getRender($dir, $data, $cache);
     }
 
 
@@ -43,13 +30,6 @@ final class View
     public static function getSource(string $dir)
     {
         $dir = Str::sanitizePath($dir);
-
-        if (!self::exists($dir)) {
-            throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $dir)
-            );
-        }
-
         return file_get_contents(self::getPath($dir));
     }
 
@@ -68,50 +48,36 @@ final class View
     public static function get(string $dir, array $data = [], bool $cache = true)
     {
         $dir = Str::sanitizePath($dir);
-
-        if (!self::exists($dir)) {
-            throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $dir)
-            );
-        }
-
         return Template::get($dir, $data, $cache);
     }
 
 
     /**
-     * Returns a view content rendered
+     * Returns a view content fully rendered
      *
      * @param  string  $dir  the view directory
      * @param  array  $data  the data
      * @param  bool  $cache  use or not the cache system
      *
-     * @return mixed the view rendered or false in case of errors
+     * @return string the view content fully rendered
      */
     public static function getRender(string $dir, array $data = [], bool $cache = true)
     {
         $dir = Str::sanitizePath($dir);
-
-        if (!self::exists($dir)) {
-            throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $dir)
-            );
-        }
-
         return Template::getRender($dir, $data, $cache);
     }
 
 
     /**
-     * Returns a view file path
+     * Returns the complete view file path
      *
-     * @param  string  $path  the view directory
+     * @param  string  $dir  the view directory
      *
-     * @return string the view file path
+     * @return string the complete view file path
      */
-    public static function getPath(string $path)
+    public static function getPath(string $dir)
     {
-        return sprintf(self::PATH_FORMAT, $path);
+        return Template::getPath($dir);
     }
 
 

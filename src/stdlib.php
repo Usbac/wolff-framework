@@ -197,7 +197,7 @@ namespace {
          * @param  string|null  $url  the url to redirect to
          * @param  int  $status  the HTTP status code
          */
-        function redirect(string $url = null, int $status = 200)
+        function redirect(string $url = null, int $status = 302)
         {
             //Set url to the homepage when null
             if (!isset($url)) {

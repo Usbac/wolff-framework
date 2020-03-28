@@ -3,10 +3,14 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
+use Wolff\Exception\FileNotFoundException;
+use Wolff\Exception\InvalidArgumentException;
 
 final class Template
 {
-
+    const VIEW_FORMAT = 'wlf';
+    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/views/%s.' . self::VIEW_FORMAT;
+    const EXISTS_ERROR = 'View file \'%s\' doesn\'t exists';
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';
     const BLOCK_NAME = '[a-zA-Z0-9_]+';
@@ -60,14 +64,6 @@ final class Template
      */
     public static function getRender(string $dir, array $data, bool $cache)
     {
-        $content = '';
-
-        if (!($cache && Cache::isEnabled() && Cache::has($dir)) &&
-            ($content = self::getContent($dir)) === false) {
-            return false;
-        }
-
-        //Variables in data array
         if (is_array($data)) {
             extract($data);
             unset($data);
@@ -84,7 +80,7 @@ final class Template
             include(Cache::set($dir, $content));
         } else {
             $tmp_file = tmpfile();
-            fwrite($tmp_file, self::replaceAll($content));
+            fwrite($tmp_file, self::replaceAll(self::getContent($dir)));
             include(stream_get_meta_data($tmp_file)['uri']);
             fclose($tmp_file);
         }
@@ -98,23 +94,14 @@ final class Template
 
     /**
      * Returns the view content with the template format applied
-     * or false if it doesn't exists
      *
      * @param  string  $dir  the view directory
      * @param  array  $data  the data array present in the view
      *
-     * @return string|bool the view content with the template format applied
-     * or false if it doesn't exists
+     * @return string the view content with the template format applied
      */
     public static function get(string $dir, array $data, bool $cache)
     {
-        $content = '';
-
-        if (!($cache && Cache::isEnabled() && Cache::has($dir)) &&
-            ($content = self::getContent($dir)) === false) {
-            return false;
-        }
-
         //Variables in data array
         if (is_array($data)) {
             extract($data);
@@ -125,12 +112,14 @@ final class Template
             return Cache::get($dir);
         }
 
-        return self::replaceAll($content);
+        return self::replaceAll(self::getContent($dir));
     }
 
 
     /**
      * Returns the content of a view file
+     *
+     * @throws \Wolff\Exception\FileNotFoundException
      *
      * @param  string  $dir  the view directory
      *
@@ -138,13 +127,28 @@ final class Template
      */
     private static function getContent($dir)
     {
-        $file_path = View::getPath($dir);
+        $file_path = self::getPath($dir);
 
         if (!file_exists($file_path)) {
-            throw new \Error("View '$dir' doesn't exists");
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $file_path)
+            );
         }
 
         return file_get_contents($file_path);
+    }
+
+
+    /**
+     * Returns the complete view file path
+     *
+     * @param  string  $dir  the view directory
+     *
+     * @return string the complete view file path
+     */
+    public static function getPath(string $dir)
+    {
+        return sprintf(self::PATH_FORMAT, $dir);
     }
 
 
@@ -225,7 +229,7 @@ final class Template
     public static function custom($function)
     {
         if (!is_callable($function)) {
-            return;
+            throw new InvalidArgumentException('function', 'callable');
         }
 
         self::$templates[] = $function;

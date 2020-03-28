@@ -119,7 +119,7 @@ class Request
         $files = [];
 
         foreach ($arr as $key => $val) {
-            $files[$key] = new \Wolff\Core\File($val, $options);
+            $files[$key] = new File($val, $options);
         }
 
         return $files;

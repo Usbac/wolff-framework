@@ -1,6 +1,6 @@
 <?php
 
-namespace Wolff\Core;
+namespace Wolff\Core\Http;
 
 class File
 {

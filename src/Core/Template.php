@@ -25,9 +25,7 @@ final class Template
         'tag'       => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
         'function'  => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
         'include'   => '/' . self::NOT_RAW . '@load\(( |\'?){1,}(.*)( |\'?){1,}\)/',
-
-        'for'    => '/' . self::NOT_RAW . '\{( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}\}/',
-        'endfor' => '/' . self::NOT_RAW . '\{( ?){1,}endfor( ?){1,}\}/',
+        'for'       => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
 
         'extends'      => '/' . self::NOT_RAW . '@extends\(((?:\'|").*(?:\'|"))\)/',
         'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
@@ -166,9 +164,9 @@ final class Template
         $content = self::replaceImports($content);
         $content = self::replaceComments($content);
         $content = self::replaceFunctions($content);
+        $content = self::replaceCycles($content);
         $content = self::replaceTags($content);
         $content = self::replaceCustom($content);
-        $content = self::replaceCycles($content);
         $content = self::replaceRaws($content);
 
         return $content;
@@ -205,7 +203,7 @@ final class Template
             $content = preg_replace($parent_block_regex, trim($block_content[2] ?? ''), $content);
         }
 
-        //Replace parent blocks with child blocks content
+        //Replace blocks in parent with child blocks content
         preg_match_all(self::FORMAT['block'], $content, $child_blocks);
 
         foreach ($child_blocks[1] as $key => $block_name) {
@@ -213,7 +211,7 @@ final class Template
             $parent_content = preg_replace($block_regex, trim($child_blocks[2][$key]), $parent_content);
         }
 
-        //Remove remaining tags
+        //Remove remaining unused tags
         $parent_content = preg_replace(self::FORMAT['block'], '', $parent_content);
         $parent_content = preg_replace(self::FORMAT['parent_block'], '', $parent_content);
 
@@ -303,34 +301,27 @@ final class Template
      */
     private static function replaceFunctions($content)
     {
-        $func = '(.*)';
+        $functions = [
+            'e'               => 'htmlspecialchars(strip_tags($2))',
+            'upper'           => 'strtoupper($2)',
+            'lower'           => 'strtolower($2)',
+            'upperf'          => 'ucfirst($2)',
+            'length'          => 'strlen($2)',
+            'count'           => 'count($2)',
+            'title'           => 'ucwords($2)',
+            'md5'             => 'md5($2)',
+            'countwords'      => 'str_word_count($2)',
+            'trim'            => 'trim($2)',
+            'nl2br'           => 'nl2br($2)',
+            'join\((.*?)\)'   => 'implode($1, $3)',
+            'repeat\((.*?)\)' => 'str_repeat($3, $1)',
+        ];
 
-        //Escape
-        $content = preg_replace(str_replace($func, 'e', self::FORMAT['function']), 'htmlspecialchars(strip_tags($2))', $content);
-        //Uppercase
-        $content = preg_replace(str_replace($func, 'upper', self::FORMAT['function']), 'strtoupper($2)', $content);
-        //Lowercase
-        $content = preg_replace(str_replace($func, 'lower', self::FORMAT['function']), 'strtolower($2)', $content);
-        //First uppercase
-        $content = preg_replace(str_replace($func, 'upperf', self::FORMAT['function']), 'ucfirst($2)', $content);
-        //Length
-        $content = preg_replace(str_replace($func, 'length', self::FORMAT['function']), 'strlen($2)', $content);
-        //Count
-        $content = preg_replace(str_replace($func, 'count', self::FORMAT['function']), 'count($2)', $content);
-        //Title case
-        $content = preg_replace(str_replace($func, 'title', self::FORMAT['function']), 'ucwords($2)', $content);
-        //MD5
-        $content = preg_replace(str_replace($func, 'md5', self::FORMAT['function']), 'md5($2)', $content);
-        //Count words
-        $content = preg_replace(str_replace($func, 'countwords', self::FORMAT['function']), 'str_word_count($2)', $content);
-        //Trim
-        $content = preg_replace(str_replace($func, 'trim', self::FORMAT['function']), 'trim($2)', $content);
-        //nl2br
-        $content = preg_replace(str_replace($func, 'nl2br', self::FORMAT['function']), 'nl2br($2)', $content);
-        //Join
-        $content = preg_replace(str_replace($func, 'join\((.*?)\)', self::FORMAT['function']), 'implode($1, $3)', $content);
-        //Repeat
-        $content = preg_replace(str_replace($func, 'repeat\((.*?)\)', self::FORMAT['function']), 'str_repeat($3, $1)', $content);
+        foreach ($functions as $original => $replacement) {
+            //Put the function name in the regex to search
+            $original = str_replace('(.*)', $original, self::FORMAT['function']);
+            $content = preg_replace($original, $replacement, $content);
+        }
 
         return $content;
     }
@@ -362,8 +353,7 @@ final class Template
      */
     private static function replaceCycles($content)
     {
-        $content = preg_replace(self::FORMAT['for'], '<?php for (\$$3=$6; \$$3 <= $9; \$$3++): ?>', $content);
-        $content = preg_replace(self::FORMAT['endfor'], '<?php endfor; ?>', $content);
+        $content = preg_replace(self::FORMAT['for'], '<?php for ($3 = $6; $3 <= $9; $3++): ?>', $content);
 
         return $content;
     }

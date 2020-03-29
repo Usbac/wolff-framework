@@ -82,7 +82,7 @@ final class View
 
 
     /**
-     * Returns true if the view exists in the indicated directory,
+     * Returns true if the given view exists,
      * false otherwise
      *
      * @param  string  $dir  the directory of the view

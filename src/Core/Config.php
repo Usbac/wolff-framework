@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-use \Wolff\Exception\FileNotReadableException;
+use Wolff\Exception\FileNotReadableException;
 
 final class Config
 {

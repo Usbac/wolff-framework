@@ -2,7 +2,8 @@
 
 namespace Wolff\Core;
 
-use \Wolff\Exception\FileNotFoundException;
+use Wolff\Exception\FileNotFoundException;
+use Wolff\Exception\FileNotAccessible;
 
 final class Cache
 {
@@ -26,6 +27,12 @@ final class Cache
         $time = time();
 
         foreach ($files as $file) {
+            if (!is_writable($file)) {
+                throw new FileNotAccessible(
+                    sprintf('Cannot delete cache file \'%s\'', $file)
+                );
+            }
+
             if ($time - filectime($file) > self::EXPIRATION_TIME) {
                 unlink($file);
             }

@@ -6,12 +6,12 @@
   <br>
 </h1>
 
-<h4 align="center">Ridiculously small PHP framework.</h4>
+<h4 align="center">Web development made just right.</h4>
 
 <p align="center">
 <img src="https://img.shields.io/badge/stability-stable-green.svg">
 <a href="https://packagist.org/packages/usbac/wolff-framework"><img src="https://poser.pugx.org/usbac/wolff-framework/d/total.svg"></a>
-<img src="https://img.shields.io/badge/version-2.8.0-blue.svg">
+<img src="https://img.shields.io/badge/version-3.0.0-blue.svg">
 <img src="https://img.shields.io/badge/license-MIT-orange.svg">
 </p>
 

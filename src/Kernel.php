@@ -59,6 +59,7 @@ final class Kernel
         Cache::init();
 
         $this->setErrors();
+        $this->stdlib();
 
         $this->url = $this->getUrl();
         $this->function = Route::getVal($this->url);
@@ -85,7 +86,19 @@ final class Kernel
     private function setErrors()
     {
         error_reporting(CONFIG['development_on'] ? E_ALL : 0);
-        ini_set('display_errors', (int)CONFIG['development_on']);
+        ini_set('display_errors', strval(CONFIG['development_on']));
+    }
+
+
+    /**
+     * Includes the standard library if
+     * it's activated in the configuration file
+     */
+    private function stdlib()
+    {
+        if (isset(CONFIG['stdlib_on']) && CONFIG['stdlib_on']) {
+            include_once('stdlib.php');
+        }
     }
 
 

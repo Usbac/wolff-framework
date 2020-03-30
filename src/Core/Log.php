@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use Wolff\Core\Helper;
 use Wolff\Utils\Str;
 
 /**
@@ -19,7 +20,7 @@ final class Log
 
     const FOLDER_PERMISSIONS = 0755;
     const DATE_FORMAT = 'H:i:s';
-    const FORMAT = '[%s] [%s] %s: %s';
+    const MSG_FORMAT = '[%s] [%s] %s: %s';
     const FOLDER_PATH = CONFIG['root_dir'] . '/' . CONFIG['system_dir'] . '/logs';
     const LEVELS = [
         'emergency',
@@ -78,7 +79,7 @@ final class Log
         }
 
         $message = Str::interpolate($message, $values);
-        $log = sprintf(self::FORMAT, date(self::DATE_FORMAT), \getClientIP(), $level, $message);
+        $log = sprintf(self::MSG_FORMAT, date(self::DATE_FORMAT), Helper::getClientIP(), $level, $message);
         self::writeToFile($log);
     }
 

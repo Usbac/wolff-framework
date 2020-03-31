@@ -2,7 +2,8 @@
 
 namespace Wolff\Core;
 
-use \Wolff\Exception\FileNotReadableException;
+use Wolff\Core\Helper;
+use Wolff\Exception\FileNotReadableException;
 
 final class Maintenance
 {
@@ -144,7 +145,7 @@ final class Maintenance
             return false;
         }
 
-        return in_array(getClientIP(), $allowed_ips);
+        return in_array(Helper::getClientIP(), $allowed_ips);
     }
 
 
@@ -152,11 +153,15 @@ final class Maintenance
      * Loads the maintenance page
      *
      * @param \Wolff\Core\Http\Request $req Reference to the current request object
+     * @param \Wolff\Core\Http\Response $res Reference to the current response object
      */
-    public static function call(Http\Request &$req)
+    public static function call(Http\Request &$req, Http\Response &$res)
     {
         if (isset(self::$function)) {
-            (self::$function)($req);
+            call_user_func_array(self::$function, [
+                $req,
+                $res
+            ]);
         }
     }
 }

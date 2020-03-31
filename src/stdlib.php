@@ -81,7 +81,7 @@ namespace {
          */
         function isAssoc(array $arr)
         {
-            return (array_keys($arr) !== range(0, count($arr) - 1));
+            return \Wolff\Core\Helper::isAssoc($arr);
         }
     }
 
@@ -317,7 +317,8 @@ namespace {
          */
         function local()
         {
-            return in_array($_SERVER['REMOTE_ADDR'] ?? '::1', [ '127.0.0.1', '::1' ]);
+            $remote_addr = $_SERVER['REMOTE_ADDR'] ?? '::1';
+            return $remote_addr === '127.0.0.1' || $remote_addr === '::1';
         }
     }
 
@@ -343,18 +344,7 @@ namespace {
          */
         function getClientIP()
         {
-            $http_client_ip = filter_var($_SERVER['HTTP_CLIENT_IP'] ?? '', FILTER_VALIDATE_IP);
-            $http_forwarded = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '', FILTER_VALIDATE_IP);
-
-            if (!empty($http_client_ip)) {
-                return $http_client_ip;
-            }
-
-            if (!empty($http_forwarded)) {
-                return $http_forwarded;
-            }
-
-            return $_SERVER['REMOTE_ADDR'] ?? '';
+            return \Wolff\Core\Helper::getClientIP();
         }
     }
 

@@ -51,7 +51,7 @@ final class Session
     private static function isValid()
     {
         return (isset($_SESSION['ip_address'], $_SESSION['user_agent']) &&
-            $_SESSION['ip_address'] === getClientIP() &&
+            $_SESSION['ip_address'] === Helper::getClientIP() &&
             $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT']);
     }
 
@@ -63,7 +63,7 @@ final class Session
     {
         self::empty();
 
-        $_SESSION['ip_address'] = getClientIP();
+        $_SESSION['ip_address'] = Helper::getClientIP();
         $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
         $_SESSION['start_time'] = microtime(true);
         $_SESSION['vars_tmp_time'] = [];

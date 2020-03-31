@@ -3,7 +3,7 @@
 namespace Wolff\Core;
 
 use Wolff\Utils\Str;
-use \Wolff\Exception\BadControllerCallException;
+use Wolff\Exception\BadControllerCallException;
 
 class Controller
 {
@@ -84,7 +84,7 @@ class Controller
             return false;
         }
 
-        return \method_exists(self::getClassname($path), $method);
+        return method_exists(self::getClassname($path), $method);
     }
 
 

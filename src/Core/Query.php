@@ -35,7 +35,7 @@ final class Query
      *
      * @return string the query results as a Json
      */
-    public function toJson()
+    public function getJson()
     {
         return json_encode($this->get());
     }
@@ -127,11 +127,13 @@ final class Query
 
 
     /**
-     * Print the query results in a nice looking way
+     * Prints the query results in a nice looking way
      */
     public function printr()
     {
-        printr($this->get());
+        echo '<pre>';
+        array_map('print_r', $this->get());
+        echo '</pre>';
     }
 
 
@@ -140,15 +142,17 @@ final class Query
      */
     public function dumpd()
     {
-        dumpd($this->get());
+        array_map('var_dump', $this->get());
+        die();
     }
 
 
     /**
-     * Print the query results in a nice looking way and die
+     * Prints the query results in a nice looking way and die
      */
     public function printrd()
     {
-        printrd($this->get());
+        $this->printr();
+        die;
     }
 }

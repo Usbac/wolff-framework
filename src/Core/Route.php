@@ -110,15 +110,21 @@ final class Route
      * Executes a code route based on the current status code
      *
      * @param \Wolff\Core\Http\Request $req Reference to the current request object
+     * @param \Wolff\Core\Http\Response $res Reference to the current response object
      */
-    public static function execCode(Http\Request &$req)
+    public static function execCode(Http\Request &$req, Http\Response &$res)
     {
         $code = http_response_code();
 
-        if (isset(self::$codes[$code]) &&
-            is_callable(self::$codes[$code])) {
-            (self::$codes[$code])($req);
+        if (!isset(self::$codes[$code]) ||
+            !is_callable(self::$codes[$code])) {
+            return;
         }
+
+        call_user_func_array(self::$codes[$code], [
+            $req,
+            $res
+        ]);
     }
 
 

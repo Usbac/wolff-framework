@@ -2,6 +2,7 @@
 
 namespace Wolff\Core\Http;
 
+use Wolff\Core\Helper;
 use Wolff\Exception\InvalidArgumentException;
 use Wolff\Exception\FileNotFoundException;
 
@@ -51,6 +52,13 @@ class Request
     private $server;
 
     /**
+     * List of cookies
+     *
+     * @var array
+     */
+    private $cookies;
+
+    /**
      * List of options for uploading files
      * @var array
      */
@@ -69,11 +77,13 @@ class Request
         array $params,
         array $body,
         array $files,
-        array $server
+        array $server,
+        array $cookies
     ) {
         $this->params = $params;
         $this->body = $body;
         $this->server = $server;
+        $this->cookies = $cookies;
         $this->headers = $this->parseHeaders($server);
         $this->file_options = self::DEFAULT_FILE_OPTIONS;
         $this->files = $this->getFiles($files, $this->file_options);
@@ -165,20 +175,19 @@ class Request
 
 
     /**
-     * Returns the specified parameter.
-     * The key parameter accepts dot notation
+     * Returns the specified parameter
      *
      * @param  string|null  $key  the parameter key
      *
-     * @return mixed The specified parameter.
+     * @return mixed The specified parameter
      */
-    public function param(string $key = null)
+    public function query(string $key = null)
     {
         if (!isset($key)) {
             return $this->params;
         }
 
-        return val($this->params, $key);
+        return $this->params[$key] ?? null;
     }
 
 
@@ -191,19 +200,18 @@ class Request
      * @return bool True if the specified parameter is set,
      * false otherwise.
      */
-    public function hasParam(string $key)
+    public function hasQuery(string $key)
     {
-        return val($this->params, $key) !== null;
+        return $this->params[$key] !== null;
     }
 
 
     /**
-     * Returns the specified body parameter.
-     * The key parameter accepts dot notation
+     * Returns the specified body parameter
      *
      * @param  string|null  $key  the body parameter key
      *
-     * @return mixed The specified body parameter.
+     * @return mixed The specified body parameter
      */
     public function body(string $key = null)
     {
@@ -211,7 +219,7 @@ class Request
             return $this->body;
         }
 
-        return val($this->body, $key);
+        return $this->body[$key] ?? null;
     }
 
 
@@ -226,16 +234,16 @@ class Request
      */
     public function has(string $key)
     {
-        return val($this->body, $key) !== null;
+        return $this->body[$key] !== null;
     }
 
 
     /**
-     * Returns the specified file.
+     * Returns the specified file
      *
      * @param  string|null  $key  the file key
      *
-     * @return mixed The specified file.
+     * @return mixed The specified file
      */
     public function file(string $key = null)
     {
@@ -259,6 +267,38 @@ class Request
     public function hasFile(string $key)
     {
         return array_key_exists($key, $this->files);
+    }
+
+
+    /**
+     * Returns the specified cookie
+     *
+     * @param  string|null  $key  the cookie key
+     *
+     * @return mixed the specified
+     */
+    public function cookie(string $key = null)
+    {
+        if (!isset($key)) {
+            return $this->cookies;
+        }
+
+        return $this->cookies[$key] ?? null;
+    }
+
+
+    /**
+     * Returns true if the specified cookie is set,
+     * false otherwise.
+     *
+     * @param  string  $key  the parameter key
+     *
+     * @return bool True if the specified cookie is set,
+     * false otherwise.
+     */
+    public function hasCookie(string $key)
+    {
+        return $this->cookies[$key] !== null;
     }
 
 
@@ -297,7 +337,7 @@ class Request
      *
      * @return string The request uri
      */
-    public function getUrl()
+    public function getUri()
     {
         return $this->server['REQUEST_URI'];
     }

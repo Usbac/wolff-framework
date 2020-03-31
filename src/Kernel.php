@@ -49,6 +49,13 @@ final class Kernel
      */
     private $req;
 
+    /**
+     * Current response object
+     *
+     * @var \Wolff\Core\Http\Response
+     */
+    private $res;
+
 
     /**
      * Default constructor
@@ -64,6 +71,7 @@ final class Kernel
         $this->url = $this->getUrl();
         $this->function = Route::getVal($this->url);
         $this->req = Factory::request();
+        $this->res = new Core\Http\Response();
 
         if (is_string($this->function)) {
             $path = explode('@', $this->function);
@@ -107,21 +115,19 @@ final class Kernel
      */
     public function start()
     {
-
         if (CONFIG['maintenance_on'] &&
             !Maintenance::hasAccess()) {
-            Maintenance::call($this->req);
+            Maintenance::call($this->req, $this->res);
+            $this->res->send();
             return;
-        }
-
-        if (!$this->isAccessible()) {
+        } elseif (!$this->isAccessible()) {
             http_response_code(404);
-            Route::execCode($this->req);
-            return;
+        } else {
+            $this->load();
         }
 
-        $this->load();
-        Route::execCode($this->req);
+        Route::execCode($this->req, $this->res);
+        $this->res->send();
     }
 
 
@@ -141,12 +147,17 @@ final class Kernel
      */
     private function loadPage()
     {
+        $params = [
+            $this->req,
+            $this->res
+        ];
+
         if ($this->function instanceof \Closure) {
-            ($this->function)($this->req);
+            call_user_func_array($this->function, $params);
         } elseif (Controller::hasMethod($this->controller, $this->method)) {
-            Controller::method($this->controller, $this->method, [ $this->req ]);
+            Controller::method($this->controller, $this->method, $params);
         } elseif (Controller::exists($this->url)) {
-            Controller::method($this->url, 'index', [ $this->req ]);
+            Controller::method($this->url, 'index', $params);
         }
     }
 

@@ -5,6 +5,20 @@ namespace Wolff\Core\Http;
 class Response
 {
 
+    const COOKIE_TIMES = [
+        'FOREVER' => 157680000, // Five years
+        'MONTH'   => 2629743,
+        'DAY'     => 86400,
+        'HOUR'    => 3600
+    ];
+
+    /**
+     * The response content
+     *
+     * @var string
+     */
+    private $content;
+
     /**
      * The HTTP status code.
      *
@@ -26,15 +40,54 @@ class Response
      */
     private $headers;
 
+    /**
+     * The cookies list.
+     *
+     * @var array
+     */
+    private $cookies;
+
 
     /**
      * Default constructor
      */
     public function __construct()
     {
+        $this->content = '';
         $this->status_code = null;
         $this->headers = [];
         $this->url = '';
+        $this->cookies = [];
+    }
+
+
+    /**
+     * Sets the response content
+     *
+     * @param  mixed  $content  the content
+     *
+     * @return \Wolff\Core\Http\Response this
+     */
+    public function write($content)
+    {
+        $this->content = strval($content);
+
+        return $this;
+    }
+
+
+    /**
+     * Appends content to the response content
+     *
+     * @param  mixed  $content  the content
+     *
+     * @return \Wolff\Core\Http\Response this
+     */
+    public function append($content)
+    {
+        $this->content .= strval($content);
+
+        return $this;
     }
 
 
@@ -45,9 +98,9 @@ class Response
      * @param  string  $key  the header key
      * @param  string  $value  the header value
      *
-     * @return Response this
+     * @return \Wolff\Core\Http\Response this
      */
-    public function header(string $key, string $value)
+    public function setHeader(string $key, string $value)
     {
         $this->headers[trim($key)] = $value;
 
@@ -56,30 +109,13 @@ class Response
 
 
     /**
-     * Removes an existent header
-     *
-     * @param  string  $key  the header key
-     *
-     * @return Response this
-     */
-    public function remove(string $key)
-    {
-        if (array_key_exists($key, $this->headers)) {
-            unset($this->headers[$key]);
-        }
-
-        return $this;
-    }
-
-
-    /**
      * Sets the HTTP status code
      *
-     * @param  int|null  $status  the HTTP status code
+     * @param  int  $status  the HTTP status code
      *
-     * @return Response this
+     * @return \Wolff\Core\Http\Response this
      */
-    public function setCode(int $status = null)
+    public function setCode(int $status)
     {
         $this->status_code = $status;
 
@@ -88,34 +124,94 @@ class Response
 
 
     /**
-     * Sets the header location and HTTP status code
+     * Sets a cookie
      *
-     * @param  string  $url  the header location
-     * @param  int|null  $status  the HTTP status code
+     * @param  string  $key  the cookie key
+     * @param  string  $value  the cookie value
+     * @param  mixed  $time  the cookie time
+     * @param  string  $path  the path where the cookie will work
+     * @param  string  $domain the cookie domain
+     * @param  bool  $secure  only available through https or not
+     * @param  bool  $http_only  only available through http protocol or not,
+     * this will hide the cookie from scripting languages like JS
      *
-     * @return Response this
+     * @return \Wolff\Core\Http\Response this
      */
-    public function redirect(string $url, int $status = null)
-    {
-        if (isset($status)) {
-            $this->status_code = $status;
+    public function setCookie(
+        string $key,
+        string $value,
+        $time = null,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = true,
+        bool $http_only = true
+    ) {
+        if (isset($time) && array_key_exists($time, self::COOKIE_TIMES)) {
+            $time = self::COOKIE_TIMES[strtoupper($time)];
         }
 
-        $this->url = $url;
+        array_push($this->cookies, [
+            'key'       => $key,
+            'value'     => $value,
+            'time'      => isset($time) ? time() + $time : 0,
+            'path'      => $path,
+            'domain'    => $domain,
+            'secure'    => $secure,
+            'http_only' => $http_only
+        ]);
 
         return $this;
     }
 
 
     /**
-     * Executes the response with the available values
+     * Removes a cookie
+     *
+     * @param  string  $key  the cookie key
+     *
+     * @return \Wolff\Core\Http\Response this
      */
-    public function go()
+    public function unsetCookie(string $key)
     {
+        array_push($this->cookies, [
+            'key'       => $key,
+            'value'     => '',
+            'time'      => time() - self::COOKIE_TIMES['HOUR'],
+            'path'      => '',
+            'domain'    => '',
+            'secure'    => false,
+            'http_only' => false
+        ]);
+
+        return $this;
+    }
+
+
+    /**
+     * Sends the response with the available values
+     */
+    public function send()
+    {
+        if (isset($this->status_code)) {
+            http_response_code($this->status_code);
+        }
+
         foreach ($this->headers as $key => $val) {
             header("$key: $val");
         }
 
-        redirect($this->url, $this->status_code);
+        foreach ($this->cookies as $cookie) {
+            setcookie(
+                $cookie['key'],
+                $cookie['value'],
+                $cookie['time'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['http_only']
+            );
+        }
+
+        print($this->content);
     }
 }

@@ -90,7 +90,8 @@ final class Factory
             $_GET,
             $_POST,
             $_FILES,
-            $_SERVER
+            $_SERVER,
+            $_COOKIE
         );
     }
 }

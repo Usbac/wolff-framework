@@ -92,29 +92,75 @@ final class Validation
     {
         $field = $this->data[$key] ?? null;
 
-        foreach ($this->fields[$key] as $rule => $val) {
+        foreach ($this->fields[$key] as $rule => $rule_val) {
             $rule = trim(strtolower($rule));
 
-            //Complies min length, max length, min value, max value and regex
-            if (($rule == 'minlen' && strlen($field) < $val) ||
-                ($rule == 'maxlen' && strlen($field) > $val) ||
-                ($rule == 'minval' && $field < $val) ||
-                ($rule == 'maxval' && $field > $val) ||
-                ($rule == 'regex' && !preg_match($val, $field))) {
+            if (!$this->compliesVal($rule, $rule_val, $field) ||
+                $rule == 'type' && !$this->compliesType($rule_val, $field)) {
                 $this->addInvalidValue($key, $rule);
             }
+        }
+    }
 
-            //Complies type
-            if ($rule == 'type') {
-                if (($val === 'email' && filter_var($field, FILTER_VALIDATE_EMAIL) === false) ||
-                    ($val === 'alphanumeric' && !preg_match('/[A-Za-z0-9 ]+$/', $field)) ||
-                    ($val === 'alpha' && !preg_match('/[A-Za-z ]+$/', $field)) ||
-                    ($val === 'int' && !isInt($field)) ||
-                    ($val === 'float' && !isFloat($field)) ||
-                    ($val === 'bool' && !isBool($field))) {
-                    $this->addInvalidValue($key, $rule);
-                }
-            }
+
+    /**
+     * Returns true if the given value complies with the
+     * specified rule, false otherwise
+     *
+     * @param  string  $rule  the rule that must be complied
+     * @param  mixed  $rule_val  the rule value
+     * @param  mixed  $val the value to check
+     *
+     * @return bool true if the given value complies with the
+     * specified rule, false otherwise
+     */
+    private function compliesVal(string $rule, $rule_val, $val)
+    {
+        switch ($rule) {
+            case 'minlen':
+                return strlen($val) >= $rule_val;
+            case 'maxlen':
+                return strlen($val) <= $rule_val;
+            case 'minval':
+                return $val >= $rule_val;
+            case 'maxval':
+                return $val <= $rule_val;
+            case 'regex':
+                return preg_match($rule_val, $val);
+            default:
+                return false;
+        }
+    }
+
+
+    /**
+     * Returns true if the given value complies with the
+     * specified type, false otherwise
+     *
+     * @param  string  $type  the type that must be complied
+     * @param  mixed  $val the value to check
+     *
+     * @return bool true if the given value complies with the
+     * specified type, false otherwise
+     */
+    private function compliesType(string $type, $val)
+    {
+        switch ($type) {
+            case 'email':
+                return filter_var($val, FILTER_VALIDATE_EMAIL) !== false;
+            case 'alphanumeric':
+                return preg_match('/[A-Za-z0-9 ]+$/', $val);
+            case 'alpha':
+                return preg_match('/[A-Za-z ]+$/', $val);
+            case 'int':
+                return filter_var($val, FILTER_VALIDATE_INT) !== false;
+            case 'float':
+                return filter_var($val, FILTER_VALIDATE_FLOAT) !== false;
+            case 'bool':
+                $val = strval($val);
+                return $val === 'true' || $val === 'false' || $val === '1' || $val === '0';
+            default:
+                return false;
         }
     }
 
@@ -144,7 +190,7 @@ final class Validation
      * @param  array  $fields  the associative array
      * with the fields rules
      *
-     * @param array $data the data array to validate
+     * @param  array  $data  the data array to validate
      *
      * @return bool true if the current data complies all the fields rules,
      * false otherwise

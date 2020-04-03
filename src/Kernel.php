@@ -120,7 +120,9 @@ final class Kernel
             Maintenance::call($this->req, $this->res);
             $this->res->send();
             return;
-        } elseif (!$this->isAccessible()) {
+        }
+
+        if (!$this->isAccessible()) {
             http_response_code(404);
         } else {
             $this->load();

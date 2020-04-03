@@ -136,31 +136,31 @@ final class Str
 
     /**
      * Returns true if the given string contains only
-     * alphanumeric characters and whitespaces, false otherwise
+     * alphanumeric characters, false otherwise
      *
      * @param  string  $str the string
      *
      * @return bool Returns true if the given string contains only
-     * alphanumeric characters and whitespaces, false otherwise
+     * alphanumeric characters, false otherwise
      */
     public static function isAlphanumeric(string $str)
     {
-        return preg_match('/[A-Za-z0-9 ]+$/', $str) == true;
+        return preg_match('/^[\w-]*$/', $str) == true;
     }
 
 
     /**
      * Returns true if the given string contains only
-     * letters and whitespaces, false otherwise
+     * letters, false otherwise
      *
      * @param  string  $str the string
      *
      * @return bool Returns true if the given string contains only
-     * letters and whitespaces, false otherwise
+     * letters, false otherwise
      */
     public static function isAlpha(string $str)
     {
-        return preg_match('/[A-Za-z ]+$/', $str) == true;
+        return preg_match('/[^A-Za-z]+/', $str) == false;
     }
 
 
@@ -187,17 +187,13 @@ final class Str
      * @param  string  $str  the string
      * @param  array  $values  the context values for the placeholders
      *
-     * @return string|bool the string with its placeholders replaced by context values
+     * @return string the string with its placeholders replaced by context values
      */
     public static function interpolate(string $str, array $values)
     {
-        if (!is_string($str) || !is_array($values)) {
-            return false;
-        }
-
         foreach ($values as $key => $val) {
-            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $str = str_replace("{$key}", $val, $str);
+            if (!is_object($val)) {
+                $str = str_replace('{' . $key . '}', strval($val), $str);
             }
         }
 

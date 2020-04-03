@@ -102,7 +102,7 @@ final class Session
             return $_SESSION;
         }
 
-        return $_SESSION[$key];
+        return $_SESSION[$key] ?? null;
     }
 
 

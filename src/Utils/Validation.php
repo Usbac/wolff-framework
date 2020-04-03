@@ -70,15 +70,21 @@ final class Validation
 
 
     /**
-     * Adds an invalid value
+     * Returns true if the current data complies all the fields rules,
+     * false otherwise
      *
-     * @param  string  $key  the value key
-     * @param  string  $field  the field that the value doesn't complies
+     * @return bool true if the current data complies all the fields rules,
+     * false otherwise
      */
-    private function addInvalidValue(string $key, string $field)
+    public function isValid()
     {
-        $this->invalid_values[$key][] = $field;
+        foreach ($this->fields as $key => $val) {
+            $this->validateField($key);
+        }
+
+        return empty($this->invalid_values);
     }
+
 
 
     /**
@@ -90,13 +96,13 @@ final class Validation
      */
     private function validateField(string $key)
     {
-        $field = $this->data[$key] ?? null;
+        $val = $this->data[$key] ?? null;
 
         foreach ($this->fields[$key] as $rule => $rule_val) {
             $rule = trim(strtolower($rule));
 
-            if (!$this->compliesVal($rule, $rule_val, $field) ||
-                $rule == 'type' && !$this->compliesType($rule_val, $field)) {
+            if (!$this->compliesType($rule_val, $val) ||
+                !$this->compliesVal($rule, $rule_val, $val)) {
                 $this->addInvalidValue($key, $rule);
             }
         }
@@ -128,7 +134,7 @@ final class Validation
             case 'regex':
                 return preg_match($rule_val, $val);
             default:
-                return false;
+                return true;
         }
     }
 
@@ -160,25 +166,20 @@ final class Validation
                 $val = strval($val);
                 return $val === 'true' || $val === 'false' || $val === '1' || $val === '0';
             default:
-                return false;
+                return true;
         }
     }
 
 
     /**
-     * Returns true if the current data complies all the fields rules,
-     * false otherwise
+     * Adds an invalid value
      *
-     * @return bool true if the current data complies all the fields rules,
-     * false otherwise
+     * @param  string  $key  the value key
+     * @param  string  $field  the field that the value doesn't complies
      */
-    public function isValid()
+    private function addInvalidValue(string $key, string $field)
     {
-        foreach ($this->fields as $key => $val) {
-            $this->validateField($key);
-        }
-
-        return empty($this->invalid_values);
+        $this->invalid_values[$key][] = $field;
     }
 
 

@@ -202,7 +202,7 @@ class Request
      */
     public function hasQuery(string $key)
     {
-        return $this->params[$key] !== null;
+        return array_key_exists($key, $this->params);
     }
 
 
@@ -234,7 +234,7 @@ class Request
      */
     public function has(string $key)
     {
-        return $this->body[$key] !== null;
+        return array_key_exists($key, $this->body);
     }
 
 

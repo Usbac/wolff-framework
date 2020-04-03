@@ -12,7 +12,7 @@ final class Language
 
 
     /**
-     * Returns the content of a language, or false if
+     * Returns the content of a language, or null if
      * it doesn't exists
      *
      * @throws \Wolff\Exception\InvalidLanguageException
@@ -20,7 +20,7 @@ final class Language
      * @param  string  $dir  the language directory
      * @param  string|null  $language  the language selected
      *
-     * @return mixed the content of a language, or false if
+     * @return mixed the content of a language, or null if
      * it doesn't exists
      */
     public static function get(string $dir, string $language = null)
@@ -30,14 +30,14 @@ final class Language
         }
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
-            $dir = substr($dir, 0, $dot_pos);
             $key = substr($dir, $dot_pos + 1);
+            $dir = substr($dir, 0, $dot_pos);
         }
 
         if (self::exists($dir, $language)) {
             $data = (include self::getPath($dir, $language));
         } else {
-            return false;
+            return null;
         }
 
         if (!is_array($data)) {
@@ -45,7 +45,7 @@ final class Language
         }
 
         if (isset($key)) {
-            return $data[$key];
+            return $data[$key] ?? null;
         }
 
         return $data;

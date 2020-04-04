@@ -232,6 +232,8 @@ final class Auth extends \Wolff\Core\DB
     {
         return (array_key_exists('password', $data) &&
                 array_key_exists('password_confirm', $data) &&
+                is_string($data['password']) &&
+                is_string($data['password_confirm']) &&
                 $data['password'] === $data['password_confirm']);
     }
 

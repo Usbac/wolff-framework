@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use Wolff\Core\Helper;
 use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
@@ -240,7 +241,7 @@ final class Route
     private static function isValidRoute($key)
     {
         return self::$routes[$key] &&
-            in_array(self::$routes[$key]['method'], [ '', $_SERVER['REQUEST_METHOD']]);
+            (self::$routes[$key]['method'] === '' || self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD']);
     }
 
 
@@ -328,18 +329,8 @@ final class Route
         $url_length = count($url) - 1;
 
         foreach (self::$blocked as $blocked) {
-            $blocked = explode('/', $blocked);
-            $blocked_length = count($blocked) - 1;
-
-            for ($i = 0; $i <= $blocked_length && $i <= $url_length; $i++) {
-                if (!in_array($blocked[$i], [ '*', $url[$i] ])) {
-                    break;
-                }
-
-                if ($blocked[$i] === '*' ||
-                    ($i === $url_length && $i === $blocked_length)) {
-                    return true;
-                }
+            if (Helper::matchesRoute($blocked, $url, $url_length)) {
+                return true;
             }
         }
 

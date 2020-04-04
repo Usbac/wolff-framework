@@ -174,21 +174,6 @@ namespace {
         }
     }
 
-    if (!function_exists('dumpAll')) {
-
-        /**
-         * Var dump all the variables
-         */
-        function dumpAll()
-        {
-            $all = print_r(var_dump($GLOBALS), 1);
-
-            echo '<pre>';
-            echo htmlspecialchars($all);
-            echo '</pre>';
-        }
-    }
-
     if (!function_exists('redirect')) {
 
         /**
@@ -438,7 +423,13 @@ namespace {
          */
         function isBool($bool)
         {
-            return in_array(strval($bool), ['true', 'false', '1', '0']);
+            if (!method_exists($bool, '__toString')) {
+                return false;
+            }
+
+            $bool = strval($bool);
+            return $bool === 'true' || $bool === 'false' ||
+                $bool === '1' || $bool === '0';
         }
     }
 

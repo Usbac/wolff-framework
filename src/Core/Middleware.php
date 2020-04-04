@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use Wolff\Core\Helper;
 use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
@@ -52,29 +53,22 @@ final class Middleware
 
         $middlewares = self::${'middlewares_' . $type};
         self::$next = false;
+        $args = [
+            $req,
+            function () {
+                self::$next = true;
+            }
+        ];
 
         $url = explode('/', $url);
         $url_length = count($url) - 1;
-        foreach ($middlewares as $val) {
-            $middleware = explode('/', $val['url']);
-            $middleware_length = count($val['url']) - 1;
+        foreach ($middlewares as $middleware) {
+            if (Helper::matchesRoute($middleware['url'], $url, $url_length)) {
+                call_user_func_array($middleware['function'], $args);
 
-            for ($i = 0; $i <= $middleware_length && $i <= $url_length; $i++) {
-                if ($url[$i] !== $middleware[$i] && $middleware[$i] !== '*') {
+                if (!self::$next) {
                     break;
                 }
-
-                if ($middleware[$i] === '*' ||
-                    ($i === $url_length && $i === $middleware_length)) {
-                    $val['function']($req, function () {
-                        self::$next = true;
-                    });
-                    break;
-                }
-            }
-
-            if (!self::$next) {
-                break;
             }
         }
     }
@@ -115,7 +109,7 @@ final class Middleware
      */
     public static function __callStatic(string $type, $args)
     {
-        if (!in_array($type, [ 'before', 'after' ])) {
+        if ($type !== 'before' && $type !== 'after') {
             return;
         }
 

@@ -423,10 +423,6 @@ namespace {
          */
         function isBool($bool)
         {
-            if (!method_exists($bool, '__toString')) {
-                return false;
-            }
-
             $bool = strval($bool);
             return $bool === 'true' || $bool === 'false' ||
                 $bool === '1' || $bool === '0';

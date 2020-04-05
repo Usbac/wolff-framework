@@ -24,10 +24,10 @@ final class Template
         'echo'      => '/' . self::NOT_RAW . '\{\{( ?){1,}(.*?)( ?){1,}\}\}/',
         'tag'       => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
         'function'  => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
-        'include'   => '/' . self::NOT_RAW . '@load\(( |\'?){1,}(.*)( |\'?){1,}\)/',
+        'include'   => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'for'       => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
 
-        'extends'      => '/' . self::NOT_RAW . '@extends\(((?:\'|").*(?:\'|"))\)/',
+        'extends'      => '/' . self::NOT_RAW . '@extends\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
         'parent_block' => '/' . self::NOT_RAW . '{\[[ ?]{1,}parent[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}/'
     ];
@@ -189,7 +189,7 @@ final class Template
             return $content;
         }
 
-        $filename = Str::sanitizePath($matches[1]);
+        $filename = Str::sanitizePath(trim($matches[1], '"\''));
         $parent_content = self::getContent($filename);
 
         //Replace parent block imports in child view
@@ -243,10 +243,6 @@ final class Template
      */
     private static function replaceCustom(string $content)
     {
-        if (empty(self::$templates)) {
-            return $content;
-        }
-
         foreach (self::$templates as $template) {
             $content = $template($content);
         }
@@ -267,7 +263,7 @@ final class Template
         preg_match_all(self::FORMAT['include'], $content, $matches, PREG_OFFSET_CAPTURE);
 
         foreach ($matches[1] as $key => $val) {
-            $filename = Str::sanitizePath($matches[2][$key][0]);
+            $filename = Str::sanitizePath(trim($val[0], '"\''));
             $content = str_replace($matches[0][$key][0], self::getContent($filename), $content);
         }
 

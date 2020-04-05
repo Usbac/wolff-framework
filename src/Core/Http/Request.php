@@ -2,7 +2,6 @@
 
 namespace Wolff\Core\Http;
 
-use Wolff\Core\Helper;
 use Wolff\Exception\InvalidArgumentException;
 use Wolff\Exception\FileNotFoundException;
 
@@ -21,7 +20,7 @@ class Request
      *
      * @var array
      */
-    private $params;
+    private $query;
 
     /**
      * List of body parameters
@@ -68,19 +67,20 @@ class Request
     /**
      * Default constructor
      *
-     * @param  array  $params  the url parameters
+     * @param  array  $query  the url parameters
      * @param  array  $body  the body parameters
      * @param  array  $files  the files
      * @param  array  $server  the superglobal server
+     * @param  array  $cookies  the cookies
      */
     public function __construct(
-        array $params,
+        array $query,
         array $body,
         array $files,
         array $server,
         array $cookies
     ) {
-        $this->params = $params;
+        $this->query = $query;
         $this->body = $body;
         $this->server = $server;
         $this->cookies = $cookies;
@@ -102,12 +102,10 @@ class Request
         $headers = [];
 
         foreach ($server as $header => $val) {
-            if (substr($header, 0, 5) !== 'HTTP_') {
-                continue;
+            if (strpos($header, 'HTTP_') === 0) {
+                $key = ucwords(str_replace('_', '-', strtolower(substr($header, 5))), '-');
+                $headers[$key] = $val;
             }
-
-            $key = ucwords(str_replace('_', '-', strtolower(substr($header, 5))), '-');
-            $headers[$key] = $val;
         }
 
         return $headers;
@@ -184,10 +182,10 @@ class Request
     public function query(string $key = null)
     {
         if (!isset($key)) {
-            return $this->params;
+            return $this->query;
         }
 
-        return $this->params[$key] ?? null;
+        return $this->query[$key] ?? null;
     }
 
 
@@ -202,7 +200,7 @@ class Request
      */
     public function hasQuery(string $key)
     {
-        return array_key_exists($key, $this->params);
+        return array_key_exists($key, $this->query);
     }
 
 

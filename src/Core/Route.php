@@ -21,11 +21,11 @@ final class Route
     const GET_FORMAT = '/\{(.*)\}/';
     const OPTIONAL_GET_FORMAT = '/\{(.*)\?\}/';
     const PREFIXES = [
-        'csv'   => 'text/csv',
-        'json'  => 'application/json',
-        'pdf'   => 'application/pdf',
-        'plain' => 'text/plain',
-        'xml'   => 'application/xml'
+        'csv:'   => 'text/csv',
+        'json:'  => 'application/json',
+        'pdf:'   => 'application/pdf',
+        'plain:' => 'text/plain',
+        'xml:'   => 'application/xml'
     ];
     const HTTP_METHODS = [
         'GET',
@@ -288,10 +288,8 @@ final class Route
 
         //Remove content-type prefix from route
         foreach (self::PREFIXES as $key => $val) {
-            $prefix_key = "$key:";
-
-            if (strpos($url, $prefix_key) === 0) {
-                $url = substr($url, strpos($url, $prefix_key) + strlen($prefix_key));
+            if (strpos($url, $key) === 0) {
+                $url = substr($url, strlen($key));
                 $content_type = $val;
             }
         }

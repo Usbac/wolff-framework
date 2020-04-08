@@ -8,6 +8,7 @@ final class Cache
 {
 
     const EXISTS_ERROR = 'Cache file \'%s\' doesn\'t exists';
+    const FOLDER = 'cache';
     const FILENAME_FORMAT = 'tmp_%s.php';
     const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
@@ -176,6 +177,6 @@ final class Cache
      */
     private static function getDir(string $path = '')
     {
-        return CONFIG['root_dir'] . '/' . CONFIG['cache_dir'] . '/' . $path;
+        return CONFIG['root_dir'] . '/' . self::FOLDER . '/' . $path;
     }
 }

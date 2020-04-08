@@ -8,7 +8,7 @@ final class Language
 {
 
     const BAD_FILE_ERROR = 'The %s language file for \'%s\' must return an associative array';
-    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/languages/%s/%s.php';
+    const PATH_FORMAT = CONFIG['root_dir'] . '/app/languages/%s/%s.php';
 
 
     /**

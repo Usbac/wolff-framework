@@ -58,7 +58,11 @@ final class Auth extends \Wolff\Core\DB
      */
     public function __construct(array $data = null, array $options = null)
     {
-        parent::__construct($data, $options);
+        if (isset($options)) {
+            $this->options = $options;
+        }
+
+        parent::__construct($data, $this->options);
     }
 
 
@@ -200,11 +204,10 @@ final class Auth extends \Wolff\Core\DB
 
         //Repeated user
         if (isset($this->unique_column)) {
-            $column = $this->unique_column;
-            $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $column = ?");
-            $stmt->execute([ $data[$column] ]);
+            $stmt = $this->connection->prepare("SELECT * FROM `$this->table` WHERE $this->unique_column = ?");
+            $stmt->execute([ $data[$this->unique_column] ]);
 
-            if (!empty($stmt->fetch(\PDO::FETCH_ASSOC))) {
+            if ($stmt->fetch(\PDO::FETCH_ASSOC) !== false) {
                 return false;
             }
         }

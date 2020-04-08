@@ -34,7 +34,9 @@ final class Config
         self::parseEnv();
 
         if (CONFIG['env_override'] ?? false) {
-            array_merge(self::$data, $_ENV);
+            foreach ($_ENV as $key => $val) {
+                self::$data[strtolower($key)] = $val;
+            }
         }
     }
 

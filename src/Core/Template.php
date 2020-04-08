@@ -9,7 +9,7 @@ use Wolff\Exception\InvalidArgumentException;
 final class Template
 {
     const VIEW_FORMAT = 'wlf';
-    const PATH_FORMAT = CONFIG['root_dir'] . '/' . CONFIG['app_dir'] . '/views/%s.' . self::VIEW_FORMAT;
+    const PATH_FORMAT = CONFIG['root_dir'] . '/app/views/%s.' . self::VIEW_FORMAT;
     const EXISTS_ERROR = 'View file \'%s\' doesn\'t exists';
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';

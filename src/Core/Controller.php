@@ -9,8 +9,8 @@ class Controller
 {
 
     const NAMESPACE = 'Controller\\';
-    const EXISTS_ERROR = 'The controller class \'%s\' doesn\'t exists';
-    const METHOD_EXISTS_ERROR = 'The controller class \'%s\' doesn\'t have a \'%s\' method';
+    const EXISTS_ERROR = 'The controller class \'%s\' does not exists';
+    const METHOD_EXISTS_ERROR = 'The controller class \'%s\' does not have a \'%s\' method';
 
 
     /**
@@ -84,7 +84,15 @@ class Controller
             return false;
         }
 
-        return method_exists(self::getClassname($path), $method);
+        $path = self::getClassname($path);
+
+        if (method_exists($path, $method)) {
+            $reflection_method = new \ReflectionMethod($path, $method);
+
+            return $reflection_method->isPublic();
+        }
+
+        return false;
     }
 
 

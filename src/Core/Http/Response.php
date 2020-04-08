@@ -141,9 +141,9 @@ class Response
         string $key,
         string $value,
         $time = null,
-        string $path = '/',
+        string $path = '',
         string $domain = '',
-        bool $secure = true,
+        bool $secure = false,
         bool $http_only = true
     ) {
         if (isset($time) && array_key_exists($time, self::COOKIE_TIMES)) {

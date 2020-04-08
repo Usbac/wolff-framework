@@ -249,7 +249,7 @@ class Request
             return $this->files;
         }
 
-        return $this->files[$key];
+        return $this->files[$key] ?? null;
     }
 
 
@@ -296,7 +296,7 @@ class Request
      */
     public function hasCookie(string $key)
     {
-        return $this->cookies[$key] !== null;
+        return array_key_exists($key, $this->cookies);
     }
 
 
@@ -315,7 +315,7 @@ class Request
             return $this->headers;
         }
 
-        return $this->headers[$key];
+        return $this->headers[$key] ?? null;
     }
 
 
@@ -336,6 +336,17 @@ class Request
      * @return string The request uri
      */
     public function getUri()
+    {
+        return substr($this->server['REQUEST_URI'], 0, strpos($this->server['REQUEST_URI'], '?'));
+    }
+
+
+    /**
+     * Returns the full request uri
+     *
+     * @return string The request uri
+     */
+    public function getFullUri()
     {
         return $this->server['REQUEST_URI'];
     }

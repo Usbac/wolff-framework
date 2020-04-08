@@ -140,24 +140,24 @@ class DB
      * Returns a query result object
      *
      * @param  string  $sql  the query
-     * @param  mixed  $args  the arguments
+     * @param  mixed  ...$args  the arguments
      *
      * @return mixed the query result object
      */
-    public function query(string $sql, $args = [])
+    public function query(string $sql, ...$args)
     {
         $this->last_sql = $sql;
-        $this->last_args = is_array($args) ? $args : [$args];
+        $this->last_args = $args;
 
         //Query without args
-        if (!isset($this->last_args)) {
+        if (!isset($args)) {
             $result = $this->connection->query($sql);
             return Factory::query($result);
         }
 
         //Query with args
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($this->last_args);
+        $stmt->execute($args);
         $this->last_stmt = $stmt;
 
         return Factory::query($stmt);
@@ -171,7 +171,7 @@ class DB
      */
     public function runLastSql()
     {
-        return $this->run($this->getLastSql(), $this->getLastArgs());
+        return $this->query($this->getLastSql(), ...$this->getLastArgs());
     }
 
 
@@ -187,7 +187,7 @@ class DB
         $table = $this->escape($table);
 
         try {
-            $result = $this->connection->query("SELECT 1 FROM $table LIMIT 1");
+            $result = $this->connection->query("SELECT 1 FROM `$table` LIMIT 1");
         } catch (\Exception $e) {
             return false;
         }
@@ -197,19 +197,25 @@ class DB
 
 
     /**
-     * Returns true if the specified column exists in the table of the database, false otherwise
+     * Returns true if the specified column and table exists in the table of the database,
+     * false otherwise
      *
      * @param  string  $table  the table name
      * @param  string  $column  the column name
      *
-     * @return bool true if the specified column exists in the table of the database, false otherwise
+     * @return bool true if the specified column and table exists in the table of the database,
+     * false otherwise
      */
     public function columnExists(string $table, string $column)
     {
         $table = $this->escape($table);
         $column = $this->escape($column);
 
-        $result = $this->connection->query("SHOW COLUMNS FROM $table LIKE $column");
+        try {
+            $result = $this->connection->query("SHOW COLUMNS FROM `$table` LIKE '$column'");
+        } catch (\Exception $e) {
+            return false;
+        }
 
         if (is_bool($result)) {
             return false;
@@ -289,7 +295,7 @@ class DB
         $columns = implode(', ', array_keys($data));
         $values = implode(', ', array_fill(1, count($data), '?'));
 
-        return $this->query("INSERT INTO $table ($columns) VALUES ($values)", array_values($data));
+        return $this->query("INSERT INTO $table ($columns) VALUES ($values)", ...array_values($data));
     }
 
 
@@ -299,16 +305,16 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  mixed  $args the query arguments
+     * @param  mixed  ...$args the query arguments
      *
      * @return array the query result as an assosiative array
      */
-    public function selectAll(string $table, string $conditions = '1', $args = null)
+    public function selectAll(string $table, string $conditions = '1', ...$args)
     {
         $table = $this->escape($table);
 
         return $this->query("SELECT * FROM $table
-            WHERE $conditions", $args)->get();
+            WHERE $conditions", ...$args)->get();
     }
 
 
@@ -318,15 +324,15 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  array|null  $args the query arguments
+     * @param  mixed  ...$args the query arguments
      *
      * @return int the query result
      */
-    public function countAll(string $table, string $conditions = '1', array $args = null)
+    public function countAll(string $table, string $conditions = '1', ...$args)
     {
         $table = $this->escape($table);
         $result = $this->query("SELECT COUNT(*) FROM $table
-            WHERE $conditions", $args)->first();
+            WHERE $conditions", ...$args)->first();
 
         return empty($result) ? 0 : $result['COUNT(*)'];
     }
@@ -379,16 +385,14 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  array|null  $args the query arguments
-     *
-     * @return array the query result as an assosiative array
+     * @param  mixed  ...$args the query arguments
      */
-    public function deleteAll(string $table, string $conditions = '1', array $args = null)
+    public function deleteAll(string $table, string $conditions = '1', ...$args)
     {
         $table = $this->escape($table);
 
-        return $this->query("DELETE FROM $table
-            WHERE $conditions", $args)->get();
+        $this->query("DELETE FROM `$table`
+            WHERE $conditions", ...$args);
     }
 
 
@@ -400,7 +404,7 @@ class DB
      *
      * @return string the string escaped
      */
-    public function escape($str)
+    protected function escape($str)
     {
         return preg_replace('/[^A-Za-z0-9_]+/', '', $str);
     }

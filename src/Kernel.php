@@ -5,14 +5,25 @@ namespace Wolff;
 use Wolff\Core\Cache;
 use Wolff\Core\Config;
 use Wolff\Core\Controller;
+use Wolff\Core\DB;
 use Wolff\Core\Factory;
+use Wolff\Core\Helper;
+use Wolff\Core\Language;
+use Wolff\Core\Log;
 use Wolff\Core\Route;
 use Wolff\Core\Maintenance;
 use Wolff\Core\Middleware;
+use Wolff\Core\Template;
 use Wolff\Utils\Str;
 
 final class Kernel
 {
+
+    /**
+     * The configuration
+     * @var array
+     */
+    private $config;
 
     /**
      * The current url.
@@ -60,14 +71,16 @@ final class Kernel
     /**
      * Default constructor
      */
-    public function __construct()
+    public function __construct(array $config = [])
     {
-        Config::init();
-        Cache::init();
+        Config::init($config);
+        Cache::init($config['cache_on'] ?? true);
+        DB::setCredentials($config['db'] ?? []);
+        Log::setStatus($config['log_on'] ?? true);
+        Template::setStatus($config['template_on'] ?? true);
+        Language::setDefault($config['language'] ?? 'english');
 
-        $this->setErrors();
-        $this->stdlib();
-
+        $this->config = $config;
         $this->url = $this->getUrl();
         $this->function = Route::getVal($this->url);
         $this->req = Factory::request();
@@ -77,13 +90,16 @@ final class Kernel
             $path = explode('@', $this->function);
             $this->controller = $path[0];
             $this->method = empty($path[1]) ? 'index' : $path[1];
-        } elseif (($last_slash = strrpos($this->url, '/')) > 0) {
-            $this->controller = substr($this->url, 0, $last_slash);
-            $this->method = substr($this->url, $last_slash + 1);
+        } elseif (($slash_index = strrpos($this->url, '/')) > 0) {
+            $this->controller = substr($this->url, 0, $slash_index);
+            $this->method = substr($this->url, $slash_index + 1);
         } else {
             $this->controller = $this->url;
             $this->method = 'index';
         }
+
+        $this->setErrors();
+        $this->stdlib();
     }
 
 
@@ -93,18 +109,23 @@ final class Kernel
      */
     private function setErrors()
     {
-        error_reporting(CONFIG['development_on'] ? E_ALL : 0);
-        ini_set('display_errors', strval(CONFIG['development_on']));
+        if (!isset($this->config['development_on'])) {
+            return;
+        }
+
+        error_reporting($this->config['development_on'] ? E_ALL : 0);
+        ini_set('display_errors', strval($this->config['development_on']));
     }
 
 
     /**
      * Includes the standard library if
-     * it's activated in the configuration file
+     * it's activated in the given configuration
      */
     private function stdlib()
     {
-        if (isset(CONFIG['stdlib_on']) && CONFIG['stdlib_on']) {
+        if (isset($this->config['stdlib_on']) &&
+            $this->config['stdlib_on']) {
             include_once('stdlib.php');
         }
     }
@@ -115,17 +136,17 @@ final class Kernel
      */
     public function start()
     {
-        if (CONFIG['maintenance_on'] &&
+        if (($this->config['maintenance_on'] ?? false) &&
             !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
             $this->res->send();
             return;
         }
 
-        if (!$this->isAccessible()) {
-            http_response_code(404);
-        } else {
+        if ($this->isAccessible()) {
             $this->load();
+        } else {
+            http_response_code(404);
         }
 
         Route::execCode($this->req, $this->res);
@@ -188,10 +209,11 @@ final class Kernel
     private function getUrl()
     {
         $url = $_SERVER['REQUEST_URI'];
+        $root = Helper::getRoot();
 
         //Remove possible project folder from url
-        if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+        if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
             $url = substr($url, strlen($project_dir));
         }
 

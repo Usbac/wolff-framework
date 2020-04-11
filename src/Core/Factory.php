@@ -16,20 +16,22 @@ final class Factory
     /**
      * Returns a PDO connection
      *
+     * @throws \PDOException
+     *
      * @param  array  $data  the data to connect to the database
      * @param  array  $options  the connection options
      *
-     * @return PDO|null a PDO connection
+     * @return PDO|null the PDO connection
      */
     public static function connection(array $data, array $options)
     {
-        if (empty($options) || empty($data['db'])) {
+        if (empty($options) || !isset($data['name']) || empty($data['name'])) {
             return null;
         }
 
-        $dsn = sprintf(self::DSN, $data['dbms'] ?? '', $data['server'] ?? '', $data['db'] ?? '');
-        $username = $data['db_username'] ?? '';
-        $password = $data['db_password'] ?? '';
+        $dsn = sprintf(self::DSN, $data['dbms'] ?? '', $data['server'] ?? '', $data['name']);
+        $username = $data['username'] ?? '';
+        $password = $data['password'] ?? '';
 
         try {
             $connection = new PDO($dsn, $username, $password, $options);
@@ -80,7 +82,7 @@ final class Factory
 
     /**
      * Returns a new request object
-     * based on the current request
+     * based on the current request data
      *
      * @return  Http\Request  The new request object
      */

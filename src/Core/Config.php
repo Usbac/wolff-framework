@@ -7,6 +7,8 @@ use Wolff\Exception\FileNotReadableException;
 final class Config
 {
 
+    const DEFAULT_ENV = '.env';
+
     /**
      * List of configuration variables
      * @var array
@@ -18,22 +20,27 @@ final class Config
      * Path of the environment file
      * @var string
      */
-    private static $env_path = CONFIG['root_dir'] . '/.env';
+    private static $env_path;
 
 
     /**
      * Initializes the configuration data
      */
-    public static function init()
+    public static function init(array $data)
     {
-        if (is_string(CONFIG['env_file'] ?? null)) {
-            self::$env_path = CONFIG['root_dir'] . '/' . CONFIG['env_file'];
+        $env_path = isset($data['env_file']) ?
+            $data['env_file'] :
+            self::DEFAULT_ENV;
+        self::$env_path = Helper::getRoot($env_path);
+        self::$data = $data;
+
+        if (!isset($data['env_file'])) {
+            return;
         }
 
-        self::$data = CONFIG;
         self::parseEnv();
 
-        if (CONFIG['env_override'] ?? false) {
+        if ($data['env_override'] ?? false) {
             foreach ($_ENV as $key => $val) {
                 self::$data[strtolower($key)] = $val;
             }
@@ -65,7 +72,8 @@ final class Config
             throw new FileNotReadableException(self::$env_path);
         }
 
-        foreach ((explode(PHP_EOL, $content)) as $line) {
+        $lines = explode(PHP_EOL, $content);
+        foreach ($lines as $line) {
             if (!($index_equal = strpos($line, '='))) {
                 continue;
             }
@@ -75,30 +83,40 @@ final class Config
             // Anything between or not single/double quotes, excluding the hashtag character after it
             preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
             $val = trim($matches[0] ?? 'null');
-
-            switch ($val) {
-                case 'true':
-                    $val = true;
-                    break;
-                case 'false':
-                    $val = false;
-                    break;
-                case 'null':
-                    $val = null;
-                    break;
-                case 'empty':
-                    $val = '';
-                    break;
-                default:
-                    $len = strlen($val) - 1;
-                    if (($val[0] === '\'' && $val[$len] === '\'') ||
-                        ($val[0] === '"' && $val[$len] === '"')) {
-                        $val = substr($val, 1, $len - 1);
-                    }
-            }
+            $val = self::getVal($val);
 
             putenv("$key=$val");
             $_ENV[$key] = $val;
         }
+    }
+
+
+    /**
+     * Returns the true value of the given string
+     *
+     * @param  string  $val  The string
+     *
+     * @return mixed the true value
+     */
+    private static function getVal(string $val)
+    {
+        switch ($val) {
+            case 'true':
+                return true;
+            case 'false':
+                return false;
+            case 'null':
+                return null;
+            case 'empty':
+                return '';
+        }
+
+        $len = strlen($val) - 1;
+        if (($val[0] === '\'' && $val[$len] === '\'') ||
+            ($val[0] === '"' && $val[$len] === '"')) {
+            $val = substr($val, 1, $len - 1);
+        }
+
+        return $val;
     }
 }

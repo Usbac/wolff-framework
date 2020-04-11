@@ -6,6 +6,30 @@ class Helper
 {
 
     /**
+     * The root directory of the current project.
+     * @var string
+     */
+    private static $base_path = null;
+
+
+    /**
+     * Returns the given relative path as absolute
+     *
+     * @param  string  $path  the path (relative to the project root folder)
+     *
+     * @return string The absolute path
+     */
+    public static function getRoot(string $path = '')
+    {
+        if (!isset(self::$base_path)) {
+            self::$base_path = dirname(getcwd());
+        }
+
+        return self::$base_path . '/' . $path;
+    }
+
+
+    /**
      * Returns true if the given array is
      * associative (numbers as keys), false otherwise.
      *

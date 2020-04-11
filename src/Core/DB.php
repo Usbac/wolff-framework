@@ -14,6 +14,11 @@ class DB
     ];
 
     /**
+     * The default connection credentials.
+     */
+    protected static $default_credentials;
+
+    /**
      * DB connection.
      *
      * @var PDO
@@ -51,7 +56,7 @@ class DB
     public function __construct(array $data = null, array $options = null)
     {
         if ($data === null) {
-            $data = CONFIG;
+            $data = self::$default_credentials;
         }
 
         if ($options === null) {
@@ -59,6 +64,17 @@ class DB
         }
 
         $this->connection = Factory::connection($data, $options);
+    }
+
+
+    /**
+     * Sets the connection default credentials.
+     *
+     * @param  array  $data  The connection default credentials
+     */
+    public static function setCredentials(array $data)
+    {
+        self::$default_credentials = $data;
     }
 
 

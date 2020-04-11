@@ -2,14 +2,14 @@
 
 namespace Wolff\Core;
 
+use Wolff\Core\Helper;
 use Wolff\Utils\Str;
 use Wolff\Exception\FileNotFoundException;
 use Wolff\Exception\InvalidArgumentException;
 
 final class Template
 {
-    const VIEW_FORMAT = 'wlf';
-    const PATH_FORMAT = CONFIG['root_dir'] . '/app/views/%s.' . self::VIEW_FORMAT;
+    const PATH_FORMAT = '/app/views/%s.wlf';
     const EXISTS_ERROR = 'View file \'%s\' doesn\'t exists';
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';
@@ -39,6 +39,24 @@ final class Template
      */
     private static $templates = [];
 
+    /**
+     * The template status
+     * @var bool
+     */
+    private static $enabled = true;
+
+
+    /**
+     * Sets the template engine status
+     *
+     * @param  bool  $enabled  True for enabling the template engine,
+     * false for disabling it
+     */
+    public static function setStatus(bool $enabled = true)
+    {
+        self::$enabled = $enabled;
+    }
+
 
     /**
      * Returns true if the template system is enabled, false otherwise
@@ -46,7 +64,7 @@ final class Template
      */
     public static function isEnabled()
     {
-        return CONFIG['template_on'];
+        return self::$enabled;
     }
 
 
@@ -69,16 +87,28 @@ final class Template
 
         ob_start();
 
-        //Cache system
+        //Cache
         if ($cache && Cache::isEnabled()) {
-            $content = Cache::has($dir) ?
-                Cache::get($dir) :
-                self::replaceAll(self::getContent($dir));
+            if (Cache::has($dir)) {
+                $content = Cache::get($dir);
+            } else {
+                $content = self::getContent($dir);
+
+                if (self::$enabled) {
+                    $content = self::replaceAll($content);
+                }
+            }
 
             include(Cache::set($dir, $content));
         } else {
             $tmp_file = tmpfile();
-            fwrite($tmp_file, self::replaceAll(self::getContent($dir)));
+            $content = self::getContent($dir);
+
+            if (self::$enabled) {
+                $content = self::replaceAll($content);
+            }
+
+            fwrite($tmp_file, $content);
             include(stream_get_meta_data($tmp_file)['uri']);
             fclose($tmp_file);
         }
@@ -110,7 +140,13 @@ final class Template
             return Cache::get($dir);
         }
 
-        return self::replaceAll(self::getContent($dir));
+        $content = self::getContent($dir);
+
+        if (!self::$enabled) {
+            return $content;
+        }
+
+        return self::replaceAll($content);
     }
 
 
@@ -146,7 +182,7 @@ final class Template
      */
     public static function getPath(string $dir)
     {
-        return sprintf(self::PATH_FORMAT, $dir);
+        return Helper::getRoot(sprintf(self::PATH_FORMAT, $dir));
     }
 
 

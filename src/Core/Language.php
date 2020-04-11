@@ -8,7 +8,24 @@ final class Language
 {
 
     const BAD_FILE_ERROR = 'The %s language file for \'%s\' must return an associative array';
-    const PATH_FORMAT = CONFIG['root_dir'] . '/app/languages/%s/%s.php';
+    const PATH_FORMAT =  'app/languages/%s/%s.php';
+
+    /**
+     * The default language to use
+     * @var string
+     */
+    private static $default;
+
+
+    /**
+     * Sets the default language to use
+     *
+     * @param  string  $language  the default language to use
+     */
+    public static function setDefault(string $language)
+    {
+        self::$default = $language;
+    }
 
 
     /**
@@ -26,7 +43,7 @@ final class Language
     public static function get(string $dir, string $language = null)
     {
         if (!isset($language)) {
-            $language = CONFIG['language'];
+            $language = self::$default;
         }
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
@@ -62,7 +79,7 @@ final class Language
      */
     private static function getPath(string $dir, string $language)
     {
-        return sprintf(self::PATH_FORMAT, $language, $dir);
+        return Helper::getRoot(sprintf(self::PATH_FORMAT, $language, $dir));
     }
 
 
@@ -71,13 +88,17 @@ final class Language
      * false otherwise
      *
      * @param  string  $dir  the language directory
-     * @param  string  $language  the language selected
+     * @param  string|null  $language  the language selected
      *
      * @return bool true if the specified language exists,
      * false otherwise
      */
-    public static function exists(string $dir, string $language = CONFIG['language'])
+    public static function exists(string $dir, string $language = null)
     {
+        if (!isset($language)) {
+            $language = self::$default;
+        }
+
         return file_exists(self::getPath($dir, $language));
     }
 }

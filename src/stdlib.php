@@ -5,13 +5,13 @@ namespace {
     if (!function_exists('config')) {
 
         /**
-         * Returns the given key of the CONFIG array or null
+         * Returns the given key of the configuration array or null
          * if it does not exists.
          * The key must be in dot syntax. Like 'user.name'.
          *
-         * @param  string|null  $key  the CONFIG array key
+         * @param  string|null  $key  the configuration array key
          *
-         * @return mixed the given key of the CONFIG array or null
+         * @return mixed the given key of the configuration array or null
          * if it does not exists.
          */
         function config(string $key = null)
@@ -47,11 +47,12 @@ namespace {
          */
         function getPublic(string $path = '')
         {
-            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) !== 0) {
+            $root = \Wolff\Core\Helper::getRoot();
+            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) !== 0) {
                 return $path;
             }
 
-            $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
             return $project_dir . '/public/' . $path;
         }
     }
@@ -189,8 +190,9 @@ namespace {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 
                 $project_dir = '';
-                if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-                    $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+                $root = \Wolff\Core\Helper::getRoot();
+                if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+                    $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
                 }
 
                 $directory = str_replace('\\', '/', $project_dir);
@@ -277,8 +279,9 @@ namespace {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 
             $project_dir = '';
-            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            $root = \Wolff\Core\Helper::getRoot();
+            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
             }
 
             $directory = str_replace('\\', '/', $project_dir);
@@ -342,10 +345,11 @@ namespace {
         function getCurrentPage()
         {
             $url = $_SERVER['REQUEST_URI'];
+            $root = \Wolff\Core\Helper::getRoot();
 
             //Remove possible project folder from url
-            if (strpos(CONFIG['root_dir'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $project_dir = substr(CONFIG['root_dir'], strlen($_SERVER['DOCUMENT_ROOT']));
+            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
                 $url = substr($url, strlen($project_dir));
             }
 

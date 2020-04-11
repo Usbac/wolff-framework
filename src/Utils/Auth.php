@@ -53,16 +53,16 @@ final class Auth extends \Wolff\Core\DB
      * Initializes the database connection for
      * the authentication utility
      *
-     * @param  array|null  $data  The array containing database authentication data
+     * @param  array|null  $credentials  The database credentials
      * @param  array|null  $options  The PDO connection options
      */
-    public function __construct(array $data = null, array $options = null)
+    public function __construct(array $credentials = null, array $options = null)
     {
         if (isset($options)) {
             $this->options = $options;
         }
 
-        parent::__construct($data, $this->options);
+        parent::__construct($credentials, $this->options);
     }
 
 

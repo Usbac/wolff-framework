@@ -21,7 +21,8 @@ final class Log
     const FOLDER_PERMISSIONS = 0755;
     const DATE_FORMAT = 'H:i:s';
     const MSG_FORMAT = '[%s] [%s] %s: %s';
-    const FOLDER_PATH = CONFIG['root_dir'] . '/system/logs';
+    const FOLDER_PATH = 'system/logs';
+    const PATH_FORMAT = self::FOLDER_PATH . '/%s.log';
     const LEVELS = [
         'emergency',
         'alert',
@@ -33,6 +34,24 @@ final class Log
         'debug'
     ];
 
+    /**
+     * The log status
+     * @var bool
+     */
+    private static $enabled = true;
+
+
+    /**
+     * Sets the log system status
+     *
+     * @param  bool  $enabled  True for enabling the log system,
+     * false for disabling it
+     */
+    public static function setStatus(bool $enabled = true)
+    {
+        self::$enabled = $enabled;
+    }
+
 
     /**
      * Returns true if the log is enabled, false otherwise
@@ -40,7 +59,7 @@ final class Log
      */
     public static function isEnabled()
     {
-        return CONFIG['log_on'];
+        return self::$enabled;
     }
 
 
@@ -92,7 +111,7 @@ final class Log
     private static function writeToFile(string $data)
     {
         self::mkdir();
-        $filename = self::FOLDER_PATH . '/' . date('m-d-Y') . '.log';
+        $filename = Helper::getRoot(sprintf(self::PATH_FORMAT, date('m-d-Y')));
         file_put_contents($filename, $data . PHP_EOL, FILE_APPEND);
     }
 
@@ -102,8 +121,10 @@ final class Log
      */
     private static function mkdir()
     {
-        if (!file_exists(self::FOLDER_PATH)) {
-            mkdir(self::FOLDER_PATH, self::FOLDER_PERMISSIONS, true);
+        $folder_path = Helper::getRoot(self::FOLDER_PATH);
+
+        if (!file_exists($folder_path)) {
+            mkdir($folder_path, self::FOLDER_PERMISSIONS, true);
         }
     }
 }

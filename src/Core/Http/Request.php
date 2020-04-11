@@ -2,6 +2,7 @@
 
 namespace Wolff\Core\Http;
 
+use Wolff\Core\Helper;
 use Wolff\Exception\InvalidArgumentException;
 use Wolff\Exception\FileNotFoundException;
 
@@ -146,7 +147,7 @@ class Request
             throw new InvalidArgumentException('dir', 'a string');
         }
 
-        $dir = CONFIG['root_dir'] . '/' . ($arr['dir'] ?? '');
+        $dir = Helper::getRoot($arr['dir'] ?? '');
         if (isset($arr['dir']) && !is_dir($dir)) {
             throw new FileNotFoundException($dir);
         }

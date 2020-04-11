@@ -8,14 +8,14 @@ use Wolff\Exception\FileNotReadableException;
 final class Maintenance
 {
 
-    const DEFAULT_FILE = '/system/maintenance_whitelist.txt';
+    const DEFAULT_FILE = 'system/maintenance_whitelist.txt';
 
     /**
      * Filename of the ip whitelist file.
      *
      * @var string
      */
-    private static $file = CONFIG['root_dir'] . self::DEFAULT_FILE;
+    private static $file = null;
 
     /**
      * Function to execute in maintenance mode.
@@ -43,7 +43,7 @@ final class Maintenance
      */
     public static function setFile(string $path = self::DEFAULT_FILE)
     {
-        self::$file = CONFIG['root_dir'] . '/' . $path;
+        self::$file = Helper::getRoot($path);
     }
 
 
@@ -56,6 +56,10 @@ final class Maintenance
      */
     public static function getAllowedIPs()
     {
+        if (!isset(self::$file)) {
+            self::setFile();
+        }
+
         if (!is_file(self::$file)) {
             return false;
         }
@@ -79,6 +83,10 @@ final class Maintenance
      */
     public static function addAllowedIP(string $ip)
     {
+        if (!isset(self::$file)) {
+            self::setFile();
+        }
+
         if (!$ip = filter_var($ip, FILTER_VALIDATE_IP)) {
             return false;
         }
@@ -116,6 +124,10 @@ final class Maintenance
      */
     public static function removeAllowedIP(string $ip)
     {
+        if (!isset(self::$file)) {
+            self::setFile();
+        }
+
         if (!$ip = filter_var($ip, FILTER_VALIDATE_IP)) {
             return false;
         }

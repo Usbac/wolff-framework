@@ -13,13 +13,23 @@ final class Cache
     const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
 
+    /**
+     * The cache status
+     * @var bool
+     */
+    private static $enabled = true;
+
 
     /**
      * Deletes all the cache files that have expired
+     *
+     * @param  bool  $enabled  the cache status
      */
-    public static function init()
+    public static function init(bool $enabled = true)
     {
-        if (!self::isEnabled()) {
+        self::$enabled = $enabled;
+
+        if (!self::$enabled) {
             return;
         }
 
@@ -43,7 +53,7 @@ final class Cache
      */
     public static function isEnabled()
     {
-        return CONFIG['cache_on'];
+        return self::$enabled;
     }
 
 
@@ -177,6 +187,6 @@ final class Cache
      */
     private static function getDir(string $path = '')
     {
-        return CONFIG['root_dir'] . '/' . self::FOLDER . '/' . $path;
+        return Helper::getRoot(self::FOLDER . '/' . $path);
     }
 }

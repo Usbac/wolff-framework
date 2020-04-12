@@ -94,6 +94,23 @@ final class Route
 
 
     /**
+     * Adds a route that renders a view
+     *
+     * @param  string  $url  the url
+     * @param  string  $view_path  the view path
+     * @param  array  $data  the view data
+     */
+    public static function view(string $url, string $view_path, array $data = [])
+    {
+        $function = function () use ($view_path, $data) {
+            View::render($view_path, $data);
+        };
+
+        self::addRoute($url, 'GET', $function, null);
+    }
+
+
+    /**
      * Adds a route that will work
      * only for a status code
      *
@@ -280,7 +297,7 @@ final class Route
      * @param  mixed  $url  the url
      * @param  string  $method  the url HTTP method
      * @param  mixed  $function  the url function or controller name
-     * @param  int  $status  the HTTP response code
+     * @param  int|null  $status  the HTTP response code
      */
     private static function addRoute($url, string $method, $function, $status)
     {

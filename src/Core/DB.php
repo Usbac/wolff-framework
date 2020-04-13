@@ -316,7 +316,8 @@ class DB
 
 
     /**
-     * Returns the result of a SELECT ALL query
+     * Returns the result of a select query.
+     * This method accepts dot notation.
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
@@ -325,12 +326,22 @@ class DB
      *
      * @return array the query result as an assosiative array
      */
-    public function selectAll(string $table, string $conditions = '1', ...$args)
+    public function select(string $table, string $conditions = '1', ...$args)
     {
-        $table = $this->escape($table);
+        $arr = explode('.', $table);
+        $table = $this->escape($arr[0]);
 
-        return $this->query("SELECT * FROM $table
-            WHERE $conditions", ...$args)->get();
+        $stmt = $this->connection->prepare("SELECT * FROM $table
+            WHERE $conditions");
+        $stmt->execute($args);
+        $this->last_stmt = $stmt;
+
+        if (isset($arr[1])) {
+            $column = $this->escape($arr[1]);
+            return array_column($stmt->fetchAll(), $column);
+        }
+
+        return $stmt->fetchAll();
     }
 
 
@@ -344,13 +355,16 @@ class DB
      *
      * @return int the query result
      */
-    public function countAll(string $table, string $conditions = '1', ...$args)
+    public function count(string $table, string $conditions = '1', ...$args)
     {
-        $table = $this->escape($table);
-        $result = $this->query("SELECT COUNT(*) FROM $table
-            WHERE $conditions", ...$args)->first();
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table
+            WHERE $conditions");
+        $stmt->execute($args);
+        $this->last_stmt = $stmt;
 
-        return empty($result) ? 0 : $result['COUNT(*)'];
+        $result = $stmt->fetchAll();
+
+        return empty($result) ? 0 : $result[0]['COUNT(*)'];
     }
 
 
@@ -396,19 +410,24 @@ class DB
 
 
     /**
-     * Runs a DELETE query
+     * Runs a delete query
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
      * @param  mixed  ...$args the query arguments
+     *
+     * @return bool true in case of success, false otherwise
      */
-    public function deleteAll(string $table, string $conditions = '1', ...$args)
+    public function delete(string $table, string $conditions = '1', ...$args)
     {
         $table = $this->escape($table);
 
-        $this->query("DELETE FROM `$table`
-            WHERE $conditions", ...$args);
+        $stmt = $this->connection->prepare("DELETE FROM $table
+            WHERE $conditions");
+
+        $this->last_stmt = $stmt;
+        return $stmt->execute($args);
     }
 
 

@@ -2,6 +2,8 @@
 
 namespace Wolff\Core;
 
+use PDOStatement;
+
 final class Query
 {
 
@@ -13,7 +15,12 @@ final class Query
     private $stmt;
 
 
-    public function __construct($stmt)
+    /**
+     * Default constructor
+     *
+     * @param  \PDOStatement  $stmt  the PDO statement
+     */
+    public function __construct(PDOStatement $stmt)
     {
         $this->stmt = $stmt;
     }
@@ -72,7 +79,7 @@ final class Query
         $result = $this->get();
 
         //Only one column to pick
-        if (count($columns) == 1) {
+        if (count($columns) === 1) {
             return array_column($result, $columns[0]);
         }
 

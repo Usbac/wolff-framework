@@ -2,6 +2,22 @@
 
 namespace {
 
+    if (!function_exists('path')) {
+
+        /**
+         * Returns the absolute path of the given relative path (supposed to be relative
+         * to the project root).
+         *
+         * @param  string  $path  the relative path
+         *
+         * @return string the absolute path
+         */
+        function path(string $path = '')
+        {
+            return \Wolff\Core\Helper::getRoot($path);
+        }
+    }
+
     if (!function_exists('config')) {
 
         /**

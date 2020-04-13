@@ -23,19 +23,13 @@ It is intended for those who want to build lightweight websites without starting
 
 Wolff is small, fast, scalable and easy. The perfect solution for building small and medium-sized web applications.
 
-
 ## Features
 
-* **Clean**: The routes system allows you to have clean and friendly URLs, and the template system makes the php code cleaner while separating the logic from the view.
+* **Extremely easy**: It's quite simple to use and has a clean documentation. It gives you the opportunity to learn it in just one night (sleep included).
 
-* **Dynamic**: You can work however you want without strictly following the Wolff design or patterns like the MVC.
+* **Ridiculously fast**: If a resource is not used, it's not loaded. Even some of the elements of the framework can be disabled. Wolff is friendly with potato servers.
 
-* **Extensible**: Take advantage of the custom middlewares, functions and templates you can make in Wolff to expand your page.
-
-* **Fast**: Due to its small size and simplicity, you don’t have to worry about loading times or resource usage.
-
-* **Simple**: It’s not only small, but simple as well; with a clean documentation and an easy way to use.
-
+* **Comprenhensive**: Wolff elements cover everything you may need for building a web app. No initial setup is required, they are safe and ready to be used.
 
 ## Contributing
 
@@ -44,7 +38,6 @@ Any contribution or support to this project in the form of a pull request or mes
 Keep in mind that these contributions must be done in the main [Wolff repository](https://github.com/usbac/wolff).
 
 Don't be shy :)
-
 
 ## License
 

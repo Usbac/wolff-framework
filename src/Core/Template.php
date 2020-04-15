@@ -14,6 +14,7 @@ final class Template
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';
     const BLOCK_NAME = '[a-zA-Z0-9_]+';
+    const TOKEN_TIME = 3600; // 1 hour
     const FORMAT = [
         'style'  => '/' . self::NOT_RAW . '\{%(\s?){1,}style( ?){1,}=( ?){1,}(.*)(\s?){1,}%\}/',
         'script' => '/' . self::NOT_RAW . '\{%(\s?){1,}script( ?){1,}=( ?){1,}(.*)(\s?){1,}%\}/',
@@ -26,6 +27,7 @@ final class Template
         'function'  => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
         'include'   => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'for'       => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
+        'csrf'      => '/' . self::NOT_RAW . '@csrf/',
 
         'extends'      => '/' . self::NOT_RAW . '@extends\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
@@ -195,6 +197,7 @@ final class Template
      */
     private static function replaceAll(string $content)
     {
+        $content = self::replaceCsrf($content);
         $content = self::replaceExtend($content);
         $content = self::replaceIncludes($content);
         $content = self::replaceImports($content);
@@ -206,6 +209,48 @@ final class Template
         $content = self::replaceRaws($content);
 
         return $content;
+    }
+
+
+    /**
+     * Applies the inputs that prevent csrf
+     * (cross site request forgery)
+     *
+     * @param  string  $content  the view content
+     *
+     * @return string the view content with
+     * the inputs that prevent csrf
+     */
+    private static function replaceCsrf(string $content)
+    {
+        preg_match(self::FORMAT['csrf'], $content, $matches);
+
+        if (empty($matches)) {
+            return $content;
+        }
+
+        $input = '<input type="hidden" name="' . WOLFF_CONFIG['csrf_key'] .'" value="' . self::getCsrfToken() . '"/>';
+        return preg_replace(self::FORMAT['csrf'], $input, $content);
+    }
+
+
+    /**
+     * Returns a csrf token, generating its respective
+     * cookie in the process if it doesn't exists.
+     *
+     * @return string the csrf token
+     */
+    private static function getCsrfToken()
+    {
+        $key = WOLFF_CONFIG['csrf_key'];
+        if (!isset($_COOKIE[$key])) {
+            $token = bin2hex(random_bytes(8));
+            setcookie($key, $token, time() + self::TOKEN_TIME, '/', '', false, true);
+
+            return $token;
+        }
+
+        return $_COOKIE[$key];
     }
 
 

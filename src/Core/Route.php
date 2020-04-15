@@ -258,18 +258,19 @@ final class Route
     private static function isValidRoute($key)
     {
         return self::$routes[$key] &&
-            (self::$routes[$key]['method'] === '' || self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD']);
+            (self::$routes[$key]['method'] === '' ||
+             self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD']);
     }
 
 
     /**
-     * Adds a route with get method
+     * Adds a route that works for any method
      *
      * @param  string  $url  the url
      * @param  mixed  $function  mixed the function that must be executed when accessing the route
      * @param  int  $status  the HTTP response code
      */
-    public static function add(string $url, $function, int $status = self::STATUS_OK)
+    public static function any(string $url, $function, int $status = self::STATUS_OK)
     {
         self::addRoute(Str::sanitizeURL($url), '', $function, $status);
     }

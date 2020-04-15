@@ -1,6 +1,7 @@
 <?php
 
-define('CORE_CONFIG', [
-    'version' => '3.0',
-    'start'   => microtime(true)
+define('WOLFF_CONFIG', [
+    'version'  => '3.0',
+    'csrf_key' => '__token',
+    'start'    => microtime(true)
 ]);

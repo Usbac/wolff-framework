@@ -2,6 +2,29 @@
 
 namespace {
 
+    if (!function_exists('validateCsrf')) {
+
+        /**
+         * Returns true if the current request is safe from csrf
+         * (cross site request forgery), false otherwise.
+         *
+         * This method combined with the 'csrf' tag in the template engine
+         * is perfect for making secure forms that prevent csrf.
+         *
+         * @return bool true if the current request is safe from csrf,
+         * false otherwise
+         */
+        function validateCsrf()
+        {
+            return ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+                isset($_POST[WOLFF_CONFIG['csrf_key']], $_COOKIE[WOLFF_CONFIG['csrf_key']]) &&
+                $_POST[WOLFF_CONFIG['csrf_key']] === $_COOKIE[WOLFF_CONFIG['csrf_key']]) ||
+                ($_SERVER['REQUEST_METHOD'] === 'GET' &&
+                isset($_GET[WOLFF_CONFIG['csrf_key']], $_COOKIE[WOLFF_CONFIG['csrf_key']]) &&
+                $_GET[WOLFF_CONFIG['csrf_key']] === $_COOKIE[WOLFF_CONFIG['csrf_key']]);
+        }
+    }
+
     if (!function_exists('path')) {
 
         /**
@@ -81,7 +104,7 @@ namespace {
          */
         function wolffVersion()
         {
-            return CORE_CONFIG['version'];
+            return WOLFF_CONFIG['version'];
         }
     }
 
@@ -399,7 +422,7 @@ namespace {
          */
         function getBenchmark()
         {
-            return microtime(true) - CORE_CONFIG['start'];
+            return microtime(true) - WOLFF_CONFIG['start'];
         }
     }
 

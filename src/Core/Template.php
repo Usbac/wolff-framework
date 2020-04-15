@@ -20,14 +20,14 @@ final class Template
         'script' => '/' . self::NOT_RAW . '\{%(\s?){1,}script( ?){1,}=( ?){1,}(.*)(\s?){1,}%\}/',
         'icon'   => '/' . self::NOT_RAW . '\{%(\s?){1,}icon( ?){1,}=( ?){1,}(.*)(\s?){1,}%\}/',
 
-        'comment'   => '/' . self::NOT_RAW . '\{#(?s).[^#\}]*#\}/',
-        'plainecho' => '/' . self::NOT_RAW . '\{\!( ?){1,}(.*?)( ?){1,}\!\}/',
-        'echo'      => '/' . self::NOT_RAW . '\{\{( ?){1,}(.*?)( ?){1,}\}\}/',
-        'tag'       => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
-        'function'  => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
-        'include'   => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
-        'for'       => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
-        'csrf'      => '/' . self::NOT_RAW . '@csrf/',
+        'comment'    => '/' . self::NOT_RAW . '\{#(?s).[^#\}]*#\}/',
+        'plain_echo' => '/' . self::NOT_RAW . '\{\!( ?){1,}(.*?)( ?){1,}\!\}/',
+        'echo'       => '/' . self::NOT_RAW . '\{\{( ?){1,}(.*?)( ?){1,}\}\}/',
+        'tag'        => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
+        'function'   => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
+        'include'    => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
+        'for'        => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
+        'csrf'       => '/' . self::NOT_RAW . '@csrf/',
 
         'extends'      => '/' . self::NOT_RAW . '@extends\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
@@ -414,7 +414,7 @@ final class Template
     private static function replaceTags($content)
     {
         $content = preg_replace(self::FORMAT['echo'], '<?php echo htmlspecialchars($2, ENT_QUOTES) ?>', $content);
-        $content = preg_replace(self::FORMAT['plainecho'], '<?php echo $2 ?>', $content);
+        $content = preg_replace(self::FORMAT['plain_echo'], '<?php echo $2 ?>', $content);
         $content = preg_replace(self::FORMAT['tag'], '<?php $2 ?>', $content);
 
         return $content;

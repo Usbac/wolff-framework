@@ -86,13 +86,14 @@ namespace {
          */
         function getPublic(string $path = '')
         {
+            $path = ltrim($path, '/');
             $root = \Wolff\Core\Helper::getRoot();
-            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) !== 0) {
-                return $path;
+            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
+                return $project_dir . '/public/' . $path;
             }
 
-            $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
-            return $project_dir . '/public/' . $path;
+            return '/' . $path;
         }
     }
 

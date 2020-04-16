@@ -159,9 +159,9 @@ final class Kernel
      */
     private function load()
     {
-        Middleware::loadBefore($this->url, $this->req);
+        $this->res->append(Middleware::loadBefore($this->url, $this->req));
         $this->loadPage();
-        Middleware::loadAfter($this->url, $this->req);
+        $this->res->append(Middleware::loadAfter($this->url, $this->req));
     }
 
 

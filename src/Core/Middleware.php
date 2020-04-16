@@ -19,7 +19,7 @@ final class Middleware
      *
      * @var array
      */
-    private static $middlewares_before = [];
+    private static $before = [];
 
     /**
      * List of middlewares
@@ -27,7 +27,7 @@ final class Middleware
      *
      * @var array
      */
-    private static $middlewares_after = [];
+    private static $after = [];
 
     /**
      * Continue or not to the
@@ -39,20 +39,22 @@ final class Middleware
 
 
     /**
-     * Loads all the middlewares files that matches the current route
+     * Loads all the middlewares that matches the current route
      *
      * @param  string  $type  the type of middlewares to load
      * @param  string  $url  the url to match the middlewares
-     * @param  Http\Request  $req  the request object
+     * @param  Http\Request|null  $req  the request object
+     *
+     * @return string The middleware responses joined
      */
-    private static function load(string $type, string $url, Http\Request &$req)
+    private static function load(string $type, string $url, Http\Request &$req = null)
     {
-        if (empty(self::${'middlewares_' . $type})) {
-            return;
+        $middlewares = self::${$type};
+
+        if (empty($middlewares)) {
+            return '';
         }
 
-        $middlewares = self::${'middlewares_' . $type};
-        self::$next = false;
         $args = [
             $req,
             function () {
@@ -60,17 +62,23 @@ final class Middleware
             }
         ];
 
-        $url = explode('/', $url);
+        $results = [];
+        $url = explode('/', rtrim($url, '/'));
         $url_length = count($url) - 1;
+
         foreach ($middlewares as $middleware) {
             if (Helper::matchesRoute($middleware['url'], $url, $url_length)) {
-                call_user_func_array($middleware['function'], $args);
+                self::$next = false;
+                $result = call_user_func_array($middleware['function'], $args);
+                array_push($results, $result);
 
                 if (!self::$next) {
                     break;
                 }
             }
         }
+
+        return implode('', $results);
     }
 
 
@@ -78,11 +86,13 @@ final class Middleware
      * Loads the middlewares files of type before that matches the current route
      *
      * @param  string  $url  the url to match the middlewares
-     * @param  Http\Request  $req  the request object
+     * @param  Http\Request|null  $req  the request object
+     *
+     * @return string The middleware responses
      */
-    public static function loadBefore(string $url, Http\Request $req)
+    public static function loadBefore(string $url, Http\Request $req = null)
     {
-        self::load('before', $url, $req);
+        return self::load('before', $url, $req);
     }
 
 
@@ -90,11 +100,13 @@ final class Middleware
      * Loads the middlewares files of type after that matches the current route
      *
      * @param  string  $url  the url to match the middlewares
-     * @param  Http\Request  $req  the request object
+     * @param  Http\Request|null  $req  the request object
+     *
+     * @return string The middleware responses
      */
-    public static function loadAfter(string $url, Http\Request $req)
+    public static function loadAfter(string $url, Http\Request $req = null)
     {
-        self::load('after', $url, $req);
+        return self::load('after', $url, $req);
     }
 
 
@@ -121,7 +133,7 @@ final class Middleware
             throw new InvalidArgumentException('function', 'an instance of \Closure');
         }
 
-        array_push(self::${'middlewares_' . $type}, [
+        array_push(self::${$type}, [
             'url'      => Str::sanitizeURL($args[0]),
             'function' => $args[1]
         ]);

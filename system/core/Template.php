@@ -267,9 +267,6 @@ class Template
     {
         $func = '(.*)';
 
-        //Escape
-        $content = preg_replace(str_replace($func, 'e', self::FORMAT['function']), 'htmlspecialchars(strip_tags($2))',
-            $content);
         //Uppercase
         $content = preg_replace(str_replace($func, 'upper', self::FORMAT['function']), 'strtoupper($2)', $content);
         //Lowercase
@@ -294,6 +291,9 @@ class Template
         $content = preg_replace(str_replace($func, 'join\((.*?)\)', self::FORMAT['function']), 'implode($1, $3)', $content);
         //Repeat
         $content = preg_replace(str_replace($func, 'repeat\((.*?)\)', self::FORMAT['function']), 'str_repeat($3, $1)', $content);
+        //Escape
+        $content = preg_replace(str_replace($func, 'e', self::FORMAT['function']), 'htmlspecialchars(strip_tags($2))',
+            $content);
 
         return $content;
     }

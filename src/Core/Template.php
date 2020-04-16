@@ -379,7 +379,6 @@ final class Template
     private static function replaceFunctions($content)
     {
         $functions = [
-            'e'               => 'htmlspecialchars(strip_tags($2))',
             'upper'           => 'strtoupper($2)',
             'lower'           => 'strtolower($2)',
             'upperf'          => 'ucfirst($2)',
@@ -392,6 +391,7 @@ final class Template
             'nl2br'           => 'nl2br($2)',
             'join\((.*?)\)'   => 'implode($1, $3)',
             'repeat\((.*?)\)' => 'str_repeat($3, $1)',
+            'e'               => 'htmlspecialchars(strip_tags($2))'
         ];
 
         foreach ($functions as $original => $replacement) {

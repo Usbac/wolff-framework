@@ -19,10 +19,10 @@ final class Log
 {
 
     const FOLDER_PERMISSIONS = 0755;
-    const DATE_FORMAT = 'H:i:s';
-    const MSG_FORMAT = '[%s] [%s] %s: %s';
-    const FOLDER_PATH = 'system/logs';
-    const PATH_FORMAT = self::FOLDER_PATH . '/%s.log';
+    const FILENAME_FORMAT = '%s.log';
+    const DEFAULT_FOLDER = 'system/logs/';
+    const DEFAULT_DATE_FORMAT = 'H:i:s';
+    const MSG_FORMAT = '[%s][%s] %s: %s';
     const LEVELS = [
         'emergency',
         'alert',
@@ -39,6 +39,18 @@ final class Log
      * @var bool
      */
     private static $enabled = true;
+
+    /**
+     * The log folder
+     * @var string
+     */
+    private static $folder = self::DEFAULT_FOLDER;
+
+    /**
+     * The date format used internally in the files
+     * @var string
+     */
+    private static $date_format = self::DEFAULT_DATE_FORMAT;
 
 
     /**
@@ -60,6 +72,28 @@ final class Log
     public static function isEnabled()
     {
         return self::$enabled;
+    }
+
+
+    /**
+     * Sets the log folder
+     *
+     * @param  string  $folder  the log folder
+     */
+    public static function setFolder(string $folder = self::DEFAULT_FOLDER)
+    {
+        self::$folder = $folder;
+    }
+
+
+    /**
+     * Sets the date format used internally for the files
+     *
+     * @param  string  $date_format  the date format
+     */
+    public static function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT)
+    {
+        self::$date_format = $date_format;
     }
 
 
@@ -98,8 +132,23 @@ final class Log
         }
 
         $message = Str::interpolate($message, $values);
-        $log = sprintf(self::MSG_FORMAT, date(self::DATE_FORMAT), Helper::getClientIP(), $level, $message);
+        $date = date(self::$date_format);
+        $log = sprintf(self::MSG_FORMAT, $date, Helper::getClientIP(), $level, $message);
+        self::mkdir();
         self::writeToFile($log);
+    }
+
+
+    /**
+     * Creates the logs folder if it doesn't exists
+     */
+    private static function mkdir()
+    {
+        $folder_path = Helper::getRoot(self::$folder);
+
+        if (!file_exists($folder_path)) {
+            mkdir($folder_path, self::FOLDER_PERMISSIONS, true);
+        }
     }
 
 
@@ -110,21 +159,17 @@ final class Log
      */
     private static function writeToFile(string $data)
     {
-        self::mkdir();
-        $filename = Helper::getRoot(sprintf(self::PATH_FORMAT, date('m-d-Y')));
-        file_put_contents($filename, $data . PHP_EOL, FILE_APPEND);
+        file_put_contents(Helper::getRoot(self::getFilename()), $data . PHP_EOL, FILE_APPEND);
     }
 
 
     /**
-     * Creates the logs folder if it doesn't exists
+     * Returns a log filename
+     *
+     * @return string the log filename
      */
-    private static function mkdir()
+    private static function getFilename()
     {
-        $folder_path = Helper::getRoot(self::FOLDER_PATH);
-
-        if (!file_exists($folder_path)) {
-            mkdir($folder_path, self::FOLDER_PERMISSIONS, true);
-        }
+        return self::$folder . '/' . sprintf(self::FILENAME_FORMAT, date('m-d-Y'));
     }
 }

@@ -6,7 +6,7 @@ use Wolff\Core\Helper;
 use Wolff\Exception\InvalidArgumentException;
 use Wolff\Exception\FileNotFoundException;
 
-class Request
+class Request implements RequestInterface
 {
 
     const DEFAULT_FILE_OPTIONS = [
@@ -66,13 +66,7 @@ class Request
 
 
     /**
-     * Default constructor
-     *
-     * @param  array  $query  the url parameters
-     * @param  array  $body  the body parameters
-     * @param  array  $files  the files
-     * @param  array  $server  the superglobal server
-     * @param  array  $cookies  the cookies
+     * {@inheritdoc}
      */
     public function __construct(
         array $query,
@@ -174,11 +168,7 @@ class Request
 
 
     /**
-     * Returns the specified parameter
-     *
-     * @param  string|null  $key  the parameter key
-     *
-     * @return mixed The specified parameter
+     * {@inheritdoc}
      */
     public function query(string $key = null)
     {
@@ -191,13 +181,7 @@ class Request
 
 
     /**
-     * Returns true if the specified parameter is set,
-     * false otherwise.
-     *
-     * @param  string  $key  the parameter key
-     *
-     * @return bool True if the specified parameter is set,
-     * false otherwise.
+     * {@inheritdoc}
      */
     public function hasQuery(string $key)
     {
@@ -206,11 +190,7 @@ class Request
 
 
     /**
-     * Returns the specified body parameter
-     *
-     * @param  string|null  $key  the body parameter key
-     *
-     * @return mixed The specified body parameter
+     * {@inheritdoc}
      */
     public function body(string $key = null)
     {
@@ -223,13 +203,7 @@ class Request
 
 
     /**
-     * Returns true if the specified body parameter is set,
-     * false otherwise.
-     *
-     * @param  string  $key  the parameter key
-     *
-     * @return bool True if the specified body parameter is set,
-     * false otherwise.
+     * {@inheritdoc}
      */
     public function has(string $key)
     {
@@ -238,11 +212,7 @@ class Request
 
 
     /**
-     * Returns the specified file
-     *
-     * @param  string|null  $key  the file key
-     *
-     * @return mixed The specified file
+     * {@inheritdoc}
      */
     public function file(string $key = null)
     {
@@ -255,13 +225,7 @@ class Request
 
 
     /**
-     * Returns true if the specified file is set,
-     * false otherwise.
-     *
-     * @param  string  $key  the parameter key
-     *
-     * @return bool True if the specified file is set,
-     * false otherwise.
+     * {@inheritdoc}
      */
     public function hasFile(string $key)
     {
@@ -270,11 +234,7 @@ class Request
 
 
     /**
-     * Returns the specified cookie
-     *
-     * @param  string|null  $key  the cookie key
-     *
-     * @return mixed the specified
+     * {@inheritdoc}
      */
     public function cookie(string $key = null)
     {
@@ -287,13 +247,7 @@ class Request
 
 
     /**
-     * Returns true if the specified cookie is set,
-     * false otherwise.
-     *
-     * @param  string  $key  the parameter key
-     *
-     * @return bool True if the specified cookie is set,
-     * false otherwise.
+     * {@inheritdoc}
      */
     public function hasCookie(string $key)
     {
@@ -302,13 +256,7 @@ class Request
 
 
     /**
-     * Returns the headers array,
-     * or the specified header key
-     *
-     * @param  string|null  $key  the header key to get
-     *
-     * @return mixed The headers array,
-     * or the specified header key
+     * {@inheritdoc}
      */
     public function getHeader(string $key = null)
     {
@@ -321,9 +269,7 @@ class Request
 
 
     /**
-     * Returns the request method
-     *
-     * @return string The request method
+     * {@inheritdoc}
      */
     public function getMethod()
     {
@@ -332,9 +278,7 @@ class Request
 
 
     /**
-     * Returns the request uri
-     *
-     * @return string The request uri
+     * {@inheritdoc}
      */
     public function getUri()
     {
@@ -343,9 +287,7 @@ class Request
 
 
     /**
-     * Returns the full request uri
-     *
-     * @return string The request uri
+     * {@inheritdoc}
      */
     public function getFullUri()
     {
@@ -354,11 +296,7 @@ class Request
 
 
     /**
-     * Returns true if the current protocol is secure (https),
-     * false otherwise.
-     *
-     * @return bool true if the current protocol is secure (https),
-     * false otherwise.
+     * {@inheritdoc}
      */
     public function isSecure()
     {

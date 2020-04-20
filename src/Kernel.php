@@ -73,13 +73,6 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
-        Config::init($config);
-        Cache::init($config['cache_on'] ?? true);
-        DB::setCredentials($config['db'] ?? []);
-        Log::setStatus($config['log_on'] ?? true);
-        Template::setStatus($config['template_on'] ?? true);
-        Language::setDefault($config['language'] ?? 'english');
-
         $this->config = $config;
         $this->url = $this->getUrl();
         $this->function = Route::getVal($this->url);
@@ -98,8 +91,25 @@ final class Kernel
             $this->method = 'index';
         }
 
+        $this->initComponents($config);
         $this->setErrors();
         $this->stdlib();
+    }
+
+
+    /**
+     * Initializes the main components
+     *
+     * @param  array  $config  the configuration
+     */
+    private function initComponents(array $config = [])
+    {
+        Config::init($config);
+        Cache::init($config['cache_on'] ?? true);
+        DB::setCredentials($config['db'] ?? []);
+        Log::setStatus($config['log_on'] ?? true);
+        Template::setStatus($config['template_on'] ?? true);
+        Language::setDefault($config['language'] ?? 'english');
     }
 
 
@@ -120,12 +130,11 @@ final class Kernel
 
     /**
      * Includes the standard library if
-     * it's activated in the given configuration
+     * it's activate in the given configuration
      */
     private function stdlib()
     {
-        if (isset($this->config['stdlib_on']) &&
-            $this->config['stdlib_on']) {
+        if ($this->config['stdlib_on'] ?? false) {
             include_once('stdlib.php');
         }
     }
@@ -146,7 +155,7 @@ final class Kernel
         if ($this->isAccessible()) {
             $this->load();
         } else {
-            http_response_code(404);
+            $this->res->setCode(404);
         }
 
         Route::execCode($this->req, $this->res);
@@ -159,21 +168,12 @@ final class Kernel
      */
     private function load()
     {
-        $this->res->append(Middleware::loadBefore($this->url, $this->req));
-        $this->loadPage();
-        $this->res->append(Middleware::loadAfter($this->url, $this->req));
-    }
-
-
-    /**
-     * Loads the requested page
-     */
-    private function loadPage()
-    {
         $params = [
             $this->req,
             $this->res
         ];
+
+        $this->res->append(Middleware::loadBefore($this->url, $this->req));
 
         if ($this->function instanceof \Closure) {
             call_user_func_array($this->function, $params);
@@ -182,6 +182,8 @@ final class Kernel
         } elseif (Controller::exists($this->url)) {
             Controller::method($this->url, 'index', $params);
         }
+
+        $this->res->append(Middleware::loadAfter($this->url, $this->req));
     }
 
 
@@ -194,17 +196,17 @@ final class Kernel
      */
     private function isAccessible()
     {
-        return (!Route::isBlocked($this->url) &&
+        return !Route::isBlocked($this->url) &&
             ($this->function instanceof \Closure ||
             Controller::hasMethod($this->controller, $this->method) ||
-            Controller::exists($this->url)));
+            Controller::exists($this->url));
     }
 
 
     /**
      * Returns the current url processed
      *
-     * @return  string  the current url processed
+     * @return string the current url processed
      */
     private function getUrl()
     {

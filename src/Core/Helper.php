@@ -2,7 +2,7 @@
 
 namespace Wolff\Core;
 
-class Helper
+final class Helper
 {
 
     /**

@@ -86,6 +86,15 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
+    public function get()
+    {
+        return $this->content;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function setHeader(string $key, string $value)
     {
         $this->headers[trim($key)] = $value;
@@ -157,7 +166,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function send()
+    public function send(bool $return = false)
     {
         if (isset($this->status_code)) {
             http_response_code($this->status_code);
@@ -177,6 +186,10 @@ class Response implements ResponseInterface
                 $cookie['secure'],
                 $cookie['http_only']
             );
+        }
+
+        if ($return) {
+            return $this->content;
         }
 
         print($this->content);

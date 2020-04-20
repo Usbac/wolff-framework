@@ -32,6 +32,14 @@ interface ResponseInterface
 
 
     /**
+     * Returns the response content
+     *
+     * @return string the response content
+     */
+    public function get();
+
+
+    /**
      * Sets the value of a header
      * If the header exists, it will be overwritten
      *
@@ -90,6 +98,10 @@ interface ResponseInterface
 
     /**
      * Sends the response with the available values
+     *
+     * @param  bool  $return  return or not the response content
+     *
+     * @return string|void the response content
      */
-    public function send();
+    public function send(bool $return = false);
 }

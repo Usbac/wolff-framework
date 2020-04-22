@@ -11,6 +11,12 @@ final class Maintenance
     const DEFAULT_FILE = 'system/maintenance_whitelist.txt';
 
     /**
+     * The maintenance status
+     * @var bool
+     */
+    private static $enabled = false;
+
+    /**
      * Filename of the ip whitelist file.
      *
      * @var string
@@ -44,6 +50,17 @@ final class Maintenance
     public static function setFile(string $path = self::DEFAULT_FILE)
     {
         self::$file = Helper::getRoot($path);
+    }
+
+    /**
+     * Sets the maintenance status
+     *
+     * @param  bool  $enabled  True for enabling the maintenance mode,
+     * false for disabling it
+     */
+    public static function setStatus(bool $enabled)
+    {
+        self::$enabled = $enabled;
     }
 
 
@@ -160,11 +177,16 @@ final class Maintenance
 
 
     /**
-     * Returns true if the current client IP is in the whitelist, false otherwise
+     * Returns true if the current client IP is in the whitelist and
+     * the maintenance mode is enabled, false otherwise
      * @return bool true if the current client IP is in the whitelist, false otherwise
      */
     public static function hasAccess()
     {
+        if (!self::$enabled) {
+            return false;
+        }
+
         $allowed_ips = self::getAllowedIPs();
 
         if ($allowed_ips === false) {

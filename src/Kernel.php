@@ -109,6 +109,7 @@ final class Kernel
         DB::setCredentials($config['db'] ?? []);
         Log::setStatus($config['log_on'] ?? true);
         Template::setStatus($config['template_on'] ?? true);
+        Maintenance::setStatus($config['maintenance_on'] ?? false);
         Language::setDefault($config['language'] ?? 'english');
     }
 
@@ -145,8 +146,7 @@ final class Kernel
      */
     public function start()
     {
-        if (($this->config['maintenance_on'] ?? false) &&
-            !Maintenance::hasAccess()) {
+        if (!Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
             $this->res->send();
             return;

@@ -155,7 +155,7 @@ final class Kernel
         if ($this->isAccessible()) {
             $this->load();
         } else {
-            $this->res->setCode(404);
+            http_response_code(404);
         }
 
         Route::execCode($this->req, $this->res);
@@ -214,9 +214,9 @@ final class Kernel
         $root = Helper::getRoot();
 
         //Remove possible project folder from url
-        if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
-            $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
-            $url = substr($url, strlen($project_dir));
+        $doc_root = $_SERVER['DOCUMENT_ROOT'];
+        if (strpos($root, $doc_root) === 0) {
+            $url = substr($url, strlen($root) - strlen($doc_root));
         }
 
         $url = ltrim($url, '/');

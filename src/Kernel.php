@@ -75,9 +75,9 @@ final class Kernel
     {
         $this->config = $config;
         $this->url = $this->getUrl();
-        $this->function = Route::getVal($this->url);
+        $this->function = Route::getFunction($this->url);
         $this->req = Factory::request();
-        $this->res = new Core\Http\Response();
+        $this->res = Factory::response();
 
         if (is_string($this->function)) {
             $path = explode('@', $this->function);

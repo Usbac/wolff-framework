@@ -153,7 +153,7 @@ final class Route
      *
      * @return mixed the value associated to the route
      */
-    public static function getVal(string $url)
+    public static function getFunction(string $url)
     {
         $current = array_filter(explode('/', $url));
         $current_length = count($current) - 1;

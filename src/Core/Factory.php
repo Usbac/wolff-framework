@@ -96,4 +96,15 @@ final class Factory
             $_COOKIE
         );
     }
+
+
+    /**
+     * Returns a new response object
+     *
+     * @return  Http\Response  The new response object
+     */
+    public static function response()
+    {
+        return new Http\Response();
+    }
 }

@@ -90,7 +90,7 @@ namespace {
             $root = \Wolff\Core\Helper::getRoot();
             if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
                 $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
-                return $project_dir . '/public/' . $path;
+                return rtrim($project_dir, '/') . '/public/' . $path;
             }
 
             return '/' . $path;

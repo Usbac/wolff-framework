@@ -99,11 +99,12 @@ final class Route
      * @param  string  $url  the url
      * @param  string  $view_path  the view path
      * @param  array  $data  the view data
+     * @param  bool  $cache  use or not the cache system
      */
-    public static function view(string $url, string $view_path, array $data = [])
+    public static function view(string $url, string $view_path, array $data = [], bool $cache = true)
     {
-        $function = function () use ($view_path, $data) {
-            View::render($view_path, $data);
+        $function = function () use ($view_path, $data, $cache) {
+            View::render($view_path, $data, $cache);
         };
 
         self::addRoute($url, 'GET', $function, null);

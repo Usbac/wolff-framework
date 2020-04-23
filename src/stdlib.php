@@ -78,7 +78,6 @@ namespace {
 
         /**
          * Returns the public directory of the project
-         * relative to the server root
          *
          * @param  string  $path  the optional path to append
          *
@@ -86,14 +85,7 @@ namespace {
          */
         function getPublic(string $path = '')
         {
-            $path = ltrim($path, '/');
-            $root = \Wolff\Core\Helper::getRoot();
-            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
-                return rtrim($project_dir, '/') . '/public/' . $path;
-            }
-
-            return '/' . $path;
+            return \Wolff\Core\Helper::getRoot('public/' . ltrim($path, '/'));
         }
     }
 

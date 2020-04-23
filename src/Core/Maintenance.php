@@ -52,6 +52,17 @@ final class Maintenance
         self::$file = Helper::getRoot($path);
     }
 
+
+    /**
+     * Returns true if the maintenance mode is enabled, false otherwise
+     * @return bool true if the maintenance mode is enabled, false otherwise
+     */
+    public static function isEnabled()
+    {
+        return self::$enabled;
+    }
+
+
     /**
      * Sets the maintenance status
      *
@@ -177,16 +188,11 @@ final class Maintenance
 
 
     /**
-     * Returns true if the current client IP is in the whitelist and
-     * the maintenance mode is enabled, false otherwise
+     * Returns true if the current client IP is in the whitelist, false otherwise
      * @return bool true if the current client IP is in the whitelist, false otherwise
      */
     public static function hasAccess()
     {
-        if (!self::$enabled) {
-            return false;
-        }
-
         $allowed_ips = self::getAllowedIPs();
 
         if ($allowed_ips === false) {

@@ -146,7 +146,7 @@ final class Kernel
      */
     public function start()
     {
-        if (!Maintenance::hasAccess()) {
+        if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
             $this->res->send();
             return;

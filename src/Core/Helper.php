@@ -45,6 +45,27 @@ final class Helper
 
 
     /**
+     * Removes an element from the given array based on its value
+     *
+     * @param  array  $arr  the array
+     * @param  mixed  $needle  the value to remove
+     *
+     * @return bool true if the element has been removed, false otherwise
+     */
+    public static function arrayRemove(array &$arr, $needle)
+    {
+        foreach ($arr as $key => $val) {
+            if ($val == $needle) {
+                unset($arr[$key]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Returns the current client IP
      * @return string the current client IP
      */

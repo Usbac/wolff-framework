@@ -7,8 +7,6 @@ use Wolff\Exception\FileNotReadableException;
 final class Config
 {
 
-    const DEFAULT_ENV = '.env';
-
     /**
      * List of configuration variables
      * @var array
@@ -17,28 +15,17 @@ final class Config
 
 
     /**
-     * Path of the environment file
-     * @var string
-     */
-    private static $env_path;
-
-
-    /**
      * Initializes the configuration data
      */
     public static function init(array $data)
     {
-        $env_path = isset($data['env_file']) ?
-            $data['env_file'] :
-            self::DEFAULT_ENV;
-        self::$env_path = Helper::getRoot($env_path);
         self::$data = $data;
 
-        if (!isset($data['env_file'])) {
+        if (!isset($data['env_file']) || empty($data['env_file'])) {
             return;
         }
 
-        self::parseEnv();
+        self::parseEnv(Helper::getRoot($data['env_file']));
 
         if ($data['env_override'] ?? false) {
             foreach ($_ENV as $key => $val) {
@@ -62,32 +49,42 @@ final class Config
 
 
     /**
-     * Maps the environment variables from an existing env file.
+     * Maps the environment variables from the given environment file path.
      * This is Wolff's own parser, an existing one has not been used
      * because lol
+     *
+     * @param  string  $env_path  the environment file path
      */
-    public static function parseEnv()
+    private static function parseEnv(string $env_path)
     {
-        if (($content = file_get_contents(self::$env_path)) === false) {
-            throw new FileNotReadableException(self::$env_path);
+        if (($content = file_get_contents($env_path)) === false) {
+            throw new FileNotReadableException($env_path);
         }
 
-        $lines = explode(PHP_EOL, $content);
-        foreach ($lines as $line) {
-            if (!($index_equal = strpos($line, '='))) {
-                continue;
-            }
+        array_map('self::parseEnvLine', explode(PHP_EOL, $content));
+    }
 
-            $key = trim(substr($line, 0, $index_equal));
-            $val = trim(substr($line, $index_equal + 1));
-            // Anything between or not single/double quotes, excluding the hashtag character after it
-            preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
-            $val = trim($matches[0] ?? 'null');
-            $val = self::getVal($val);
 
-            putenv("$key=$val");
-            $_ENV[$key] = $val;
+    /**
+     * Parses the given line and sets an environment variable from it
+     *
+     * @param  string  $line  the line
+     */
+    private static function parseEnvLine(string $line)
+    {
+        if (!($index_equal = strpos($line, '='))) {
+            return;
         }
+
+        $key = trim(substr($line, 0, $index_equal));
+        $val = trim(substr($line, $index_equal + 1));
+        // Anything between or not single/double quotes, excluding the hashtag character after it
+        preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
+        $val = trim($matches[0] ?? 'null');
+        $val = self::getVal($val);
+
+        putenv("$key=$val");
+        $_ENV[$key] = $val;
     }
 
 

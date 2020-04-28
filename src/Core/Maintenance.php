@@ -107,7 +107,7 @@ final class Maintenance
      *
      * @param  string  $ip  the IP to add
      *
-     * @return bool true if the IP is added/exists in the whitelist
+     * @return bool true if the IP has been added, false otherwise
      */
     public static function addAllowedIP(string $ip)
     {
@@ -115,13 +115,13 @@ final class Maintenance
             self::setFile();
         }
 
-        if (!$ip = filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (!($ip = filter_var($ip, FILTER_VALIDATE_IP))) {
             return false;
         }
 
         self::createFile();
 
-        if (!$content = file_get_contents(self::$file)) {
+        if (!file_get_contents(self::$file)) {
             if (is_writable(self::$file)) {
                 file_put_contents(self::$file, $ip);
 
@@ -129,10 +129,6 @@ final class Maintenance
             }
 
             throw new FileNotReadableException(self::$file);
-        }
-
-        if (strpos($content, $ip) !== false) {
-            return true;
         }
 
         file_put_contents(self::$file, PHP_EOL . $ip, FILE_APPEND | LOCK_EX);
@@ -148,7 +144,7 @@ final class Maintenance
      *
      * @param  string  $ip  the IP to remove
      *
-     * @return bool true if the IP has been removed/doesn't exists in the whitelist, false otherwise
+     * @return bool true if the IP has been removed, false otherwise
      */
     public static function removeAllowedIP(string $ip)
     {
@@ -156,21 +152,15 @@ final class Maintenance
             self::setFile();
         }
 
-        if (!$ip = filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (!($ip = filter_var($ip, FILTER_VALIDATE_IP))) {
             return false;
-        }
-
-        if (($content = file_get_contents(self::$file)) === false) {
+        } elseif (($content = file_get_contents(self::$file)) === false) {
             throw new FileNotReadableException(self::$file);
         }
 
-        if (strpos($content, $ip) === false) {
-            return true;
-        }
-
-        $content = str_replace($ip, '', $content);
-        $content = implode(PHP_EOL, array_filter(explode(PHP_EOL, $content)));
-        file_put_contents(self::$file, $content);
+        $ip_list = array_filter(explode(PHP_EOL, $content));
+        Helper::arrayRemove($ip_list, $ip);
+        file_put_contents(self::$file, implode(PHP_EOL, $ip_list));
 
         return true;
     }

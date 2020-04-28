@@ -2,6 +2,44 @@
 
 namespace {
 
+    if (!function_exists('bytesToString')) {
+
+        /**
+         * Returns the given size (in bytes) as a human-readable string
+         *
+         * @param  int  $size  size (in bytes)
+         * @param  int  $precision  number of digits after the decimal point
+         * @return string the size as a human-readable string
+         */
+        function bytesToString($size, $precision = 0)
+        {
+            $sizes = [ 'YB', 'ZB', 'EB', 'PB', 'TB', 'GB', 'MB', 'KB', 'B' ];
+            $total = count($sizes);
+
+            while ($total-- && $size > 1024) {
+                $size /= 1024;
+            }
+
+            return round($size, $precision) . $sizes[$total];
+        }
+    }
+
+    if (!function_exists('arrayRemove')) {
+
+        /**
+         * Removes an element from the given array based on its value
+         *
+         * @param  array  $arr  the array
+         * @param  mixed  $needle  the value to remove
+         *
+         * @return bool true if the element has been removed, false otherwise
+         */
+        function arrayRemove(array &$arr, $needle)
+        {
+            return \Wolff\Core\Helper::arrayRemove($arr, $needle);
+        }
+    }
+
     if (!function_exists('validateCsrf')) {
 
         /**
@@ -16,12 +54,14 @@ namespace {
          */
         function validateCsrf()
         {
+            $key = WOLFF_CONFIG['csrf_key'];
+
             return ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-                isset($_POST[WOLFF_CONFIG['csrf_key']], $_COOKIE[WOLFF_CONFIG['csrf_key']]) &&
-                $_POST[WOLFF_CONFIG['csrf_key']] === $_COOKIE[WOLFF_CONFIG['csrf_key']]) ||
+                isset($_POST[$key], $_COOKIE[$key]) &&
+                $_POST[$key] === $_COOKIE[$key]) ||
                 ($_SERVER['REQUEST_METHOD'] === 'GET' &&
-                isset($_GET[WOLFF_CONFIG['csrf_key']], $_COOKIE[WOLFF_CONFIG['csrf_key']]) &&
-                $_GET[WOLFF_CONFIG['csrf_key']] === $_COOKIE[WOLFF_CONFIG['csrf_key']]);
+                isset($_GET[$key], $_COOKIE[$key]) &&
+                $_GET[$key] === $_COOKIE[$key]);
         }
     }
 

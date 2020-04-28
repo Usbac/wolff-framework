@@ -19,6 +19,19 @@ use Wolff\Utils\Str;
 final class Kernel
 {
 
+    const DEFAULT_CONFIG = [
+        'db'             => [],
+        'language'       => 'english',
+        'env_file'       => '',
+        'env_override'   => false,
+        'log_on'         => true,
+        'development_on' => true,
+        'template_on'    => true,
+        'cache_on'       => true,
+        'stdlib_on'      => true,
+        'maintenance_on' => false
+    ];
+
     /**
      * The configuration
      * @var array
@@ -73,7 +86,7 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
-        $this->config = $config;
+        $this->initConfig($config);
         $this->url = $this->getUrl();
         $this->function = Route::getFunction($this->url);
         $this->req = Factory::request();
@@ -91,26 +104,41 @@ final class Kernel
             $this->method = 'index';
         }
 
-        $this->initComponents($config);
+        $this->initComponents();
         $this->setErrors();
         $this->stdlib();
     }
 
 
     /**
-     * Initializes the main components
+     * Initializes the configuration array based
+     * on the given array
      *
      * @param  array  $config  the configuration
      */
-    private function initComponents(array $config = [])
+    private function initConfig(array $config = [])
     {
-        Config::init($config);
-        Cache::init($config['cache_on'] ?? true);
-        DB::setCredentials($config['db'] ?? []);
-        Log::setStatus($config['log_on'] ?? true);
-        Template::setStatus($config['template_on'] ?? true);
-        Maintenance::setStatus($config['maintenance_on'] ?? false);
-        Language::setDefault($config['language'] ?? 'english');
+        $this->config = [];
+
+        foreach (self::DEFAULT_CONFIG as $key => $val) {
+            $this->config[$key] = $config[$key] ?? $val;
+        }
+    }
+
+
+    /**
+     * Initializes the main components based
+     * on the current configuration
+     */
+    private function initComponents()
+    {
+        Config::init($this->config);
+        Cache::init($this->config['cache_on']);
+        DB::setCredentials($this->config['db']);
+        Log::setStatus($this->config['log_on']);
+        Template::setStatus($this->config['template_on']);
+        Maintenance::setStatus($this->config['maintenance_on']);
+        Language::setDefault($this->config['language']);
     }
 
 
@@ -120,10 +148,6 @@ final class Kernel
      */
     private function setErrors()
     {
-        if (!isset($this->config['development_on'])) {
-            return;
-        }
-
         error_reporting($this->config['development_on'] ? E_ALL : 0);
         ini_set('display_errors', strval($this->config['development_on']));
     }
@@ -135,7 +159,7 @@ final class Kernel
      */
     private function stdlib()
     {
-        if ($this->config['stdlib_on'] ?? false) {
+        if ($this->config['stdlib_on']) {
             include_once('stdlib.php');
         }
     }

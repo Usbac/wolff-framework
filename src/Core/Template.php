@@ -33,6 +33,21 @@ final class Template
         'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
         'parent_block' => '/' . self::NOT_RAW . '{\[[ ?]{1,}parent[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}/'
     ];
+    const FUNCTIONS = [
+        'upper'           => 'strtoupper($2)',
+        'lower'           => 'strtolower($2)',
+        'upperf'          => 'ucfirst($2)',
+        'length'          => 'strlen($2)',
+        'count'           => 'count($2)',
+        'title'           => 'ucwords($2)',
+        'md5'             => 'md5($2)',
+        'countwords'      => 'str_word_count($2)',
+        'trim'            => 'trim($2)',
+        'nl2br'           => 'nl2br($2)',
+        'join\((.*?)\)'   => 'implode($1, $3)',
+        'repeat\((.*?)\)' => 'str_repeat($3, $1)',
+        'e'               => 'htmlspecialchars(strip_tags($2))'
+    ];
 
     /**
      * List of custom templates
@@ -144,11 +159,7 @@ final class Template
 
         $content = self::getContent($dir);
 
-        if (!self::$enabled) {
-            return $content;
-        }
-
-        return self::replaceAll($content);
+        return self::$enabled ? self::replaceAll($content) : $content;
     }
 
 
@@ -378,24 +389,7 @@ final class Template
      */
     private static function replaceFunctions($content)
     {
-        $functions = [
-            'upper'           => 'strtoupper($2)',
-            'lower'           => 'strtolower($2)',
-            'upperf'          => 'ucfirst($2)',
-            'length'          => 'strlen($2)',
-            'count'           => 'count($2)',
-            'title'           => 'ucwords($2)',
-            'md5'             => 'md5($2)',
-            'countwords'      => 'str_word_count($2)',
-            'trim'            => 'trim($2)',
-            'nl2br'           => 'nl2br($2)',
-            'join\((.*?)\)'   => 'implode($1, $3)',
-            'repeat\((.*?)\)' => 'str_repeat($3, $1)',
-            'e'               => 'htmlspecialchars(strip_tags($2))'
-        ];
-
-        foreach ($functions as $original => $replacement) {
-            //Put the function name in the regex to search
+        foreach (self::FUNCTIONS as $original => $replacement) {
             $original = str_replace('(.*)', $original, self::FORMAT['function']);
             $content = preg_replace($original, $replacement, $content);
         }

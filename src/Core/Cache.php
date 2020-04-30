@@ -123,9 +123,7 @@ final class Cache
      */
     public static function has(string $dir)
     {
-        $file_path = self::getDir(self::getFilename($dir));
-
-        return is_file($file_path);
+        return is_file(self::getDir(self::getFilename($dir)));
     }
 
 

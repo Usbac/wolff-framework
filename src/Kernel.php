@@ -250,8 +250,6 @@ final class Kernel
             $url = substr($url, 0, $query_index);
         }
 
-        $url = Str::sanitizeUrl($url);
-
         //Redirection
         $redirect = Route::getRedirection($url);
         if (isset($redirect)) {

@@ -13,6 +13,25 @@ final class Helper
 
 
     /**
+     * Returns the given string without the single or double
+     * quotes surrounding it
+     *
+     * @param  string  $str  the string
+     * @return string the string without single or double
+     * quotes surrounding it
+     */
+    public static function removeQuotes(string $str)
+    {
+        $len = strlen($str) - 1;
+        if (($str[0] === '\'' && $str[$len] === '\'') ||
+            ($str[0] === '"' && $str[$len] === '"')) {
+            $str = substr($str, 1, $len - 1);
+        }
+
+        return $str;
+    }
+
+    /**
      * Returns the given relative path as absolute
      *
      * @param  string  $path  the path (relative to the project root folder)

@@ -25,7 +25,7 @@ class Controller
         $path = Str::sanitizePath($path);
 
         //load controller default function and return it
-        if (($controller = Factory::controller($path)) === false) {
+        if (($controller = Factory::controller($path)) === null) {
             throw new BadControllerCallException(self::EXISTS_ERROR, $path);
         }
 

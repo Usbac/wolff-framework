@@ -193,9 +193,7 @@ final class Auth extends \Wolff\Core\DB
     {
         if (empty($data) || !isAssoc($data)) {
             throw new InvalidArgumentException('data', 'a non-empty associative array');
-        }
-
-        if (!$this->passwordMatches($data)) {
+        } elseif (!$this->passwordMatches($data)) {
             return false;
         }
 

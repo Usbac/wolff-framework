@@ -59,9 +59,7 @@ final class Language
 
         if (!is_array($data)) {
             throw new InvalidLanguageException(self::BAD_FILE_ERROR, $language, $dir);
-        }
-
-        if (isset($key)) {
+        } elseif (isset($key)) {
             return $data[$key] ?? null;
         }
 
@@ -95,10 +93,6 @@ final class Language
      */
     public static function exists(string $dir, string $language = null)
     {
-        if (!isset($language)) {
-            $language = self::$default;
-        }
-
-        return file_exists(self::getPath($dir, $language));
+        return file_exists(self::getPath($dir, $language ?? self::$default));
     }
 }

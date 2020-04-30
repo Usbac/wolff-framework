@@ -49,22 +49,17 @@ final class Factory
      *
      * @param  string|null  $dir  the controller directory
      *
-     * @return object|bool a controller initialized
+     * @return object|null a controller initialized
      */
     public static function controller(string $dir = null)
     {
-        //Load default Controller
         if (!isset($dir)) {
             return new Controller;
         }
 
         $class = self::NAMESPACE_CONTROLLER . str_replace('/', '\\', $dir);
 
-        if (!class_exists($class)) {
-            return false;
-        }
-
-        return new $class;
+        return class_exists($class) ? new $class : null;
     }
 
 

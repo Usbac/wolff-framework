@@ -134,6 +134,7 @@ final class Log
         $message = Str::interpolate($message, $values);
         $date = date(self::$date_format);
         $log = sprintf(self::MSG_FORMAT, $date, Helper::getClientIP(), $level, $message);
+
         self::mkdir();
         self::writeToFile($log);
     }

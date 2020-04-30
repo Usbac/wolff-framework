@@ -2,6 +2,8 @@
 
 namespace Wolff\Utils;
 
+use Wolff\Core\Helper;
+
 final class Str
 {
 
@@ -69,6 +71,20 @@ final class Str
     public static function sanitizePath(string $path)
     {
         return preg_replace('/[^a-zA-Z0-9_\-\/. ]/', '', $path);
+    }
+
+
+    /**
+     * Returns the given string without the single or double
+     * quotes surrounding it
+     *
+     * @param  string  $str  the string
+     * @return string the string without single or double
+     * quotes surrounding it
+     */
+    public static function removeQuotes(string $str)
+    {
+        return Helper::removeQuotes($str);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use Wolff\Core\Helper;
 use Wolff\Exception\FileNotReadableException;
 
 final class Config
@@ -108,12 +109,6 @@ final class Config
                 return '';
         }
 
-        $len = strlen($val) - 1;
-        if (($val[0] === '\'' && $val[$len] === '\'') ||
-            ($val[0] === '"' && $val[$len] === '"')) {
-            $val = substr($val, 1, $len - 1);
-        }
-
-        return $val;
+        return Helper::removeQuotes($val);
     }
 }

@@ -19,25 +19,17 @@
 
 Wolff is a ridiculously small and lightweight PHP framework.
 
-It is intended for those who want to build lightweight websites without starting from scratch or dealing with large frameworks.
+It is intended for those who want to build ultralight web applications, without starting from scratch or dealing with complexity.
 
 Wolff is small, fast, scalable and easy. The perfect solution for building small and medium-sized web applications.
 
 ## Features
 
-* **Extremely easy**: It's quite simple to use and has a clean documentation. It gives you the opportunity to learn it in just one night (sleep included).
+* **Extremely easy**: It's simple to use and has a clean documentation and interface. It gives you the opportunity to learn it in just a single night (sleep included).
 
-* **Ridiculously fast**: If a resource is not used, it's not loaded. Even some of the elements of the framework can be disabled. Wolff is friendly with potato servers.
+* **Ridiculously fast**: If a resource is not used, it's not loaded. Some elements of the framework can even be disabled. Wolff is very friendly with potato servers and works seamlessly.
 
-* **Comprenhensive**: Wolff elements cover everything you may need for building a web app. No initial setup is required, they are safe and ready to be used.
-
-## Contributing
-
-Any contribution or support to this project in the form of a pull request or message will be highly appreciated.
-
-Keep in mind that these contributions must be done in the main [Wolff repository](https://github.com/usbac/wolff).
-
-Don't be shy :)
+* **Comprenhensive**: Wolff has elements that cover everything you may ever need for building a web app. Absolutely no initial setup is required. They are ready to use.
 
 ## License
 

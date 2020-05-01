@@ -11,11 +11,7 @@
 <p align="center">
 <img src="https://img.shields.io/badge/stability-stable-green.svg">
 <a href="https://packagist.org/packages/usbac/wolff-framework"><img src="https://poser.pugx.org/usbac/wolff-framework/d/total.svg"></a>
-<<<<<<< HEAD
-<img src="https://img.shields.io/badge/version-2.8.1-blue.svg">
-=======
 <img src="https://img.shields.io/badge/version-3.0.0-blue.svg">
->>>>>>> 3.x
 <img src="https://img.shields.io/badge/license-MIT-orange.svg">
 </p>
 

@@ -101,35 +101,13 @@ final class Validation
         foreach ($this->fields[$key] as $rule => $rule_val) {
             $rule = trim(strtolower($rule));
 
-<<<<<<< HEAD:system/utilities/Validation.php
-            //Complies min length, max length, min value, max value and regex
-            if (($rule === 'minlen' && strlen($field) < $val) ||
-                ($rule === 'maxlen' && strlen($field) > $val) ||
-                ($rule === 'minval' && $field < $val) ||
-                ($rule === 'maxval' && $field > $val) ||
-                ($rule === 'regex' && !preg_match($val, $field))) {
-=======
             if (!$this->compliesType($rule_val, $val) ||
                 !$this->compliesVal($rule, $rule_val, $val)) {
->>>>>>> 3.x:src/Utils/Validation.php
                 $this->addInvalidValue($key, $rule);
             }
         }
     }
 
-<<<<<<< HEAD:system/utilities/Validation.php
-            //Complies type
-            if ($rule === 'type') {
-                if (($val == 'email' && !Str::isEmail($field)) ||
-                    ($val == 'alphanumeric' && !Str::isAlphanumeric($field)) ||
-                    ($val == 'alpha' && !Str::isAlpha($field)) ||
-                    ($val == 'int' && !isInt($field)) ||
-                    ($val == 'float' && !isFloat($field)) ||
-                    ($val == 'bool' && !isBool($field))) {
-                    $this->addInvalidValue($key, $rule);
-                }
-            }
-=======
 
     /**
      * Returns true if the given value complies with the
@@ -157,7 +135,6 @@ final class Validation
                 return preg_match($rule_val, $val);
             default:
                 return true;
->>>>>>> 3.x:src/Utils/Validation.php
         }
     }
 

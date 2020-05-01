@@ -5,11 +5,7 @@
     "framework", "php", "small", "web", "apps", "fast", "full", "db"
   ],
   "type": "project",
-<<<<<<< HEAD
-  "version": "2.8.1",
-=======
   "version": "3.0",
->>>>>>> 3.x
   "license": "MIT",
   "support": {
     "issues": "https://github.com/Usbac/Wolff/issues",
@@ -25,9 +21,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
-    "ext-pdo": "*",
-    "ext-json": "*"
+    "php": ">=7.0.0"
   },
   "autoload": {
     "files": [

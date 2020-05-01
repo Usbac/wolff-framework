@@ -133,16 +133,9 @@ final class Route
     {
         $code = http_response_code();
 
-<<<<<<< HEAD:system/core/Route.php
-        if (isset(self::$codes[$code]) &&
-            is_callable(self::$codes[$code])) {
-            /** @var callable $codes */
-            self::$codes[$code]();
-=======
         if (!isset(self::$codes[$code]) ||
             !is_callable(self::$codes[$code])) {
             return;
->>>>>>> 3.x:src/Core/Route.php
         }
 
         call_user_func_array(self::$codes[$code], [
@@ -181,12 +174,7 @@ final class Route
             }
 
             for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
-<<<<<<< HEAD:system/core/Route.php
-                if ($current[$i] !== $route[$i] && !empty($route[$i]) &&
-                    !self::isGetVar($route[$i])) {
-=======
                 if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
->>>>>>> 3.x:src/Core/Route.php
                     break;
                 }
 
@@ -244,13 +232,8 @@ final class Route
         for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
             if (self::isOptionalGet($route[$i])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
-<<<<<<< HEAD:system/core/Route.php
-            } elseif (self::isGetVar($route[$i])) {
-                self::setGetVar($route[$i], $current[$i]);
-=======
             } elseif (self::isGet($route[$i])) {
                 self::setGet($route[$i], $current[$i]);
->>>>>>> 3.x:src/Core/Route.php
             }
 
             //Finish if last GET variable from url is optional

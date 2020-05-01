@@ -208,19 +208,8 @@ namespace {
     }
 
     if (!function_exists('printr')) {
+
         /**
-<<<<<<< HEAD:system/stdlib/utilities.php
-         * Print the given arrays in a nice looking way
-         * @param array $args
-         */
-        function printr(...$args)
-        {
-            echo "<pre>";
-            foreach ($args as $arg) {
-                print_r($arg);
-            }
-            echo "</pre>";
-=======
          * Print the given values in a nice looking way
          */
         function printr(...$args)
@@ -228,24 +217,12 @@ namespace {
             echo '<pre>';
             array_map('print_r', $args);
             echo '</pre>';
->>>>>>> 3.x:src/stdlib.php
         }
     }
 
     if (!function_exists('printrd')) {
+
         /**
-<<<<<<< HEAD:system/stdlib/utilities.php
-         * Print the given arrays in a nice looking way and die
-         * @param array $args
-         */
-        function printrd(...$args)
-        {
-            echo "<pre>";
-            foreach ($args as $arg) {
-                print_r($arg);
-            }
-            echo "</pre>";
-=======
          * Print the given values in a nice looking way and die
          */
         function printrd(...$args)
@@ -253,31 +230,19 @@ namespace {
             echo '<pre>';
             array_map('print_r', $args);
             echo '</pre>';
->>>>>>> 3.x:src/stdlib.php
 
             die();
         }
     }
 
     if (!function_exists('dumpd')) {
-        /**
-<<<<<<< HEAD:system/stdlib/utilities.php
-         * Var dump a variable and die
-         * @param array $args
-         */
-        function dumpd(...$args)
-        {
-            foreach ($args as $arg) {
-                var_dump($arg);
-            }
 
-=======
+        /**
          * Var dump the given values and die
          */
         function dumpd(...$args)
         {
             array_map('var_dump', $args);
->>>>>>> 3.x:src/stdlib.php
             die();
         }
     }
@@ -296,9 +261,6 @@ namespace {
             if (!isset($url)) {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 
-<<<<<<< HEAD:system/stdlib/utilities.php
-                if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
-=======
                 $project_dir = '';
                 $root = \Wolff\Core\Helper::getRoot();
                 if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
@@ -308,7 +270,6 @@ namespace {
                 $directory = str_replace('\\', '/', $project_dir);
 
                 if (substr($directory, -1) !== '/') {
->>>>>>> 3.x:src/stdlib.php
                     $directory .= '/';
                 }
 
@@ -389,9 +350,6 @@ namespace {
         {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 
-<<<<<<< HEAD:system/stdlib/utilities.php
-            if (substr($directory, -1) !== '/' && substr($url, 0, 1) !== '/') {
-=======
             $project_dir = '';
             $root = \Wolff\Core\Helper::getRoot();
             if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
@@ -401,7 +359,6 @@ namespace {
             $directory = str_replace('\\', '/', $project_dir);
 
             if (substr($directory, -1) !== '/') {
->>>>>>> 3.x:src/stdlib.php
                 $directory .= '/';
             }
 
@@ -531,6 +488,7 @@ namespace {
     }
 
     if (!function_exists('isBool')) {
+
         /**
          * Returns true if the given variable complies with an boolean,
          * false otherwise

@@ -100,13 +100,6 @@ final class Session
     {
         if (!isset($key)) {
             return $_SESSION;
-<<<<<<< HEAD:system/core/Session.php
-        }
-
-        if (!self::has($key)) {
-            return null;
-=======
->>>>>>> 3.x:src/Core/Session.php
         }
 
         return $_SESSION[$key] ?? null;

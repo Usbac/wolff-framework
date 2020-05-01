@@ -1,19 +1,21 @@
 <?php
 
-namespace Core;
+namespace Wolff\Core;
 
-class Session
+final class Session
 {
 
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
 
     /**
-     * Destroy and unset the session if the live time is zero or less
+     * Starts the session
      */
-    private static function index()
+    public static function start()
     {
-        if (self::hasExpired()) {
+        session_start();
+
+        if (self::expired()) {
             self::empty();
             self::kill();
 
@@ -21,7 +23,7 @@ class Session
         }
 
         if (!self::isValid()) {
-            self::initialize();
+            self::init();
         }
 
         self::unsetExpiredVariables();
@@ -32,59 +34,50 @@ class Session
      * Returns true if the current session has expired, false otherwise
      * @return bool true if the current session has expired, false otherwise
      */
-    public static function hasExpired()
+    public static function expired()
     {
         return isset($_SESSION['end_time']) && time() >= $_SESSION['end_time'];
     }
 
 
     /**
-     * Returns true if the current IP and the userAgent are the same
-     * than the IP and userAgent of the previous connection.
+     * Returns true if the current IP and the User-Agent are the same
+     * than the IP and User-Agent of the previous connection.
      * This is done for preventing session hijacking.
      *
-     * @return bool true if the current IP address and the userAgent are the same
-     * than the IP address and userAgent of the previous connection.
+     * @return bool true if the current IP address and the User-Agent are the same
+     * than the IP address and User-Agent of the previous connection.
      */
     private static function isValid()
     {
-        if (!isset($_SESSION['IPaddress']) || !isset($_SESSION['userAgent'])) {
-            return false;
-        }
-
-        if ($_SESSION['IPaddress'] != getClientIP()) {
-            return false;
-        }
-
-        if ($_SESSION['userAgent'] != getUserAgent()) {
-            return false;
-        }
-
-        return true;
+        return (isset($_SESSION['ip_address'], $_SESSION['user_agent']) &&
+            $_SESSION['ip_address'] === Helper::getClientIP() &&
+            $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT']);
     }
 
 
     /**
-     * Initialize all the session variables
+     * Initializes all the session variables
      */
-    private static function initialize()
+    private static function init()
     {
         self::empty();
 
-        $_SESSION['IPaddress'] = getClientIP();
-        $_SESSION['userAgent'] = getUserAgent();
+        $_SESSION['ip_address'] = Helper::getClientIP();
+        $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
         $_SESSION['start_time'] = microtime(true);
         $_SESSION['vars_tmp_time'] = [];
     }
 
 
     /**
-     * Unset all the session variables that have expired
+     * Removes all the session variables that have expired
      */
     private static function unsetExpiredVariables()
     {
 
-        if (!isset($_SESSION['vars_tmp_time']) || !is_array($_SESSION['vars_tmp_time'])) {
+        if (!isset($_SESSION['vars_tmp_time']) ||
+            !is_array($_SESSION['vars_tmp_time'])) {
             $_SESSION['vars_tmp_time'] = [];
         }
 
@@ -97,19 +90,9 @@ class Session
 
 
     /**
-     * Starts the session and initializes everything
-     */
-    public static function start()
-    {
-        session_start();
-        self::index();
-    }
-
-
-    /**
      * Returns a session variable
      *
-     * @param  string  $key  the variable key
+     * @param  string|null  $key  the variable key
      *
      * @return mixed the session variable
      */
@@ -117,22 +100,25 @@ class Session
     {
         if (!isset($key)) {
             return $_SESSION;
+<<<<<<< HEAD:system/core/Session.php
         }
 
         if (!self::has($key)) {
             return null;
+=======
+>>>>>>> 3.x:src/Core/Session.php
         }
 
-        return $_SESSION[$key];
+        return $_SESSION[$key] ?? null;
     }
 
 
     /**
-     * Set a session variable
+     * Sets a session variable
      *
      * @param  string  $key  the variable key
      * @param  mixed  $value the variable value
-     * @param  int  $time the variable live time in minutes
+     * @param  int|null  $time the variable live time in minutes
      */
     public static function set(string $key, $value, int $time = null)
     {
@@ -176,15 +162,13 @@ class Session
      * @param  string  $key  the variable key
      * @param  bool  $gmdate  return the time in date format
      *
-     * @return int the variable live time
+     * @return int|string the variable live time
      */
     public static function getVarTime(string $key, bool $gmdate = false)
     {
         $remaining = 0;
         if (isset($_SESSION['vars_tmp_time'][$key])) {
             $remaining = $_SESSION['vars_tmp_time'][$key] - time();
-        } else {
-            Log::notice("Undefined '$key' live time value in Session array");
         }
 
         if ($gmdate) {
@@ -196,35 +180,33 @@ class Session
 
 
     /**
-     * Set a live time (in minutes) to a session variable
+     * Sets a live time (in minutes) to a session variable
      *
      * @param  string  $key  the variable key
      * @param  int  $time  the variable live time in minutes
      */
     public static function setVarTime(string $key, int $time = 1)
     {
-        if (!isset($_SESSION[$key])) {
-            return;
+        if (isset($_SESSION[$key])) {
+            $_SESSION['vars_tmp_time'][$key] = time() + ($time * 60);
         }
-
-        $_SESSION['vars_tmp_time'][$key] = time() + ($time * 60);
     }
 
 
     /**
-     * Add more live time (in minutes) to a session variable
+     * Adds more live time (in minutes) to a session variable
      *
      * @param  string  $key  the variable key
      * @param  int  $time  the variable time to add
      */
-    public static function addVarTime(string $key, int $time = 1)
+    public static function addVarTime(string $key, int $time)
     {
         $_SESSION['vars_tmp_time'][$key] += ($time * 60);
     }
 
 
     /**
-     * Add time to the session live time (in minutes)
+     * Adds time to the session live time (in minutes)
      *
      * @param  int  $time  the session live time to add
      */
@@ -235,32 +217,14 @@ class Session
 
 
     /**
-     * Set the session live time (in minutes) starting from
+     * Sets the session live time (in minutes) starting from
      * the moment this function is called
      *
      * @param  int  $time  the time
      */
     public static function setTime(int $time)
     {
-        $_SESSION['live_time'] = ($time * 60);
         $_SESSION['end_time'] = time() + ($time * 60);
-    }
-
-
-    /**
-     * Returns the session creation time
-     *
-     * @param  bool  $gmdate  format the time in H:i:s
-     *
-     * @return mixed the session creation time
-     */
-    public static function getStartTime(bool $gmdate = false)
-    {
-        if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, $_SESSION['start_time']);
-        }
-
-        return $_SESSION['start_time'];
     }
 
 
@@ -271,23 +235,6 @@ class Session
     public static function getPassedTime()
     {
         return microtime(true) - $_SESSION['start_time'];
-    }
-
-
-    /**
-     * Returns the established session live time (in minutes)
-     *
-     * @param  bool  $gmdate  format the time in H:i:s
-     *
-     * @return mixed the established session live time (in minutes)
-     */
-    public static function getLiveTime(bool $gmdate = false)
-    {
-        if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, $_SESSION['live_time']);
-        }
-
-        return $_SESSION['live_time'];
     }
 
 
@@ -312,7 +259,7 @@ class Session
 
 
     /**
-     * Unset a session variable
+     * Removes a session variable
      *
      * @param  string  $key  the variable key
      */
@@ -324,7 +271,7 @@ class Session
 
 
     /**
-     * Unset the session data
+     * Removes the session data
      */
     public static function empty()
     {
@@ -333,11 +280,10 @@ class Session
 
 
     /**
-     * Destroy the session
+     * Destroys the session
      */
     public static function kill()
     {
         session_destroy();
     }
-
 }

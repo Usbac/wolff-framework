@@ -1,8 +1,8 @@
 <?php
 
-namespace Core;
+namespace Wolff\Core;
 
-class Container implements ContainerInterface
+final class Container implements ContainerInterface
 {
 
     /**
@@ -49,7 +49,7 @@ class Container implements ContainerInterface
     private static function addService(string $class, $value, bool $singleton)
     {
         if (is_null($value)) {
-            $value = function() use ($class) {
+            $value = function () use ($class) {
                 return new $class;
             };
         }
@@ -64,20 +64,20 @@ class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      *
-     * If no entry is found, the function will return null
+     * If no entry is found, null will be returned
      */
-    public static function get(string $key, array $params = [])
+    public static function get(string $key, array $args = [])
     {
         if (!self::has($key)) {
             return null;
         }
 
-        //Normal
+        //Service
         $service = self::$services[$key];
 
         if (!$service['singleton']) {
             if (is_callable($service['value'])) {
-                return call_user_func_array($service['value'], $params);
+                return call_user_func_array($service['value'], $args);
             }
 
             return new $service['value'];
@@ -86,7 +86,8 @@ class Container implements ContainerInterface
         //Singleton
         if (!isset(self::$singletons[$key])) {
             self::$singletons[$key] = is_callable($service['value']) ?
-                call_user_func_array($service['value'], $params) : new $service['value'];
+                call_user_func_array($service['value'], $args) :
+                new $service['value'];
         }
 
         return self::$singletons[$key];
@@ -100,5 +101,4 @@ class Container implements ContainerInterface
     {
         return array_key_exists($key, self::$services);
     }
-
 }

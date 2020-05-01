@@ -1,17 +1,21 @@
 <h1 align="center">
   <br>
-  <img src="http://usbac.com.ve/wp-content/uploads/2019/05/wolff-logo-2.0.png" alt="Wolff logo" width="200">
+  <img src="http://getwolff.com/logo.png" alt="Wolff logo" width="200">
   <br>
   Wolff
   <br>
 </h1>
 
-<h4 align="center">Ridiculously small PHP framework.</h4>
+<h4 align="center">Web development made just right.</h4>
 
 <p align="center">
 <img src="https://img.shields.io/badge/stability-stable-green.svg">
 <a href="https://packagist.org/packages/usbac/wolff-framework"><img src="https://poser.pugx.org/usbac/wolff-framework/d/total.svg"></a>
+<<<<<<< HEAD
 <img src="https://img.shields.io/badge/version-2.8.1-blue.svg">
+=======
+<img src="https://img.shields.io/badge/version-3.0.0-blue.svg">
+>>>>>>> 3.x
 <img src="https://img.shields.io/badge/license-MIT-orange.svg">
 </p>
 
@@ -19,32 +23,17 @@
 
 Wolff is a ridiculously small and lightweight PHP framework.
 
-It is intended for those who want to build lightweight websites without starting from scratch or dealing with large frameworks.
+It is intended for those who want to build ultralight web applications, without starting from scratch or dealing with complexity.
 
 Wolff is small, fast, scalable and easy. The perfect solution for building small and medium-sized web applications.
 
-
 ## Features
 
-* **Clean**: The routes system allows you to have clean and friendly URLs, and the template system makes the php code cleaner while separating the logic from the view.
+* **Extremely easy**: It's simple to use and has a clean documentation and interface. It gives you the opportunity to learn it in just a single night (sleep included).
 
-* **Dynamic**: You can work however you want without strictly following the Wolff design or patterns like the MVC.
+* **Ridiculously fast**: If a resource is not used, it's not loaded. Some elements of the framework can even be disabled. Wolff is very friendly with potato servers and works seamlessly.
 
-* **Extensible**: Take advantage of the custom middlewares, functions and templates you can make in Wolff to expand your page.
-
-* **Fast**: Due to its small size and simplicity, you don’t have to worry about loading times or resource usage.
-
-* **Simple**: It’s not only small, but simple as well; with a clean documentation and an easy way to use.
-
-
-## Contributing
-
-Any contribution or support to this project in the form of a pull request or message will be highly appreciated.
-
-Keep in mind that these contributions must be done in the main [Wolff repository](https://github.com/usbac/wolff).
-
-Don't be shy :)
-
+* **Comprenhensive**: Wolff has elements that cover everything you may ever need for building a web app. Absolutely no initial setup is required. They are ready to use.
 
 ## License
 

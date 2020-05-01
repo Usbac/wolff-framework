@@ -1,14 +1,16 @@
 <?php
 
-namespace Utilities;
+namespace Wolff\Utils;
 
-class Str
+use Wolff\Core\Helper;
+
+final class Str
 {
 
     const DEFAULT_ENCODING = 'UTF-8';
 
     /**
-     * Sanitize an url
+     * Sanitizes an url
      *
      * @param  string  $url the url
      *
@@ -21,7 +23,7 @@ class Str
 
 
     /**
-     * Sanitize an email
+     * Sanitizes an email
      *
      * @param  string  $email the email
      *
@@ -34,7 +36,7 @@ class Str
 
 
     /**
-     * Sanitize an string to integer (only numbers and +-)
+     * Sanitizes an string to integer (only numbers and +-)
      *
      * @param  string  $int the integer
      *
@@ -47,7 +49,7 @@ class Str
 
 
     /**
-     * Sanitize an string to float (only numbers, fractions and +-)
+     * Sanitizes an string to float (only numbers, fractions and +-)
      *
      * @param  string  $float the float
      *
@@ -60,7 +62,7 @@ class Str
 
 
     /**
-     * Sanitize a path for only letters, numbers, underscores, dots and slashes
+     * Sanitizes the given path for only letters, numbers, underscores, dots and slashes
      *
      * @param  string  $path the path
      *
@@ -73,9 +75,23 @@ class Str
 
 
     /**
+     * Returns the given string without the single or double
+     * quotes surrounding it
+     *
+     * @param  string  $str  the string
+     * @return string the string without single or double
+     * quotes surrounding it
+     */
+    public static function removeQuotes(string $str)
+    {
+        return Helper::removeQuotes($str);
+    }
+
+
+    /**
      * Returns a friendly url string based on the given string.
      *
-     * @param  string  str the original string
+     * @param  string  $str the original string
      *
      * @return string the url friendly string
      */
@@ -136,31 +152,31 @@ class Str
 
     /**
      * Returns true if the given string contains only
-     * alphanumeric characters and whitespaces, false otherwise
+     * alphanumeric characters, false otherwise
      *
      * @param  string  $str the string
      *
      * @return bool Returns true if the given string contains only
-     * alphanumeric characters and whitespaces, false otherwise
+     * alphanumeric characters, false otherwise
      */
     public static function isAlphanumeric(string $str)
     {
-        return preg_match('/[A-Za-z0-9 ]+$/', $str) == true;
+        return preg_match('/^[\w-]*$/', $str) == true;
     }
 
 
     /**
      * Returns true if the given string contains only
-     * letters and whitespaces, false otherwise
+     * letters, false otherwise
      *
      * @param  string  $str the string
      *
      * @return bool Returns true if the given string contains only
-     * letters and whitespaces, false otherwise
+     * letters, false otherwise
      */
     public static function isAlpha(string $str)
     {
-        return preg_match('/[A-Za-z ]+$/', $str) == true;
+        return preg_match('/[^A-Za-z]+/', $str) == false;
     }
 
 
@@ -187,17 +203,13 @@ class Str
      * @param  string  $str  the string
      * @param  array  $values  the context values for the placeholders
      *
-     * @return string|bool the string with its placeholders replaced by context values
+     * @return string the string with its placeholders replaced by context values
      */
     public static function interpolate(string $str, array $values)
     {
-        if (!is_string($str) || !is_array($values)) {
-            return false;
-        }
-
         foreach ($values as $key => $val) {
-            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $str = str_replace('{' . $key . '}', $val, $str);
+            if (!is_object($val)) {
+                $str = str_replace('{' . $key . '}', strval($val), $str);
             }
         }
 
@@ -218,10 +230,6 @@ class Str
      */
     public static function swap(string $str, string $first_str, string $second_str)
     {
-        if (!is_string($str) || !is_string($first_str) || !is_string($second_str)) {
-            return false;
-        }
-
         return strtr($str, [
             $first_str  => $second_str,
             $second_str => $first_str
@@ -237,8 +245,10 @@ class Str
      *
      * @return string the string encoded in UTF-8
      */
-    public static function toUtf8($str) {
-        $encoded = iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
+    public static function toUtf8(string $str)
+    {
+        $encoding = mb_detect_encoding($str, mb_detect_order(), true);
+        $encoded = iconv($encoding, 'UTF-8', $str);
 
         if (empty($encoded)) {
             return utf8_encode($str);
@@ -258,7 +268,7 @@ class Str
      */
     public static function startsWith(string $str, string $needle)
     {
-        return substr($str, 0, strlen($needle)) === $needle;
+        return strpos($str, $needle) === 0;
     }
 
 
@@ -303,7 +313,7 @@ class Str
     public static function after(string $str, string $needle)
     {
         if (!self::contains($str, $needle)) {
-            return false;
+            return '';
         }
 
         return substr($str, strpos($str, $needle) + strlen($needle));
@@ -323,7 +333,7 @@ class Str
     public static function before(string $str, string $needle)
     {
         if (!self::contains($str, $needle)) {
-            return false;
+            return '';
         }
 
         return substr($str, 0, strpos($str, $needle));
@@ -349,23 +359,9 @@ class Str
 
 
     /**
-     * Adds the given value at the start of the string and returns it
-     *
-     * @param  string  $str  the string
-     * @param  string  $start  the string to start with
-     *
-     * @return string a string starting with the given value
-     */
-    public static function unshift(string $str, string $start)
-    {
-        return $start . $str;
-    }
-
-
-    /**
      * Returns the given paths concatenated
      *
-     * @param  string|array  $paths  the paths
+     * @param  mixed  ...$paths  the paths
      *
      * @return string the given paths concatenated
      */
@@ -388,7 +384,7 @@ class Str
     /**
      * Returns all the given strings concatenated into one
      *
-     * @param  string[]  $strings  the strings
+     * @param  mixed  ...$strings  the strings
      *
      * @return string all the given strings concatenated into one
      */
@@ -438,31 +434,4 @@ class Str
         //Other
         return strval($var);
     }
-
-
-    /**
-     * Returns the directory path with the slashes replaced by backslashes
-     *
-     * @param  string  $path  the directory path
-     *
-     * @return string the directory path with the slashes replaced by backslashes
-     */
-    public static function pathToNamespace(string $path)
-    {
-        return str_replace('/', '\\', $path);
-    }
-
-
-    /**
-     * Returns the directory path with the backslashes replaced by slashes
-     *
-     * @param  string  $path  the directory path
-     *
-     * @return string the directory path with the backslashes replaced by slashes
-     */
-    public static function namespaceToPath(string $path)
-    {
-        return str_replace('\\', '/', $path);
-    }
-
 }

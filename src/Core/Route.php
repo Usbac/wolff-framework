@@ -1,10 +1,19 @@
 <?php
 
-namespace Core;
+namespace Wolff\Core;
 
-use Utilities\Str;
+use Wolff\Core\Helper;
+use Wolff\Utils\Str;
+use Wolff\Exception\InvalidArgumentException;
 
-class Route
+/**
+ * @method static get(string $url, $function, int $status = null)
+ * @method static post(string $url, $function, int $status = null)
+ * @method static put(string $url, $function, int $status = null)
+ * @method static patch(string $url, $function, int $status = null)
+ * @method static delete(string $url, $function, int $status = null)
+ */
+final class Route
 {
 
     const STATUS_OK = 200;
@@ -12,11 +21,11 @@ class Route
     const GET_FORMAT = '/\{(.*)\}/';
     const OPTIONAL_GET_FORMAT = '/\{(.*)\?\}/';
     const PREFIXES = [
-        'csv'   => 'text/csv',
-        'json'  => 'application/json',
-        'pdf'   => 'application/pdf',
-        'plain' => 'text/plain',
-        'xml'   => 'application/xml'
+        'csv:'   => 'text/csv',
+        'json:'  => 'application/json',
+        'pdf:'   => 'application/pdf',
+        'plain:' => 'text/plain',
+        'xml:'   => 'application/xml'
     ];
     const HTTP_METHODS = [
         'GET',
@@ -66,55 +75,93 @@ class Route
             return;
         }
 
+        if (!isset($args[0]) || !is_string($args[0])) {
+            throw new InvalidArgumentException('url', 'of type string');
+        } elseif (!isset($args[1]) || (!is_string($args[1]) && !($args[1] instanceof \Closure))) {
+            throw new InvalidArgumentException('function', 'of type string or an instance of \Closure');
+        }
+
         $url = Str::sanitizeURL($args[0]);
         $function = $args[1];
         $status = isset($args[2]) && is_numeric($args[2]) ?
             (int)$args[2] :
-            self::STATUS_OK;
+            null;
 
         self::addRoute($url, $http_method, $function, $status);
     }
 
 
     /**
-     * Add a route that will work
-     * only for a status code
+     * Adds a route that renders a view
      *
-     * @param  string  $code  the status code
-     * @param  mixed  $function  mixed the function that must be executed
-     * when getting the status code
+     * @param  string  $url  the url
+     * @param  string  $view_path  the view path
+     * @param  array  $data  the view data
+     * @param  bool  $cache  use or not the cache system
      */
-    public static function code(string $code, $function)
+    public static function view(string $url, string $view_path, array $data = [], bool $cache = true)
     {
-        self::$codes[trim($code)] = $function;
+        $function = function () use ($view_path, $data, $cache) {
+            View::render($view_path, $data, $cache);
+        };
+
+        self::addRoute($url, 'GET', $function, null);
     }
 
 
     /**
-     * Execute a code route based on the current status code
+     * Adds a route that will work
+     * only for a status code
+     *
+     * @param  int  $code  the status code
+     * @param  \Closure  $function  mixed the function that must be executed
+     * when getting the status code
      */
-    public static function execCode()
+    public static function code(int $code, \Closure $function)
+    {
+        self::$codes[$code] = $function;
+    }
+
+
+    /**
+     * Executes a code route based on the current status code
+     *
+     * @param \Wolff\Core\Http\Request $req Reference to the current request object
+     * @param \Wolff\Core\Http\Response $res Reference to the current response object
+     */
+    public static function execCode(Http\Request &$req, Http\Response &$res)
     {
         $code = http_response_code();
 
+<<<<<<< HEAD:system/core/Route.php
         if (isset(self::$codes[$code]) &&
             is_callable(self::$codes[$code])) {
             /** @var callable $codes */
             self::$codes[$code]();
+=======
+        if (!isset(self::$codes[$code]) ||
+            !is_callable(self::$codes[$code])) {
+            return;
+>>>>>>> 3.x:src/Core/Route.php
         }
+
+        call_user_func_array(self::$codes[$code], [
+            $req,
+            $res
+        ]);
     }
 
 
     /**
-     * Returns the function of a route
+     * Returns the value of a route
      *
      * @param  string  $url  the url
      *
-     * @return object the function associated to the route
+     * @return mixed the value associated to the route
      */
-    public static function getFunc(string $url)
+    public static function getFunction(string $url)
     {
-        $current = explode('/', Str::sanitizeURL($url));
+        $current = array_filter(explode('/', $url));
         $current_length = count($current) - 1;
 
         if (empty(self::$routes)) {
@@ -122,17 +169,29 @@ class Route
         }
 
         foreach (self::$routes as $key => $val) {
-            $route = explode('/', $key);
+            if (!self::isValidRoute($key)) {
+                continue;
+            }
+
+            $route = array_filter(explode('/', $key));
             $route_length = count($route) - 1;
 
+            if (empty($current) && empty($route)) {
+                return self::processRoute($current, $route);
+            }
+
             for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
+<<<<<<< HEAD:system/core/Route.php
                 if ($current[$i] !== $route[$i] && !empty($route[$i]) &&
                     !self::isGetVar($route[$i])) {
+=======
+                if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
+>>>>>>> 3.x:src/Core/Route.php
                     break;
                 }
 
-                if (($i === $route_length || ($i + 1 === $route_length && self::isOptionalGetVar($route[$i + 1]))) &&
-                    $i === $current_length && self::isValidRoute($key)) {
+                if (($i === $route_length || ($i + 1 === $route_length && self::isOptionalGet($route[$i + 1]))) &&
+                    $i === $current_length) {
                     return self::processRoute($current, $route);
                 }
             }
@@ -159,8 +218,10 @@ class Route
         self::mapParameters($current, $route);
 
         $route = self::$routes[implode('/', $route)];
-        http_response_code($route['status']);
         header("Content-Type: $route[content_type]");
+        if (isset($route['status'])) {
+            http_response_code($route['status']);
+        }
 
         return $route['function'];
     }
@@ -181,15 +242,20 @@ class Route
         $route_length = count($route) - 1;
 
         for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
-            if (self::isOptionalGetVar($route[$i])) {
+            if (self::isOptionalGet($route[$i])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
+<<<<<<< HEAD:system/core/Route.php
             } elseif (self::isGetVar($route[$i])) {
                 self::setGetVar($route[$i], $current[$i]);
+=======
+            } elseif (self::isGet($route[$i])) {
+                self::setGet($route[$i], $current[$i]);
+>>>>>>> 3.x:src/Core/Route.php
             }
 
             //Finish if last GET variable from url is optional
             if ($i + 1 === $route_length && $i === $current_length &&
-                self::isOptionalGetVar($route[$i + 1])) {
+                self::isOptionalGet($route[$i + 1])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
                 return;
             }
@@ -198,74 +264,71 @@ class Route
 
 
     /**
-     * Returns true if the route exists and it's
+     * Returns true if the route exists and its
      * request method matches the current methods
      *
      * @param  string  $key  the route key
-     * @return boolean true if the route exists and it's
+     * @return boolean true if the route exists and its
      * request method matches the current methods
      */
     private static function isValidRoute($key)
     {
-        return (self::$routes[$key] &&
-            (self::$routes[$key]['method'] === '' || Request::matchesMethod(self::$routes[$key]['method'])));
+        return self::$routes[$key] &&
+            (self::$routes[$key]['method'] === '' ||
+             self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD']);
     }
 
 
     /**
-     * Add a route with get method
+     * Adds a route that works for any method
      *
      * @param  string  $url  the url
      * @param  mixed  $function  mixed the function that must be executed when accessing the route
      * @param  int  $status  the HTTP response code
      */
-    public static function add(string $url, $function, int $status = self::STATUS_OK)
+    public static function any(string $url, $function, int $status = self::STATUS_OK)
     {
         self::addRoute(Str::sanitizeURL($url), '', $function, $status);
     }
 
 
     /**
-     * Redirect the first url to the second url
+     * Redirects the first url to the second url
      *
-     * @param  string  $url  the first url
-     * @param  string  $url_2  the second url
-     * @param  int  $status  The HTTP response code
+     * @param  string  $from  the origin url
+     * @param  string  $to  the destiny url
+     * @param  int  $code  The HTTP response code
      */
-    public static function redirect(string $url, string $url_2, int $status = self::STATUS_REDIRECT)
+    public static function redirect(string $from, string $to, int $code = self::STATUS_REDIRECT)
     {
-        $url = Str::sanitizeURL($url);
-        $url_2 = Str::sanitizeURL($url_2);
-
-        //Get the controller default route if the second url isn't a defined custom route
-        $function = isset(self::$routes[$url_2]) ?
-            self::$routes[$url_2]['function'] : $url_2;
-
-        self::addRoute($url, self::$routes[$url_2]['method'], $function, $status);
-        self::addRedirect($url, $url_2, $status);
+        self::$redirects[Str::sanitizeURL($from)] = [
+            'destiny' => Str::sanitizeURL($to),
+            'code'    => $code
+        ];
     }
 
 
     /**
-     * Add a route to the list
+     * Adds a route to the list
      *
      * @param  mixed  $url  the url
      * @param  string  $method  the url HTTP method
      * @param  mixed  $function  the url function or controller name
-     * @param  int  $status  the HTTP response code
+     * @param  int|null  $status  the HTTP response code
      */
-    private static function addRoute($url, string $method, $function, int $status) {
+    private static function addRoute($url, string $method, $function, $status)
+    {
         $content_type = 'text/html';
 
+        //Remove content-type prefix from route
         foreach (self::PREFIXES as $key => $val) {
-            $prefix_key = $key . ':';
-            if (Str::startsWith($url, $prefix_key)) {
-                $url = Str::after($url, $prefix_key);
+            if (strpos($url, $key) === 0) {
+                $url = substr($url, strlen($key));
                 $content_type = $val;
             }
         }
 
-        self::$routes[$url] = [
+        self::$routes[trim($url, '/')] = [
             'function'     => $function,
             'method'       => $method,
             'status'       => $status,
@@ -275,22 +338,7 @@ class Route
 
 
     /**
-     * Add a redirection to the list
-     *
-     * @param  mixed  $url  the origin url
-     * @param  mixed  $url2  the destiny url
-     * @param  int  $status  the HTTP response code
-     */
-    private static function addRedirect($url, $url2, int $status) {
-        self::$redirects[$url] = [
-            'destiny' => $url2,
-            'code'    => $status
-        ];
-    }
-
-
-    /**
-     * Block an url
+     * Blocks an url
      *
      * @param  string  $url  the url
      */
@@ -310,24 +358,11 @@ class Route
     public static function isBlocked(string $url)
     {
         $url = explode('/', $url);
-        $url_length = count($url);
+        $url_length = count($url) - 1;
 
         foreach (self::$blocked as $blocked) {
-            $blocked = explode('/', $blocked);
-            $blocked_length = count($blocked);
-
-            for ($i = 0; $i < $blocked_length && $i < $url_length; $i++) {
-                if ($url[$i] !== $blocked[$i] && $blocked[$i] !== '*') {
-                    return false;
-                }
-
-                if ($blocked[$i] === '*') {
-                    return true;
-                }
-
-                if ($i === $url_length - 1 && $i === $blocked_length - 1) {
-                    return true;
-                }
+            if (Helper::matchesRoute($blocked, $url, $url_length)) {
+                return true;
             }
         }
 
@@ -362,7 +397,7 @@ class Route
      *
      * @return boolean true if the string has the format of a route GET variable, false otherwise
      */
-    public static function isGetVar(string $str)
+    private static function isGet(string $str)
     {
         return preg_match(self::GET_FORMAT, $str);
     }
@@ -375,7 +410,7 @@ class Route
      *
      * @return boolean true if the string has the format of an optional route GET variable, false otherwise
      */
-    public static function isOptionalGetVar(string $str)
+    private static function isOptionalGet(string $str)
     {
         return preg_match(self::OPTIONAL_GET_FORMAT, $str);
     }
@@ -387,10 +422,10 @@ class Route
      * @param  string  $key  the variable key
      * @param  string  $value  the variable value
      */
-    private static function setGetVar(string $key, $value)
+    private static function setGet(string $key, $value)
     {
         $key = preg_replace(self::GET_FORMAT, '$1', $key);
-        Request::setGet($key, $value);
+        $_GET[$key] = $value;
     }
 
 
@@ -403,7 +438,7 @@ class Route
     private static function setOptionalGetVar(string $key, $value = null)
     {
         $key = preg_replace(self::OPTIONAL_GET_FORMAT, '$1', $key);
-        Request::setGet($key, $value ?? '');
+        $_GET[$key] = $value ?? '';
     }
 
 
@@ -441,7 +476,7 @@ class Route
             return null;
         }
 
-        return self::$redirects[$url]['destiny'] ?? null;
+        return self::$redirects[$url];
     }
 
 

@@ -1,8 +1,10 @@
 <?php
 
-namespace Core;
+namespace Wolff\Core;
 
-class Query
+use PDOStatement;
+
+final class Query
 {
 
     /**
@@ -13,7 +15,12 @@ class Query
     private $stmt;
 
 
-    public function __construct($stmt)
+    /**
+     * Default constructor
+     *
+     * @param  \PDOStatement  $stmt  the PDO statement
+     */
+    public function __construct(PDOStatement $stmt)
     {
         $this->stmt = $stmt;
     }
@@ -35,7 +42,7 @@ class Query
      *
      * @return string the query results as a Json
      */
-    public function toJson()
+    public function getJson()
     {
         return json_encode($this->get());
     }
@@ -45,7 +52,7 @@ class Query
      * Returns the first element of the query results
      * or only the specified column of the first element
      *
-     * @param  string  $column  the column name to pick
+     * @param  string|null  $column  the column name to pick
      *
      * @return array the first element of the query results,
      * or only the specified column of the first element
@@ -53,7 +60,7 @@ class Query
     public function first(string $column = null)
     {
         $first = $this->get()[0] ?? [];
-        if (isset($column, $first)) {
+        if (isset($first, $column)) {
             return $first[$column];
         }
 
@@ -66,10 +73,9 @@ class Query
      *
      * @return array only the specified column/s of the query result
      */
-    public function pick()
+    public function pick(...$columns)
     {
         $rows = [];
-        $columns = func_get_args();
         $result = $this->get();
 
         //Only one column to pick
@@ -78,7 +84,7 @@ class Query
         }
 
         //Multiple columns to pick
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $new_row = [];
             foreach ($columns as $column) {
                 if (array_key_exists($column, $row)) {
@@ -128,11 +134,13 @@ class Query
 
 
     /**
-     * Print the query results in a nice looking way
+     * Prints the query results in a nice looking way
      */
     public function printr()
     {
-        printr($this->get());
+        echo '<pre>';
+        array_map('print_r', $this->get());
+        echo '</pre>';
     }
 
 
@@ -141,16 +149,17 @@ class Query
      */
     public function dumpd()
     {
-        dumpd($this->get());
+        array_map('var_dump', $this->get());
+        die();
     }
 
 
     /**
-     * Print the query results in a nice looking way and die
+     * Prints the query results in a nice looking way and die
      */
     public function printrd()
     {
-        printrd($this->get());
+        $this->printr();
+        die;
     }
-
 }

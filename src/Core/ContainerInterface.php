@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Wolff\Core;
 
 /**
  * Describes the interface of a container that exposes methods to read its entries.
@@ -46,5 +46,4 @@ interface ContainerInterface
      * false otherwise
      */
     public static function has(string $key);
-
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Utilities;
+namespace Wolff\Utils;
 
-class Pagination
+final class Pagination
 {
 
-    const PLACEHOLDER = 'page';
+    const PLACEHOLDER = '{page}';
 
     /**
      * The total of elements.
@@ -60,12 +60,13 @@ class Pagination
      * @param  int  $side_pages_n  the number of pages that will
      * be beside the current page
      */
-    public function __construct(int $total = 0,
-                                int $per_page = 0,
-                                int $page = 0,
-                                int $side_pages_n = 5,
-                                string $url_format)
-    {
+    public function __construct(
+        int $total = 0,
+        int $per_page = 0,
+        int $page = 0,
+        int $side_pages_n = 5,
+        string $url_format = '{page}'
+    ) {
         $this->total = $total;
         $this->per_page = $per_page;
         $this->page = $page;
@@ -104,7 +105,7 @@ class Pagination
 
 
     /**
-     * Set the total number of elements
+     * Sets the total number of elements
      *
      * @param  int  $total  the total number of elements
      *
@@ -119,18 +120,7 @@ class Pagination
 
 
     /**
-     * Returns the total number of pages
-     *
-     * @return int the total number of pages
-     */
-    public function getTotal()
-    {
-        return $this->total;
-    }
-
-
-    /**
-     * Set the number of elements per page
+     * Sets the number of elements per page
      *
      * @param  int  $per_page  the number of elements per page
      *
@@ -145,18 +135,7 @@ class Pagination
 
 
     /**
-     * Returns the total number of elements per page
-     *
-     * @return int the total number of elements per page
-     */
-    public function getPageSize()
-    {
-        return $this->per_page;
-    }
-
-
-    /**
-     * Set the current page
+     * Sets the current page
      *
      * @param  int  $page  the current page
      *
@@ -167,17 +146,6 @@ class Pagination
         $this->page = $page;
 
         return $this;
-    }
-
-
-    /**
-     * Returns the current page
-     *
-     * @return int the current page
-     */
-    public function getPage()
-    {
-        return $this->page;
     }
 
 
@@ -199,20 +167,7 @@ class Pagination
 
 
     /**
-     * Returns the number of pages that will
-     * be beside the current page
-     *
-     * @return int the number of pages that will
-     * be beside the current page
-     */
-    public function getSidePages()
-    {
-        return $this->side_pages_n;
-    }
-
-
-    /**
-     * Set the pages url
+     * Sets the pages url
      * The placeholder for the page number in the string
      * must have the following format: {page}
      *
@@ -229,19 +184,8 @@ class Pagination
 
 
     /**
-     * Returns the pages url
-     *
-     * @return string the pages url
-     */
-    public function getUrl()
-    {
-        return $this->url_format;
-    }
-
-
-    /**
-     * Show or not the first and
-     * last page
+     * Sets if the first and
+     * last page will be shown
      *
      * @param  bool  $show_ends  true for showing the first
      * and last page in the pagination, false for not showing it
@@ -257,20 +201,7 @@ class Pagination
 
 
     /**
-     * Returns true if the first and last page
-     * will be shown, false otherwise
-     *
-     * @return bool true if the first and last page
-     * will be shown, false otherwise
-     */
-    public function getShowEnds()
-    {
-        return $this->show_ends;
-    }
-
-
-    /**
-     * Add the first and last page to the pagination array
+     * Adds the first and last page to the pagination array
      *
      * @param  array  &$pagination  the pagination array
      */
@@ -301,10 +232,7 @@ class Pagination
         return [
             'index'        => $index,
             'current_page' => $index === $this->page,
-            'url'          => Str::interpolate($this->url_format, [
-                self::PLACEHOLDER => $index
-            ])
+            'url'          => str_replace(self::PLACEHOLDER, strval($index), $this->url_format)
         ];
     }
-
 }

@@ -8,6 +8,17 @@ final class Str
 {
 
     const DEFAULT_ENCODING = 'UTF-8';
+    const SLUG_CHARS = [
+        'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+        'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+        'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+        'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+        'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+        'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+        'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b',
+        'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-'
+    ];
+
 
     /**
      * Sanitizes an url
@@ -97,19 +108,8 @@ final class Str
      */
     public static function slug(string $str)
     {
-        $chars = [
-            'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
-            'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
-            'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
-            'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
-            'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
-            'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
-            'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b',
-            'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-'
-        ];
-
         //Trim whitespaces and change special characters by their normal counterpart
-        $str = strtr(trim($str), $chars);
+        $str = strtr(trim($str), self::SLUG_CHARS);
 
         //Remove remaining special characters
         $str = preg_replace('/[^a-zA-Z0-9-]+/', '-', $str);
@@ -117,7 +117,7 @@ final class Str
         //Remove followed and duplicated hyphen characters
         $str = preg_replace('/-{2,}/', '-', $str);
 
-        return strtolower($str);
+        return mb_strtolower($str);
     }
 
 
@@ -191,7 +191,7 @@ final class Str
      */
     public static function contains(string $str, string $needle)
     {
-        return strpos($str, $needle) !== false;
+        return mb_strpos($str, $needle) !== false;
     }
 
 
@@ -268,7 +268,7 @@ final class Str
      */
     public static function startsWith(string $str, string $needle)
     {
-        return strpos($str, $needle) === 0;
+        return mb_strpos($str, $needle) === 0;
     }
 
 
@@ -282,7 +282,7 @@ final class Str
      */
     public static function endsWith(string $str, string $needle)
     {
-        return substr($str, -strlen($needle)) === $needle;
+        return mb_substr($str, -mb_strlen($needle)) === $needle;
     }
 
 
@@ -316,7 +316,7 @@ final class Str
             return '';
         }
 
-        return substr($str, strpos($str, $needle) + strlen($needle));
+        return mb_substr($str, mb_strpos($str, $needle) + mb_strlen($needle));
     }
 
 
@@ -336,7 +336,7 @@ final class Str
             return '';
         }
 
-        return substr($str, 0, strpos($str, $needle));
+        return mb_substr($str, 0, mb_strpos($str, $needle));
     }
 
 
@@ -377,7 +377,7 @@ final class Str
             $final_path[] = $path;
         }
 
-        return preg_replace('/\/+/', '/', implode('/', $final_path));
+        return mb_ereg_replace('/\/+/', '/', implode('/', $final_path));
     }
 
 

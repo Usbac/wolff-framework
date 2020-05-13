@@ -31,6 +31,7 @@ final class Helper
         return $str;
     }
 
+
     /**
      * Returns the given relative path as absolute
      *
@@ -41,7 +42,7 @@ final class Helper
     public static function getRoot(string $path = '')
     {
         if (!isset(self::$base_path)) {
-            self::$base_path = dirname(getcwd());
+            self::$base_path = str_replace('\\', '/', dirname(getcwd()));
         }
 
         return self::$base_path . '/' . $path;

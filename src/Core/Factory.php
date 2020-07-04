@@ -9,8 +9,8 @@ final class Factory
 {
 
     const NAMESPACE_CONTROLLER = 'Controller\\';
-    const DSN = '%s:host=%s; dbname=%s';
-    const DEFAULT_ENCODING = 'set names utf8mb4 collate utf8mb4_unicode_ci';
+    const DSN = '%s:host=%s; dbname=%s;';
+    const DSN_PORT = 'port=%s;';
 
 
     /**
@@ -30,12 +30,15 @@ final class Factory
         }
 
         $dsn = sprintf(self::DSN, $data['dbms'] ?? '', $data['server'] ?? '', $data['name']);
+        if (!empty($data['port'])) {
+            $dsn .= sprintf(self::DSN_PORT, $data['port']);
+        }
+
         $username = $data['username'] ?? '';
         $password = $data['password'] ?? '';
 
         try {
             $connection = new PDO($dsn, $username, $password, $options);
-            $connection->prepare(self::DEFAULT_ENCODING)->execute();
         } catch (PDOException $err) {
             throw $err;
         }

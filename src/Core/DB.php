@@ -326,13 +326,16 @@ class DB
      *
      * @return array the query result as an assosiative array
      */
-    public function select(string $table, string $conditions = '1', ...$args)
+    public function select(string $table, string $conditions = null, ...$args)
     {
         $arr = explode('.', $table);
         $table = $this->escape($arr[0]);
 
-        $stmt = $this->connection->prepare("SELECT * FROM $table
-            WHERE $conditions");
+        $stmt = $this->connection->prepare("SELECT * FROM $table");
+        if (isset($conditions)) {
+            $stmt .= " WHERE $conditions";
+        }
+
         $stmt->execute($args);
         $this->last_stmt = $stmt;
 
@@ -355,10 +358,13 @@ class DB
      *
      * @return int the query result
      */
-    public function count(string $table, string $conditions = '1', ...$args)
+    public function count(string $table, string $conditions = null, ...$args)
     {
-        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table
-            WHERE $conditions");
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table");
+        if (isset($conditions)) {
+            $stmt .= " WHERE $conditions";
+        }
+
         $stmt->execute($args);
         $this->last_stmt = $stmt;
 
@@ -419,12 +425,14 @@ class DB
      *
      * @return bool true in case of success, false otherwise
      */
-    public function delete(string $table, string $conditions = '1', ...$args)
+    public function delete(string $table, string $conditions = null, ...$args)
     {
         $table = $this->escape($table);
 
-        $stmt = $this->connection->prepare("DELETE FROM $table
-            WHERE $conditions");
+        $stmt = $this->connection->prepare("DELETE FROM $table");
+        if (isset($conditions)) {
+            $stmt .= " WHERE $conditions";
+        }
 
         $this->last_stmt = $stmt;
         return $stmt->execute($args);

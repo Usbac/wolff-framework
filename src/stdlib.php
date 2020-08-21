@@ -84,11 +84,12 @@ namespace {
     if (!function_exists('relativePath')) {
 
         /**
-         * Returns the relative path of the given absolute path.
+         * Returns the relative path (based on the project root)
+         * of the given absolute path.
          *
          * @param  string  $path  the absolute path
          *
-         * @return string the relative path
+         * @return string the path as relative.
          */
         function relativePath(string $path = '')
         {

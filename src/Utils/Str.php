@@ -282,7 +282,7 @@ final class Str
      */
     public static function endsWith(string $str, string $needle)
     {
-        return mb_substr($str, -mb_strlen($needle)) === $needle;
+        return Helper::endsWith($str, $needle);
     }
 
 

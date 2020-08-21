@@ -9,7 +9,9 @@ use Wolff\Exception\InvalidArgumentException;
 
 final class Template
 {
-    const PATH_FORMAT = '/app/views/%s.wlf';
+
+    const PATH_FORMAT_EXT = 'app/views/%s.wlf';
+    const PATH_FORMAT = 'app/views/%s';
     const EXISTS_ERROR = 'View file \'%s\' doesn\'t exists';
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';
@@ -195,7 +197,13 @@ final class Template
      */
     public static function getPath(string $dir)
     {
-        return Helper::getRoot(sprintf(self::PATH_FORMAT, $dir));
+        $path_format =
+            Helper::endsWith($dir, '.php') ||
+            Helper::endsWith($dir, '.html') ?
+            self::PATH_FORMAT :
+            self::PATH_FORMAT_EXT;
+
+        return Helper::getRoot(sprintf($path_format, $dir));
     }
 
 

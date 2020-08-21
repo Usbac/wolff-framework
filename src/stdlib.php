@@ -81,6 +81,27 @@ namespace {
         }
     }
 
+    if (!function_exists('relativePath')) {
+
+        /**
+         * Returns the relative path of the given absolute path.
+         *
+         * @param  string  $path  the absolute path
+         *
+         * @return string the relative path
+         */
+        function relativePath(string $path = '')
+        {
+            $root = Wolff\Core\Helper::getRoot();
+
+            if (strpos($path, $root) === 0) {
+                return substr($path, strlen($root));
+            }
+
+            return $path;
+        }
+    }
+
     if (!function_exists('config')) {
 
         /**

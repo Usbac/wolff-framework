@@ -14,7 +14,6 @@ use Wolff\Core\Route;
 use Wolff\Core\Maintenance;
 use Wolff\Core\Middleware;
 use Wolff\Core\Template;
-use Wolff\Utils\Str;
 
 final class Kernel
 {

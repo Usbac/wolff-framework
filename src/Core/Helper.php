@@ -135,4 +135,18 @@ final class Helper
 
         return false;
     }
+
+
+    /**
+     * Returns true if a string ends with another string, false otherwise
+     *
+     * @param  string  $str  the string
+     * @param  string  $needle  the substring
+     *
+     * @return boolean true if a string ends with another string, false otherwise
+     */
+    public static function endsWith(string $str, string $needle)
+    {
+        return mb_substr($str, -mb_strlen($needle)) === $needle;
+    }
 }

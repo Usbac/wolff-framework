@@ -512,7 +512,7 @@ namespace {
     if (!function_exists('isBool')) {
 
         /**
-         * Returns true if the given variable complies with an boolean,
+         * Returns true if the given variable complies with a boolean,
          * false otherwise
          * Only the numeric values 1 and 0, and the strings
          * 'true', 'false', '1' and '0' are counted as boolean.

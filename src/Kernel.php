@@ -154,7 +154,7 @@ final class Kernel
 
     /**
      * Includes the standard library if
-     * it's activate in the given configuration
+     * it's activated in the current configuration
      */
     private function stdlib()
     {

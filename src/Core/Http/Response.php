@@ -27,13 +27,6 @@ class Response implements ResponseInterface
     private $status_code;
 
     /**
-     * The header location.
-     *
-     * @var string
-     */
-    private $url;
-
-    /**
      * The header tag list.
      *
      * @var array
@@ -56,7 +49,6 @@ class Response implements ResponseInterface
         $this->content = '';
         $this->status_code = null;
         $this->headers = [];
-        $this->url = '';
         $this->cookies = [];
     }
 
@@ -177,15 +169,7 @@ class Response implements ResponseInterface
         }
 
         foreach ($this->cookies as $cookie) {
-            setcookie(
-                $cookie['key'],
-                $cookie['value'],
-                $cookie['time'],
-                $cookie['path'],
-                $cookie['domain'],
-                $cookie['secure'],
-                $cookie['http_only']
-            );
+            setcookie(...array_values($cookie));
         }
 
         if ($return) {

@@ -133,7 +133,7 @@ class Request implements RequestInterface
      * Sets the options for uploading the files.
      *
      * @param array $arr the array with the options
-     * (dir, extensions, max_size)
+     * (dir, extensions, max_size, override)
      */
     public function fileOptions(array $arr = [])
     {

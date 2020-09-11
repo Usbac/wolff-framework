@@ -149,11 +149,8 @@ final class Template
      */
     public static function get(string $dir, array $data, bool $cache)
     {
-        //Variables in data array
-        if (is_array($data)) {
-            extract($data);
-            unset($data);
-        }
+        extract($data);
+        unset($data);
 
         if ($cache && Cache::isEnabled() && Cache::has($dir)) {
             return Cache::get($dir);

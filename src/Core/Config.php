@@ -58,7 +58,9 @@ final class Config
      */
     private static function parseEnv(string $env_path)
     {
-        if (($content = file_get_contents($env_path)) === false) {
+        if (is_readable($env_path)) {
+            $content = file_get_contents($env_path);
+        } else {
             throw new FileNotReadableException($env_path);
         }
 

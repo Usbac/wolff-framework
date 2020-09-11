@@ -90,10 +90,10 @@ final class Maintenance
 
         if (!is_file(self::$file)) {
             return false;
-        }
-
-        if (($content = file_get_contents(self::$file)) === false) {
+        } elseif (!is_readable(self::$file)) {
             throw new FileNotReadableException(self::$file);
+        } else {
+            $content = file_get_contents(self::$file);
         }
 
         return explode(PHP_EOL, $content);
@@ -154,8 +154,10 @@ final class Maintenance
 
         if (!($ip = filter_var($ip, FILTER_VALIDATE_IP))) {
             return false;
-        } elseif (($content = file_get_contents(self::$file)) === false) {
+        } elseif (!is_readable(self::$file)) {
             throw new FileNotReadableException(self::$file);
+        } else {
+            $content = file_get_contents(self::$file);
         }
 
         $ip_list = array_filter(explode(PHP_EOL, $content));

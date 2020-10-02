@@ -455,11 +455,7 @@ final class Route
      */
     public static function getRedirection(string $url)
     {
-        if (!isset(self::$redirects[$url])) {
-            return null;
-        }
-
-        return self::$redirects[$url];
+        return self::$redirects[$url] ?? null;
     }
 
 

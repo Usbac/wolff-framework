@@ -166,7 +166,7 @@ class DB
         $this->last_args = $args;
 
         //Query without args
-        if (!isset($args)) {
+        if (!$args) {
             $result = $this->connection->query($sql);
             return Factory::query($result);
         }

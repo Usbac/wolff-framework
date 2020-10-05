@@ -218,14 +218,14 @@ final class Str
 
 
     /**
-     * Returns the string with the indicated substrings swaped
+     * Returns the string with the indicated substrings swapped
      * or false in case of errors.
      *
      * @param  string  $str  the string
      * @param  string  $first_str  the first string
      * @param  string  $second_str  the second string
      *
-     * @return string the string with the indicated substrings swaped
+     * @return string the string with the indicated substrings swapped
      * or false in case of errors.
      */
     public static function swap(string $str, string $first_str, string $second_str)

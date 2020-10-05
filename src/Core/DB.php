@@ -166,7 +166,7 @@ class DB
         $this->last_args = $args;
 
         //Query without args
-        if (!isset($args)) {
+        if (!$args) {
             $result = $this->connection->query($sql);
             return Factory::query($result);
         }
@@ -324,7 +324,7 @@ class DB
      * @param  string  $conditions  the select conditions
      * @param  mixed  ...$args the query arguments
      *
-     * @return array the query result as an assosiative array
+     * @return array the query result as an associative array
      */
     public function select(string $table, string $conditions = null, ...$args)
     {

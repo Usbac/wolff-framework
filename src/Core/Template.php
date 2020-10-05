@@ -144,6 +144,7 @@ final class Template
      *
      * @param  string  $dir  the view directory
      * @param  array  $data  the data array present in the view
+     * @param bool $cache
      *
      * @return string the view content with the template format applied
      */

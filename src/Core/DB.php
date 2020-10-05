@@ -203,7 +203,7 @@ class DB
         $table = $this->escape($table);
 
         try {
-            $result = $this->connection->query("SELECT 1 FROM `$table` LIMIT 1");
+            $result = $this->connection->query("SELECT 1 FROM $table LIMIT 1");
         } catch (\Exception $e) {
             return false;
         }
@@ -228,7 +228,7 @@ class DB
         $column = $this->escape($column);
 
         try {
-            $result = $this->connection->query("SHOW COLUMNS FROM `$table` LIKE '$column'");
+            $result = $this->connection->query("SHOW COLUMNS FROM $table LIKE '$column'");
         } catch (\Exception $e) {
             return false;
         }
@@ -330,12 +330,13 @@ class DB
     {
         $arr = explode('.', $table);
         $table = $this->escape($arr[0]);
+        $query = "SELECT * FROM $table";
 
-        $stmt = $this->connection->prepare("SELECT * FROM $table");
         if (isset($conditions)) {
-            $stmt .= " WHERE $conditions";
+            $query .= " WHERE $conditions";
         }
 
+        $stmt = $this->connection->prepare($query);
         $stmt->execute($args);
         $this->last_stmt = $stmt;
 
@@ -360,11 +361,13 @@ class DB
      */
     public function count(string $table, string $conditions = null, ...$args)
     {
-        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table");
+        $query = "SELECT COUNT(*) FROM $table";
+
         if (isset($conditions)) {
-            $stmt .= " WHERE $conditions";
+            $query .= " WHERE $conditions";
         }
 
+        $stmt = $this->connection->prepare($query);
         $stmt->execute($args);
         $this->last_stmt = $stmt;
 
@@ -428,12 +431,13 @@ class DB
     public function delete(string $table, string $conditions = null, ...$args)
     {
         $table = $this->escape($table);
+        $query = "DELETE FROM $table";
 
-        $stmt = $this->connection->prepare("DELETE FROM $table");
         if (isset($conditions)) {
-            $stmt .= " WHERE $conditions";
+            $query .= " WHERE $conditions";
         }
 
+        $stmt = $this->connection->prepare($query);
         $this->last_stmt = $stmt;
         return $stmt->execute($args);
     }

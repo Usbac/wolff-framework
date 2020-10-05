@@ -59,7 +59,7 @@ final class Pagination
      * @param  int  $page  the current page
      * @param  int  $side_pages_n  the number of pages that will
      * be beside the current page
-     * @param string $url_format
+     * @param  string  $url_format  the url format
      */
     public function __construct(
         int $total = 0,

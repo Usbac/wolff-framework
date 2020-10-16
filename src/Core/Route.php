@@ -7,11 +7,11 @@ use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
 /**
- * @method static get(string $url, $function, int $status = null)
- * @method static post(string $url, $function, int $status = null)
- * @method static put(string $url, $function, int $status = null)
- * @method static patch(string $url, $function, int $status = null)
- * @method static delete(string $url, $function, int $status = null)
+ * static @method get(string $url, $function, int $status = null)
+ * static @method post(string $url, $function, int $status = null)
+ * static @method put(string $url, $function, int $status = null)
+ * static @method patch(string $url, $function, int $status = null)
+ * static @method delete(string $url, $function, int $status = null)
  */
 final class Route
 {

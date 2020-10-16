@@ -57,15 +57,10 @@ class DB
      */
     public function __construct(array $data = null, array $options = null)
     {
-        if ($data === null) {
-            $data = self::$default_credentials;
-        }
-
-        if ($options === null) {
-            $options = self::DEFAULT_OPTIONS;
-        }
-
-        $this->connection = self::getConnection($data, $options);
+        $this->connection = self::getConnection(
+            $data ?? self::$default_credentials,
+            $options ?? self::DEFAULT_OPTIONS
+        );
     }
 
 
@@ -81,7 +76,7 @@ class DB
      */
     private static function getConnection(array $data, array $options)
     {
-        if (empty($options) || empty($data['dsn'])) {
+        if (empty($data['dsn']) || empty($options)) {
             return null;
         }
 

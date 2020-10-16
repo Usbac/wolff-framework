@@ -6,12 +6,10 @@ use Wolff\Core\Cache;
 use Wolff\Core\Config;
 use Wolff\Core\Controller;
 use Wolff\Core\DB;
-use Wolff\Core\Factory;
 use Wolff\Core\Helper;
 use Wolff\Core\Http\Request;
 use Wolff\Core\Http\Response;
 use Wolff\Core\Language;
-use Wolff\Core\Log;
 use Wolff\Core\Route;
 use Wolff\Core\Maintenance;
 use Wolff\Core\Middleware;
@@ -25,7 +23,6 @@ final class Kernel
         'language'       => 'english',
         'env_file'       => '',
         'env_override'   => false,
-        'log_on'         => true,
         'development_on' => true,
         'template_on'    => true,
         'cache_on'       => true,
@@ -88,29 +85,7 @@ final class Kernel
     public function __construct(array $config = [])
     {
         $this->initConfig($config);
-        $this->url = $this->getUrl();
-        $this->function = Route::getFunction($this->url);
-        $this->req = new Request(
-            $_GET,
-            $_POST,
-            $_FILES,
-            $_SERVER,
-            $_COOKIE
-        );
-        $this->res = new Response();
-
-        if (is_string($this->function)) {
-            $path = explode('@', $this->function);
-            $this->controller = $path[0];
-            $this->method = empty($path[1]) ? 'index' : $path[1];
-        } elseif (($slash_index = strrpos($this->url, '/')) > 0) {
-            $this->controller = substr($this->url, 0, $slash_index);
-            $this->method = substr($this->url, $slash_index + 1);
-        } else {
-            $this->controller = $this->url;
-            $this->method = 'index';
-        }
-
+        $this->initProperties();
         $this->initComponents();
         $this->setErrors();
         $this->stdlib();
@@ -134,6 +109,36 @@ final class Kernel
 
 
     /**
+     * Initializes the properties
+     */
+    private function initProperties()
+    {
+        $this->url = $this->getUrl();
+        $this->function = Route::getFunction($this->url);
+        $this->req = new Request(
+            $_GET,
+            $_POST,
+            $_FILES,
+            $_SERVER,
+            $_COOKIE
+        );
+        $this->res = new Response();
+
+        if (is_string($this->function)) {
+            $path = explode('@', $this->function);
+            $this->controller = $path[0];
+            $this->method = empty($path[1]) ? 'index' : $path[1];
+        } elseif (($slash_index = strrpos($this->url, '/')) > 0) {
+            $this->controller = substr($this->url, 0, $slash_index);
+            $this->method = substr($this->url, $slash_index + 1);
+        } else {
+            $this->controller = $this->url;
+            $this->method = 'index';
+        }
+    }
+
+
+    /**
      * Initializes the main components based
      * on the current configuration
      */
@@ -142,7 +147,6 @@ final class Kernel
         Config::init($this->config);
         Cache::init($this->config['cache_on']);
         DB::setCredentials($this->config['db']);
-        Log::setStatus($this->config['log_on']);
         Template::setStatus($this->config['template_on']);
         Maintenance::setStatus($this->config['maintenance_on']);
         Language::setDefault($this->config['language']);
@@ -162,7 +166,7 @@ final class Kernel
 
     /**
      * Includes the standard library if
-     * it's activated in the current configuration
+     * it's active in the current configuration
      */
     private function stdlib()
     {

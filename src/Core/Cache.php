@@ -9,7 +9,7 @@ final class Cache
 
     const EXISTS_ERROR = 'Cache file \'%s\' doesn\'t exists';
     const FOLDER = 'cache';
-    const FILENAME_FORMAT = 'tmp_%s.php';
+    const FILENAME_FORMAT = '%s.tmp';
     const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
 

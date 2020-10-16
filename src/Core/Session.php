@@ -50,9 +50,9 @@ final class Session
      */
     private static function isValid()
     {
-        return (isset($_SESSION['ip_address'], $_SESSION['user_agent']) &&
+        return isset($_SESSION['ip_address'], $_SESSION['user_agent']) &&
             $_SESSION['ip_address'] === Helper::getClientIP() &&
-            $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT']);
+            $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT'];
     }
 
 
@@ -139,17 +139,6 @@ final class Session
 
 
     /**
-     * Returns the numbers of elements in the session
-     *
-     * @return int the numbers of elements in the session
-     */
-    public static function count()
-    {
-        return count($_SESSION);
-    }
-
-
-    /**
      * Returns a live time (in minutes) of a session variable
      *
      * @param  string  $key  the variable key
@@ -165,7 +154,7 @@ final class Session
         }
 
         if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, ($remaining > 0) ? $remaining : 0);
+            return gmdate(self::DATE_FORMAT, $remaining > 0 ? $remaining : 0);
         }
 
         return ($remaining > 0) ? $remaining : 0;
@@ -247,7 +236,7 @@ final class Session
             return gmdate(self::DATE_FORMAT, ($remaining > 0) ? $remaining : 0);
         }
 
-        return ($remaining > 0) ? $remaining : 0;
+        return $remaining > 0 ? $remaining : 0;
     }
 
 

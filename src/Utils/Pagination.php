@@ -208,6 +208,10 @@ final class Pagination
      */
     private function addEnds(array &$pagination)
     {
+        if (!isset($pagination[0])) {
+            return;
+        }
+
         if ($pagination[0]['index'] != 1) {
             array_unshift($pagination, $this->getNewPage(1));
         }

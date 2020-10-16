@@ -272,6 +272,53 @@ final class Template
 
 
     /**
+     * Replaces the parent block imports with its respective content
+     *
+     * @param  string  $content  the content of the child view
+     * @param  string  $parent_content  the content of the parent view
+     *
+     * @return string the content of the given child view with the parent block imports replaced
+     * by its content
+     */
+    private static function replaceParentBlockImports(string $content, string $parent_content)
+    {
+        preg_match_all(self::FORMAT['parent_block'], $content, $parent_blocks);
+
+        foreach ($parent_blocks[1] as $block_name) {
+            $block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['block']);
+            $parent_block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['parent_block']);
+            preg_match($block_regex, $parent_content, $block_content);
+
+            $content = preg_replace($parent_block_regex, trim($block_content[2] ?? ''), $content);
+        }
+
+        return $content;
+    }
+
+
+    /**
+     * Replaces the blocks in the parent with its content defined in the child
+     *
+     * @param  string  $content  the content of the child view
+     * @param  string  $parent_content  the content of the parent view
+     *
+     * @return string the content of the given parent with its blocks replaced by the content
+     * defined in the child view
+     */
+    private static function replaceParentBlocksWithChildContent(string $content, string $parent_content)
+    {
+        preg_match_all(self::FORMAT['block'], $content, $child_blocks);
+
+        foreach ($child_blocks[1] as $key => $block_name) {
+            $block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['block']);
+            $parent_content = preg_replace($block_regex, trim($child_blocks[2][$key]), $parent_content);
+        }
+
+        return $parent_content;
+    }
+
+
+    /**
      * Applies the template extends
      *
      * @param  string  $content  the view content
@@ -290,26 +337,10 @@ final class Template
         $filename = Str::sanitizePath(trim($matches[1], '"\''));
         $parent_content = self::getContent($filename);
 
-        //Replace parent block imports in child view
-        preg_match_all(self::FORMAT['parent_block'], $content, $parent_blocks);
+        $content = self::replaceParentBlockImports($content, $parent_content);
+        $parent_content = self::replaceParentBlocksWithChildContent($content, $parent_content);
 
-        foreach ($parent_blocks[1] as $block_name) {
-            $block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['block']);
-            $parent_block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['parent_block']);
-            preg_match($block_regex, $parent_content, $block_content);
-
-            $content = preg_replace($parent_block_regex, trim($block_content[2] ?? ''), $content);
-        }
-
-        //Replace blocks in parent with child blocks content
-        preg_match_all(self::FORMAT['block'], $content, $child_blocks);
-
-        foreach ($child_blocks[1] as $key => $block_name) {
-            $block_regex = str_replace(self::BLOCK_NAME, $block_name, self::FORMAT['block']);
-            $parent_content = preg_replace($block_regex, trim($child_blocks[2][$key]), $parent_content);
-        }
-
-        //Remove remaining unused tags
+        //Remove remaining blocks tags
         $parent_content = preg_replace(self::FORMAT['block'], '', $parent_content);
         $parent_content = preg_replace(self::FORMAT['parent_block'], '', $parent_content);
 

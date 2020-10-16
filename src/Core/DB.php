@@ -10,10 +10,6 @@ use Wolff\Exception\InvalidArgumentException;
 class DB
 {
 
-    const DSN = '%s:host=%s; dbname=%s;';
-
-    const DSN_PORT = 'port=%s;';
-
     const DEFAULT_OPTIONS = [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION
@@ -85,22 +81,17 @@ class DB
      */
     private static function getConnection(array $data, array $options)
     {
-        if (empty($options) || !isset($data['name']) || empty($data['name'])) {
+        if (empty($options) || empty($data['dsn'])) {
             return null;
         }
 
-        $dsn = sprintf(self::DSN, $data['dbms'] ?? '', $data['server'] ?? '', $data['name']);
-        if (!empty($data['port'])) {
-            $dsn .= sprintf(self::DSN_PORT, $data['port']);
-        }
-
-        $username = $data['username'] ?? '';
-        $password = $data['password'] ?? '';
-
         try {
-            $connection = new PDO($dsn, $username, $password, $options);
-        } catch (PDOException $err) {
-            throw $err;
+            $connection = new PDO($data['dsn'],
+                $data['username'] ?? '',
+                $data['password'] ?? '',
+                $options);
+        } catch (PDOException $e) {
+            throw $e;
         }
 
         return $connection;

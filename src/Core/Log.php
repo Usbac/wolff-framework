@@ -6,14 +6,14 @@ use Wolff\Core\Helper;
 use Wolff\Utils\Str;
 
 /**
- * @method static emergency(string $message, array $values = [])
- * @method static alert(string $message, array $values = [])
- * @method static critical(string $message, array $values = [])
- * @method static error(string $message, array $values = [])
- * @method static warning(string $message, array $values = [])
- * @method static notice(string $message, array $values = [])
- * @method static info(string $message, array $values = [])
- * @method static debug(string $message, array $values = [])
+ * @method emergency(string $message, array $values = [])
+ * @method alert(string $message, array $values = [])
+ * @method critical(string $message, array $values = [])
+ * @method error(string $message, array $values = [])
+ * @method warning(string $message, array $values = [])
+ * @method notice(string $message, array $values = [])
+ * @method info(string $message, array $values = [])
+ * @method debug(string $message, array $values = [])
  */
 final class Log
 {
@@ -38,19 +38,19 @@ final class Log
      * The log status
      * @var bool
      */
-    private static $enabled = true;
+    private $enabled = true;
 
     /**
      * The log folder
      * @var string
      */
-    private static $folder = self::DEFAULT_FOLDER;
+    private $folder = self::DEFAULT_FOLDER;
 
     /**
      * The date format used internally in the files
      * @var string
      */
-    private static $date_format = self::DEFAULT_DATE_FORMAT;
+    private $date_format = self::DEFAULT_DATE_FORMAT;
 
 
     /**
@@ -59,9 +59,9 @@ final class Log
      * @param  bool  $enabled  True for enabling the log system,
      * false for disabling it
      */
-    public static function setStatus(bool $enabled = true)
+    public function setStatus(bool $enabled = true)
     {
-        self::$enabled = $enabled;
+        $this->enabled = $enabled;
     }
 
 
@@ -69,9 +69,9 @@ final class Log
      * Returns true if the log is enabled, false otherwise
      * @return bool true if the log is enabled, false otherwise
      */
-    public static function isEnabled()
+    public function isEnabled()
     {
-        return self::$enabled;
+        return $this->enabled;
     }
 
 
@@ -80,9 +80,9 @@ final class Log
      *
      * @param  string  $folder  the log folder
      */
-    public static function setFolder(string $folder = self::DEFAULT_FOLDER)
+    public function setFolder(string $folder = self::DEFAULT_FOLDER)
     {
-        self::$folder = $folder;
+        $this->folder = $folder;
     }
 
 
@@ -91,9 +91,9 @@ final class Log
      *
      * @param  string  $date_format  the date format
      */
-    public static function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT)
+    public function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT)
     {
-        self::$date_format = $date_format;
+        $this->date_format = $date_format;
     }
 
 
@@ -104,17 +104,14 @@ final class Log
      * @param  string  $method_name the method name
      * @param  mixed  $args  the method arguments
      */
-    public static function __callStatic(string $method_name, $args)
+    public function __call(string $method_name, $args)
     {
-        //If the method is not for logging something or if the log message is empty
         if (!in_array($method_name, self::LEVELS) ||
             ($message = $args[0]) === null) {
             return;
         }
 
-        $values = $args[1] ?? [];
-
-        self::log(ucfirst($method_name), $message, $values);
+        $this->log(ucfirst($method_name), $message, $args[1] ?? []);
     }
 
 
@@ -125,27 +122,26 @@ final class Log
      * @param  string  $message the message
      * @param  array  $values  the values to interpolate
      */
-    private static function log(string $level, string $message, array $values)
+    private function log(string $level, string $message, array $values)
     {
-        if (!self::isEnabled()) {
+        if (!$this->isEnabled()) {
             return;
         }
 
         $message = Str::interpolate($message, $values);
-        $date = date(self::$date_format);
-        $log = sprintf(self::MSG_FORMAT, $date, Helper::getClientIP(), $level, $message);
+        $log = sprintf(self::MSG_FORMAT, date($this->date_format), Helper::getClientIP(), $level, $message);
 
-        self::mkdir();
-        self::writeToFile($log);
+        $this->mkdir();
+        $this->writeToFile($log);
     }
 
 
     /**
      * Creates the logs folder if it doesn't exists
      */
-    private static function mkdir()
+    private function mkdir()
     {
-        $folder_path = Helper::getRoot(self::$folder);
+        $folder_path = Helper::getRoot($this->folder);
 
         if (!file_exists($folder_path)) {
             mkdir($folder_path, self::FOLDER_PERMISSIONS, true);
@@ -158,9 +154,9 @@ final class Log
      *
      * @param  string  $data the content to append
      */
-    private static function writeToFile(string $data)
+    private function writeToFile(string $data)
     {
-        file_put_contents(Helper::getRoot(self::getFilename()), $data . PHP_EOL, FILE_APPEND);
+        file_put_contents(Helper::getRoot($this->getFilename()), $data . PHP_EOL, FILE_APPEND);
     }
 
 
@@ -169,8 +165,8 @@ final class Log
      *
      * @return string the log filename
      */
-    private static function getFilename()
+    private function getFilename()
     {
-        return self::$folder . '/' . sprintf(self::FILENAME_FORMAT, date('m-d-Y'));
+        return $this->folder . '/' . sprintf(self::FILENAME_FORMAT, date('m-d-Y'));
     }
 }

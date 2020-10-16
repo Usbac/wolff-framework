@@ -191,18 +191,14 @@ class DB
         $this->last_sql = $sql;
         $this->last_args = $args;
 
-        //Query without args
         if (!$args) {
-            $result = $this->connection->query($sql);
-            return new Query($result);
+            $this->last_stmt = $this->connection->query($sql);
+        } else {
+            $this->last_stmt = $this->connection->prepare($sql);
+            $this->last_stmt->execute($args);
         }
 
-        //Query with args
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($args);
-        $this->last_stmt = $stmt;
-
-        return new Query($stmt);
+        return new Query($this->last_stmt);
     }
 
 
@@ -285,7 +281,6 @@ class DB
         }
 
         $database = [];
-
         while ($table = $tables->fetch(PDO::FETCH_NUM)[0]) {
             $database[$table] = $this->getTableSchema($table);
         }
@@ -307,11 +302,7 @@ class DB
         $table = $this->escape($table);
         $result = $this->connection->query("SHOW COLUMNS FROM $table");
 
-        if (is_bool($result)) {
-            return false;
-        }
-
-        return $result->fetchAll();
+        return is_bool($result) ? false : $result->fetchAll();
     }
 
 

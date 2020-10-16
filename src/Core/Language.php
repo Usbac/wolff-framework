@@ -42,9 +42,7 @@ final class Language
      */
     public static function get(string $dir, string $language = null)
     {
-        if (!isset($language)) {
-            $language = self::$default;
-        }
+        $language = $language ?? self::$default;
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
             $key = substr($dir, $dot_pos + 1);

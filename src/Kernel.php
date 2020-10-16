@@ -183,17 +183,16 @@ final class Kernel
     {
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
-            $this->res->send();
-            return;
-        }
-
-        if ($this->isAccessible()) {
-            $this->load();
         } else {
-            http_response_code(404);
+            if ($this->isAccessible()) {
+                $this->load();
+            } else {
+                http_response_code(404);
+            }
+
+            Route::execCode($this->req, $this->res);
         }
 
-        Route::execCode($this->req, $this->res);
         $this->res->send();
     }
 
@@ -249,16 +248,15 @@ final class Kernel
         $root = Helper::getRoot();
 
         //Remove possible project folder from url
-        $doc_root = $_SERVER['DOCUMENT_ROOT'];
-        if (strpos($root, $doc_root) === 0) {
-            $url = substr($url, strlen($root) - strlen($doc_root));
+        if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
         }
 
         $url = ltrim($url, '/');
 
         //Remove parameters
-        if (($query_index = strpos($url, '?')) !== false) {
-            $url = substr($url, 0, $query_index);
+        if (($q_index = strpos($url, '?')) !== false) {
+            $url = substr($url, 0, $q_index);
         }
 
         //Redirection

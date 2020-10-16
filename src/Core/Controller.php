@@ -9,8 +9,8 @@ class Controller
 {
 
     const NAMESPACE = 'Controller\\';
-    const EXISTS_ERROR = 'The controller class \'%s\' does not exists';
-    const METHOD_EXISTS_ERROR = 'The controller class \'%s\' does not have a \'%s\' method';
+    const ERROR_CONTROLLER_EXISTS = 'The controller class \'%s\' does not exists';
+    const ERROR_METHOD_EXISTS = 'The controller class \'%s\' does not have a \'%s\' method';
 
 
     /**
@@ -24,9 +24,9 @@ class Controller
     {
         $path = Str::sanitizePath($path);
 
-        //load controller default function and return it
+        //load controller's default function and return it
         if (($controller = self::getController($path)) === null) {
-            throw new BadControllerCallException(self::EXISTS_ERROR, $path);
+            throw new BadControllerCallException(self::ERROR_CONTROLLER_EXISTS, $path);
         }
 
         return $controller;
@@ -49,7 +49,7 @@ class Controller
         $controller = self::getController($path);
 
         if (!method_exists($controller, $method)) {
-            throw new BadControllerCallException(self::METHOD_EXISTS_ERROR, $path, $method);
+            throw new BadControllerCallException(self::ERROR_METHOD_EXISTS, $path, $method);
         }
 
         return call_user_func_array([$controller, $method], $args);

@@ -7,7 +7,7 @@ use Wolff\Exception\InvalidLanguageException;
 final class Language
 {
 
-    const BAD_FILE_ERROR = 'The %s language file for \'%s\' must return an associative array';
+    const ERROR_BAD_FILE = 'The %s language file for \'%s\' must return an associative array';
     const PATH_FORMAT =  'app/languages/%s/%s.php';
 
     /**
@@ -58,7 +58,7 @@ final class Language
         }
 
         if (!is_array($data)) {
-            throw new InvalidLanguageException(self::BAD_FILE_ERROR, $language, $dir);
+            throw new InvalidLanguageException(self::ERROR_BAD_FILE, $language, $dir);
         } elseif (isset($key)) {
             return $data[$key] ?? null;
         }

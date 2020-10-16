@@ -12,7 +12,7 @@ final class Template
 
     const PATH_FORMAT_EXT = 'app/views/%s.wlf';
     const PATH_FORMAT = 'app/views/%s';
-    const EXISTS_ERROR = 'View file \'%s\' doesn\'t exists';
+    const ERROR_EXISTS = 'View file \'%s\' doesn\'t exists';
     const RAW = '~';
     const NOT_RAW = '(?<!' . self::RAW . ')';
     const BLOCK_NAME = '[a-zA-Z0-9_]+';
@@ -178,7 +178,7 @@ final class Template
 
         if (!file_exists($file_path)) {
             throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $file_path)
+                sprintf(self::ERROR_EXISTS, $file_path)
             );
         }
 

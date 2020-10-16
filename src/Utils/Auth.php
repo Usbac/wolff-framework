@@ -164,13 +164,11 @@ final class Auth extends \Wolff\Core\DB
             $conditions[] = "$key = :$key";
         }
 
-        $stmt = $this->connection->prepare("SELECT * FROM `{$this->table}` WHERE " . implode(' AND ', $conditions));
+        $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE " . implode(' AND ', $conditions));
         $stmt->execute($data);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        $valid = is_array($user) &&
-            array_key_exists('password', $user) &&
-            password_verify($password, $user['password']);
+        $valid = $this->isValidUser($user, $password);
 
         $this->last_user = $valid ? $user : null;
         return $valid;
@@ -202,7 +200,7 @@ final class Auth extends \Wolff\Core\DB
 
         //Repeated user
         if (isset($this->unique_column)) {
-            $stmt = $this->connection->prepare("SELECT * FROM `$this->table` WHERE $this->unique_column = ?");
+            $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $this->unique_column = ?");
             $stmt->execute([ $data[$this->unique_column] ]);
 
             if ($stmt->fetch(\PDO::FETCH_ASSOC) !== false) {
@@ -220,6 +218,24 @@ final class Auth extends \Wolff\Core\DB
 
 
     /**
+     * Returns true if the password in the given user array matches
+     * the given password, false otherwise
+     *
+     * @param  mixed  $user  the user array
+     * @param  mixed  $password  the password to match
+     *
+     * @return bool true if the password in the given user array matches
+     * the given password, false otherwise
+     */
+    private function isValidUser($user, $password)
+    {
+        return is_array($user) &&
+            array_key_exists('password', $user) &&
+            password_verify($password, $user['password']);
+    }
+
+
+    /**
      * Returns true if the 'password' and the 'password_confirm' values
      * of the given array are equal, false otherwise
      *
@@ -231,11 +247,11 @@ final class Auth extends \Wolff\Core\DB
      */
     private function passwordMatches(array $data)
     {
-        return (array_key_exists('password', $data) &&
-                array_key_exists('password_confirm', $data) &&
-                is_string($data['password']) &&
-                is_string($data['password_confirm']) &&
-                $data['password'] === $data['password_confirm']);
+        return array_key_exists('password', $data) &&
+            array_key_exists('password_confirm', $data) &&
+            is_string($data['password']) &&
+            is_string($data['password_confirm']) &&
+            $data['password'] === $data['password_confirm'];
     }
 
 
@@ -273,7 +289,7 @@ final class Auth extends \Wolff\Core\DB
         $keys = implode(', ', $array_keys);
         $values = implode(', ', $values);
 
-        $stmt = $this->connection->prepare("INSERT INTO `$this->table` ($keys) VALUES ($values)");
+        $stmt = $this->connection->prepare("INSERT INTO $this->table ($keys) VALUES ($values)");
 
         return $stmt->execute($data);
     }

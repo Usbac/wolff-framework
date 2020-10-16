@@ -25,7 +25,7 @@ class Controller
         $path = Str::sanitizePath($path);
 
         //load controller default function and return it
-        if (($controller = Factory::controller($path)) === null) {
+        if (($controller = self::getController($path)) === null) {
             throw new BadControllerCallException(self::EXISTS_ERROR, $path);
         }
 
@@ -46,7 +46,7 @@ class Controller
      */
     public static function method(string $path, string $method = 'index', array $args = [])
     {
-        $controller = Factory::controller($path);
+        $controller = self::getController($path);
 
         if (!method_exists($controller, $method)) {
             throw new BadControllerCallException(self::METHOD_EXISTS_ERROR, $path, $method);
@@ -104,5 +104,24 @@ class Controller
     private static function getClassname(string $path)
     {
         return self::NAMESPACE . str_replace('/', '\\', $path);
+    }
+
+
+    /**
+     * Returns a controller initialized
+     *
+     * @param  string|null  $path  the controller path
+     *
+     * @return object|null a controller initialized
+     */
+    private static function getController(string $path = null)
+    {
+        if (!isset($path)) {
+            return new Controller;
+        }
+
+        $class = self::getClassname($path);
+
+        return class_exists($class) ? new $class : null;
     }
 }

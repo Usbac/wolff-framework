@@ -3,10 +3,16 @@
 namespace Wolff\Core;
 
 use PDO;
+use PDOException;
+use Wolff\Core\Query;
 use Wolff\Exception\InvalidArgumentException;
 
 class DB
 {
+
+    const DSN = '%s:host=%s; dbname=%s;';
+
+    const DSN_PORT = 'port=%s;';
 
     const DEFAULT_OPTIONS = [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -63,7 +69,41 @@ class DB
             $options = self::DEFAULT_OPTIONS;
         }
 
-        $this->connection = Factory::connection($data, $options);
+        $this->connection = self::getConnection($data, $options);
+    }
+
+
+    /**
+     * Returns a PDO connection
+     *
+     * @throws \PDOException
+     *
+     * @param  array  $data  the data to connect to the database
+     * @param  array  $options  the connection options
+     *
+     * @return PDO|null the PDO connection
+     */
+    private static function getConnection(array $data, array $options)
+    {
+        if (empty($options) || !isset($data['name']) || empty($data['name'])) {
+            return null;
+        }
+
+        $dsn = sprintf(self::DSN, $data['dbms'] ?? '', $data['server'] ?? '', $data['name']);
+        if (!empty($data['port'])) {
+            $dsn .= sprintf(self::DSN_PORT, $data['port']);
+        }
+
+        $username = $data['username'] ?? '';
+        $password = $data['password'] ?? '';
+
+        try {
+            $connection = new PDO($dsn, $username, $password, $options);
+        } catch (PDOException $err) {
+            throw $err;
+        }
+
+        return $connection;
     }
 
 
@@ -168,7 +208,7 @@ class DB
         //Query without args
         if (!$args) {
             $result = $this->connection->query($sql);
-            return Factory::query($result);
+            return new Query($result);
         }
 
         //Query with args
@@ -176,7 +216,7 @@ class DB
         $stmt->execute($args);
         $this->last_stmt = $stmt;
 
-        return Factory::query($stmt);
+        return new Query($stmt);
     }
 
 

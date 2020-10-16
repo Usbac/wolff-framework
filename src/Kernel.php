@@ -8,6 +8,8 @@ use Wolff\Core\Controller;
 use Wolff\Core\DB;
 use Wolff\Core\Factory;
 use Wolff\Core\Helper;
+use Wolff\Core\Http\Request;
+use Wolff\Core\Http\Response;
 use Wolff\Core\Language;
 use Wolff\Core\Log;
 use Wolff\Core\Route;
@@ -88,8 +90,14 @@ final class Kernel
         $this->initConfig($config);
         $this->url = $this->getUrl();
         $this->function = Route::getFunction($this->url);
-        $this->req = Factory::request();
-        $this->res = Factory::response();
+        $this->req = new Request(
+            $_GET,
+            $_POST,
+            $_FILES,
+            $_SERVER,
+            $_COOKIE
+        );
+        $this->res = new Response();
 
         if (is_string($this->function)) {
             $path = explode('@', $this->function);

@@ -56,14 +56,14 @@ final class Config
      * This is Wolff's own parser, an existing one has not been used
      * because lol
      *
-     * @param  string  $env_path  the environment file path
+     * @param  string  $file_path  the environment file path
      */
-    private static function parseEnv(string $env_path)
+    private static function parseEnv(string $file_path)
     {
-        if (is_readable($env_path)) {
-            $content = file_get_contents($env_path);
+        if (is_readable($file_path)) {
+            $content = file_get_contents($file_path);
         } else {
-            throw new FileNotReadableException($env_path);
+            throw new FileNotReadableException($file_path);
         }
 
         array_map('self::parseEnvLine', explode(PHP_EOL, $content));

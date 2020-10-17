@@ -66,7 +66,7 @@ final class Pagination
         int $per_page = 0,
         int $page = 0,
         int $side_pages_n = 5,
-        string $url_format = '{page}'
+        string $url_format = self::PLACEHOLDER
     ) {
         $this->total = $total;
         $this->per_page = $per_page;
@@ -228,16 +228,16 @@ final class Pagination
      * Returns a new page based in the given index
      * in the form of an associative array
      *
-     * @param  int  $index  the page index
+     * @param  int  $i  the page index
      *
      * @return array A new page based in the given index
      */
-    private function getNewPage(int $index)
+    private function getNewPage(int $i)
     {
         return [
-            'index'        => $index,
-            'current_page' => $index === $this->page,
-            'url'          => str_replace(self::PLACEHOLDER, strval($index), $this->url_format)
+            'index'        => $i,
+            'current_page' => $i === $this->page,
+            'url'          => str_replace(self::PLACEHOLDER, $i, $this->url_format)
         ];
     }
 }

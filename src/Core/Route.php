@@ -7,11 +7,11 @@ use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
 /**
- * static @method get(string $url, $function, int $status = null)
- * static @method post(string $url, $function, int $status = null)
- * static @method put(string $url, $function, int $status = null)
- * static @method patch(string $url, $function, int $status = null)
- * static @method delete(string $url, $function, int $status = null)
+ * static @method get(string $url, $func, int $status = null)
+ * static @method post(string $url, $func, int $status = null)
+ * static @method put(string $url, $func, int $status = null)
+ * static @method patch(string $url, $func, int $status = null)
+ * static @method delete(string $url, $func, int $status = null)
  */
 final class Route
 {
@@ -82,12 +82,12 @@ final class Route
         }
 
         $url = Str::sanitizeURL($args[0]);
-        $function = $args[1];
+        $func = $args[1];
         $status = isset($args[2]) && is_numeric($args[2]) ?
             (int)$args[2] :
             null;
 
-        self::addRoute($url, $http_method, $function, $status);
+        self::addRoute($url, $http_method, $func, $status);
     }
 
 
@@ -101,11 +101,11 @@ final class Route
      */
     public static function view(string $url, string $view_path, array $data = [], bool $cache = true)
     {
-        $function = function () use ($view_path, $data, $cache) {
+        $func = function () use ($view_path, $data, $cache) {
             View::render($view_path, $data, $cache);
         };
 
-        self::addRoute($url, 'GET', $function, null);
+        self::addRoute($url, 'GET', $func, null);
     }
 
 
@@ -114,12 +114,12 @@ final class Route
      * only for a status code
      *
      * @param  int  $code  the status code
-     * @param  \Closure  $function  mixed the function that must be executed
+     * @param  \Closure  $func  mixed the function that must be executed
      * when getting the status code
      */
-    public static function code(int $code, \Closure $function)
+    public static function code(int $code, \Closure $func)
     {
-        self::$codes[$code] = $function;
+        self::$codes[$code] = $func;
     }
 
 
@@ -266,12 +266,12 @@ final class Route
      * Adds a route that works for any method
      *
      * @param  string  $url  the url
-     * @param  mixed  $function  mixed the function that must be executed when accessing the route
+     * @param  mixed  $func  mixed the function that must be executed when accessing the route
      * @param  int  $status  the HTTP response code
      */
-    public static function any(string $url, $function, int $status = self::STATUS_OK)
+    public static function any(string $url, $func, int $status = self::STATUS_OK)
     {
-        self::addRoute(Str::sanitizeURL($url), '', $function, $status);
+        self::addRoute(Str::sanitizeURL($url), '', $func, $status);
     }
 
 

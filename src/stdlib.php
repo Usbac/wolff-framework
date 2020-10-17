@@ -202,8 +202,7 @@ namespace {
             }
 
             foreach ($keys as $key) {
-                if (!is_array($arr) ||
-                    !array_key_exists($key, $arr)) {
+                if (!is_array($arr) || !array_key_exists($key, $arr)) {
                     return null;
                 }
 

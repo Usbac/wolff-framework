@@ -24,7 +24,6 @@ class Controller
     {
         $path = Str::sanitizePath($path);
 
-        //load controller's default function and return it
         if (($controller = self::getController($path)) === null) {
             throw new BadControllerCallException(self::ERROR_CONTROLLER_EXISTS, $path);
         }
@@ -52,7 +51,7 @@ class Controller
             throw new BadControllerCallException(self::ERROR_METHOD_EXISTS, $path, $method);
         }
 
-        return call_user_func_array([$controller, $method], $args);
+        return call_user_func_array([ $controller, $method ], $args);
     }
 
 
@@ -80,16 +79,10 @@ class Controller
      */
     public static function hasMethod(string $path, string $method)
     {
-        if (!self::exists($path)) {
-            return false;
-        }
-
         $path = self::getClassname($path);
 
         if (method_exists($path, $method)) {
-            $reflection_method = new \ReflectionMethod($path, $method);
-
-            return $reflection_method->isPublic();
+            return (new \ReflectionMethod($path, $method))->isPublic();
         }
 
         return false;

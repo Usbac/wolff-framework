@@ -7,7 +7,7 @@ use Wolff\Exception\InvalidLanguageException;
 final class Language
 {
 
-    const ERROR_BAD_FILE = 'The %s language file for \'%s\' must return an associative array';
+    const ERROR_FILE = 'The %s language file for \'%s\' must return an associative array';
     const PATH_FORMAT =  'app/languages/%s/%s.php';
 
     /**
@@ -20,11 +20,11 @@ final class Language
     /**
      * Sets the default language to use
      *
-     * @param  string  $language  the default language to use
+     * @param  string  $lang  the default language to use
      */
-    public static function setDefault(string $language)
+    public static function setDefault(string $lang)
     {
-        self::$default = $language;
+        self::$default = $lang;
     }
 
 
@@ -35,33 +35,32 @@ final class Language
      * @throws \Wolff\Exception\InvalidLanguageException
      *
      * @param  string  $dir  the language directory
-     * @param  string|null  $language  the language selected
+     * @param  string|null  $lang  the language selected
      *
      * @return mixed the content of a language, or null if
      * it doesn't exists
      */
-    public static function get(string $dir, string $language = null)
+    public static function get(string $dir, string $lang = null)
     {
-        $language = $language ?? self::$default;
+        $lang = $lang ?? self::$default;
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
             $key = substr($dir, $dot_pos + 1);
             $dir = substr($dir, 0, $dot_pos);
         }
 
-        if (self::exists($dir, $language)) {
-            $data = (include self::getPath($dir, $language));
-        } else {
+        if (!self::exists($dir, $lang)) {
             return null;
         }
 
+        $data = (include self::getPath($dir, $lang));
         if (!is_array($data)) {
-            throw new InvalidLanguageException(self::ERROR_BAD_FILE, $language, $dir);
-        } elseif (isset($key)) {
-            return $data[$key] ?? null;
+            throw new InvalidLanguageException(self::ERROR_FILE, $lang, $dir);
         }
 
-        return $data;
+        return !isset($key) ?
+            $data :
+            ($data[$key] ?? null);
     }
 
 
@@ -69,13 +68,13 @@ final class Language
      * Returns the path of a language file
      *
      * @param  string  $dir  the language directory
-     * @param  string  $language  the language selected
+     * @param  string  $lang  the language selected
      *
      * @return string the path of a language file
      */
-    private static function getPath(string $dir, string $language)
+    private static function getPath(string $dir, string $lang)
     {
-        return Helper::getRoot(sprintf(self::PATH_FORMAT, $language, $dir));
+        return Helper::getRoot(sprintf(self::PATH_FORMAT, $lang, $dir));
     }
 
 
@@ -84,13 +83,13 @@ final class Language
      * false otherwise
      *
      * @param  string  $dir  the language directory
-     * @param  string|null  $language  the language selected
+     * @param  string|null  $lang  the language selected
      *
      * @return bool true if the specified language exists,
      * false otherwise
      */
-    public static function exists(string $dir, string $language = null)
+    public static function exists(string $dir, string $lang = null)
     {
-        return file_exists(self::getPath($dir, $language ?? self::$default));
+        return file_exists(self::getPath($dir, $lang ?? self::$default));
     }
 }

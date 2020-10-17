@@ -18,7 +18,7 @@ class DB
     /**
      * The default connection credentials.
      */
-    protected static $default_credentials;
+    protected static $credentials;
 
     /**
      * DB connection.
@@ -58,7 +58,7 @@ class DB
     public function __construct(array $data = null, array $options = null)
     {
         $this->connection = self::getConnection(
-            $data ?? self::$default_credentials,
+            $data ?? self::$credentials,
             $options ?? self::DEFAULT_OPTIONS
         );
     }
@@ -100,7 +100,7 @@ class DB
      */
     public static function setCredentials(array $data)
     {
-        self::$default_credentials = $data;
+        self::$credentials = $data;
     }
 
 
@@ -225,12 +225,10 @@ class DB
         $table = $this->escape($table);
 
         try {
-            $result = $this->connection->query("SELECT 1 FROM $table LIMIT 1");
+            return $this->connection->query("SELECT 1 FROM $table LIMIT 1") !== false;
         } catch (\Exception $e) {
             return false;
         }
-
-        return $result !== false;
     }
 
 

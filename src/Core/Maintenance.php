@@ -92,11 +92,9 @@ final class Maintenance
             return false;
         } elseif (!is_readable(self::$file)) {
             throw new FileNotReadableException(self::$file);
-        } else {
-            $content = file_get_contents(self::$file);
         }
 
-        return explode(PHP_EOL, $content);
+        return explode(PHP_EOL, file_get_contents(self::$file));
     }
 
 
@@ -156,13 +154,11 @@ final class Maintenance
             return false;
         } elseif (!is_readable(self::$file)) {
             throw new FileNotReadableException(self::$file);
-        } else {
-            $content = file_get_contents(self::$file);
         }
 
-        $ip_list = array_filter(explode(PHP_EOL, $content));
-        Helper::arrayRemove($ip_list, $ip);
-        file_put_contents(self::$file, implode(PHP_EOL, $ip_list));
+        $ips = array_filter(explode(PHP_EOL, file_get_contents(self::$file)));
+        Helper::arrayRemove($ips, $ip);
+        file_put_contents(self::$file, implode(PHP_EOL, $ips));
 
         return true;
     }
@@ -180,8 +176,10 @@ final class Maintenance
 
 
     /**
-     * Returns true if the current client IP is in the whitelist, false otherwise
-     * @return bool true if the current client IP is in the whitelist, false otherwise
+     * Returns true if the current client IP is in the whitelist,
+     * false otherwise
+     * @return bool true if the current client IP is in the whitelist,
+     * false otherwise
      */
     public static function hasAccess()
     {
@@ -196,8 +194,8 @@ final class Maintenance
     /**
      * Loads the maintenance page
      *
-     * @param \Wolff\Core\Http\Request $req Reference to the current request object
-     * @param \Wolff\Core\Http\Response $res Reference to the current response object
+     * @param \Wolff\Core\Http\Request $req Reference to the request object
+     * @param \Wolff\Core\Http\Response $res Reference to the response object
      */
     public static function call(Http\Request &$req, Http\Response &$res)
     {

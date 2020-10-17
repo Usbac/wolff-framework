@@ -212,7 +212,7 @@ namespace {
                 echo $arg;
             }
 
-            die();
+            die;
         }
     }
 
@@ -239,8 +239,7 @@ namespace {
             echo '<pre>';
             array_map('print_r', $args);
             echo '</pre>';
-
-            die();
+            die;
         }
     }
 
@@ -252,7 +251,7 @@ namespace {
         function dumpd(...$args)
         {
             array_map('var_dump', $args);
-            die();
+            die;
         }
     }
 
@@ -384,8 +383,8 @@ namespace {
          */
         function local()
         {
-            $remote_addr = $_SERVER['REMOTE_ADDR'] ?? '::1';
-            return $remote_addr === '127.0.0.1' || $remote_addr === '::1';
+            $addr = $_SERVER['REMOTE_ADDR'] ?? '::1';
+            return $addr === '127.0.0.1' || $addr === '::1';
         }
     }
 

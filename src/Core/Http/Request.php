@@ -172,11 +172,9 @@ class Request implements RequestInterface
      */
     public function query(string $key = null)
     {
-        if (!isset($key)) {
-            return $this->query;
-        }
-
-        return $this->query[$key] ?? null;
+        return !isset($key) ?
+            $this->query :
+            ($this->query[$key] ?? null);
     }
 
 
@@ -194,11 +192,9 @@ class Request implements RequestInterface
      */
     public function body(string $key = null)
     {
-        if (!isset($key)) {
-            return $this->body;
-        }
-
-        return $this->body[$key] ?? null;
+        return !isset($key) ?
+            $this->body :
+            ($this->body[$key] ?? null);
     }
 
 
@@ -216,11 +212,9 @@ class Request implements RequestInterface
      */
     public function file(string $key = null)
     {
-        if (!isset($key)) {
-            return $this->files;
-        }
-
-        return $this->files[$key] ?? null;
+        return !isset($key) ?
+            $this->files :
+            ($this->files[$key] ?? null);
     }
 
 
@@ -238,11 +232,9 @@ class Request implements RequestInterface
      */
     public function cookie(string $key = null)
     {
-        if (!isset($key)) {
-            return $this->cookies;
-        }
-
-        return $this->cookies[$key] ?? null;
+        return !isset($key) ?
+            $this->cookies :
+            ($this->cookies[$key] ?? null);
     }
 
 
@@ -260,11 +252,9 @@ class Request implements RequestInterface
      */
     public function getHeader(string $key = null)
     {
-        if (!isset($key)) {
-            return $this->headers;
-        }
-
-        return $this->headers[$key] ?? null;
+        return !isset($key) ?
+            $this->headers :
+            ($this->headers[$key] ?? null);
     }
 
 

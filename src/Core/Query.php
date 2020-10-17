@@ -149,7 +149,7 @@ final class Query
     public function dumpd()
     {
         array_map('var_dump', $this->get());
-        die();
+        die;
     }
 
 

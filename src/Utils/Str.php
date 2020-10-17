@@ -7,7 +7,7 @@ use Wolff\Core\Helper;
 final class Str
 {
 
-    const DEFAULT_ENCODING = 'UTF-8';
+    const ENCODING = 'UTF-8';
     const SLUG_CHARS = [
         'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
         'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
@@ -309,9 +309,7 @@ final class Str
      */
     public static function before(string $str, string $needle)
     {
-        return self::contains($str, $needle) ?
-            mb_substr($str, 0, mb_strpos($str, $needle)) :
-            '';
+        return mb_substr($str, 0, mb_strpos($str, $needle));
     }
 
 
@@ -325,11 +323,7 @@ final class Str
      */
     public static function limit(string $str, int $limit)
     {
-        if (mb_strwidth($str, self::DEFAULT_ENCODING) <= $limit) {
-            return $str;
-        }
-
-        return mb_strimwidth($str, 0, $limit, '', self::DEFAULT_ENCODING);
+        return mb_strimwidth($str, 0, $limit, '', self::ENCODING);
     }
 
 
@@ -342,17 +336,17 @@ final class Str
      */
     public static function concatPath(...$paths)
     {
-        $final_path = [];
+        $final = [];
 
         foreach ($paths as $path) {
             if (is_array($path)) {
                 $path = implode('/', $path);
             }
 
-            $final_path[] = $path;
+            $final[] = $path;
         }
 
-        return mb_ereg_replace('/\/+/', '/', implode('/', $final_path));
+        return mb_ereg_replace('/\/+/', '/', implode('/', $final));
     }
 
 
@@ -388,11 +382,9 @@ final class Str
     {
         //Boolean
         if (is_bool($var)) {
-            if ($var === true) {
-                return 'true';
-            }
-
-            return 'false';
+            return $var === true ?
+                'true' :
+                'false';
         }
 
         //Array

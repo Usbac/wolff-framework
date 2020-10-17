@@ -248,16 +248,12 @@ class DB
         $column = $this->escape($column);
 
         try {
-            $result = $this->connection->query("SHOW COLUMNS FROM $table LIKE '$column'");
+            $query = $this->connection->query("SHOW COLUMNS FROM $table LIKE '$column'");
+
+            return is_bool($query) ? false : !empty($query->fetchAll());
         } catch (\Exception $e) {
             return false;
         }
-
-        if (is_bool($result)) {
-            return false;
-        }
-
-        return !empty($result->fetchAll());
     }
 
 
@@ -298,9 +294,9 @@ class DB
     private function getTableSchema(string $table)
     {
         $table = $this->escape($table);
-        $result = $this->connection->query("SHOW COLUMNS FROM $table");
+        $query = $this->connection->query("SHOW COLUMNS FROM $table");
 
-        return is_bool($result) ? false : $result->fetchAll();
+        return is_bool($query) ? false : $query->fetchAll();
     }
 
 
@@ -454,6 +450,7 @@ class DB
 
         $stmt = $this->connection->prepare($query);
         $this->last_stmt = $stmt;
+
         return $stmt->execute($args);
     }
 

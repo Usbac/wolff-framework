@@ -151,18 +151,6 @@ namespace {
         }
     }
 
-    if (!function_exists('wolffVersion')) {
-
-        /**
-         * Returns the current version of Wolff
-         * @return string the current version of Wolff
-         */
-        function wolffVersion()
-        {
-            return WOLFF_CONFIG['version'];
-        }
-    }
-
     if (!function_exists('isAssoc')) {
 
         /**

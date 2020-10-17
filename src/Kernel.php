@@ -84,8 +84,7 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
-        $this->initConfig($config);
-        $this->initProperties();
+        $this->initProperties($config);
         $this->initComponents();
         $this->setErrors();
         $this->stdlib();
@@ -93,35 +92,16 @@ final class Kernel
 
 
     /**
-     * Initializes the configuration array based
-     * on the given array
+     * Initializes the properties
      *
      * @param  array  $config  the configuration
      */
-    private function initConfig(array $config = [])
+    private function initProperties(array $config = [])
     {
-        $this->config = [];
-
-        foreach (self::DEFAULT_CONFIG as $key => $val) {
-            $this->config[$key] = $config[$key] ?? $val;
-        }
-    }
-
-
-    /**
-     * Initializes the properties
-     */
-    private function initProperties()
-    {
+        $this->config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->url = $this->getUrl();
         $this->function = Route::getFunction($this->url);
-        $this->req = new Request(
-            $_GET,
-            $_POST,
-            $_FILES,
-            $_SERVER,
-            $_COOKIE
-        );
+        $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
 
         if (is_string($this->function)) {

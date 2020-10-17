@@ -99,19 +99,16 @@ final class Log
 
     /**
      * Proxy method to log the messages in
-     * different levels.
+     * different levels
      *
      * @param  string  $method_name the method name
      * @param  mixed  $args  the method arguments
      */
     public function __call(string $method_name, $args)
     {
-        if (!in_array($method_name, self::LEVELS) ||
-            ($message = $args[0]) === null) {
-            return;
+        if (in_array($method_name, self::LEVELS) && isset($args[0])) {
+            $this->log(ucfirst($method_name), $args[0], $args[1] ?? []);
         }
-
-        $this->log(ucfirst($method_name), $message, $args[1] ?? []);
     }
 
 

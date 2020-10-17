@@ -59,12 +59,11 @@ final class Query
      */
     public function first(string $column = null)
     {
-        $first = $this->get()[0] ?? [];
-        if (isset($first, $column)) {
-            return $first[$column];
-        }
+        $first = $this->get()[0] ?? null;
 
-        return $first ?? null;
+        return isset($first, $column) ?
+            $first[$column] :
+            $first;
     }
 
 

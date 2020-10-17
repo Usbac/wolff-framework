@@ -341,12 +341,10 @@ namespace {
 
             $new = [];
 
-            //Object
             if (is_object($obj)) {
                 $obj = (array) $obj;
             }
 
-            //Array
             if (is_array($obj)) {
                 foreach ($obj as $key => $val) {
                     $new[$key] = toArray($val);
@@ -461,11 +459,11 @@ namespace {
         {
             $host = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 
-            if (($question_index = strpos($_SERVER['REQUEST_URI'], '?')) === false) {
+            if (($q_pos = strpos($_SERVER['REQUEST_URI'], '?')) === false) {
                 return $host . $_SERVER['REQUEST_URI'];
             }
 
-            return $host . substr($_SERVER['REQUEST_URI'], 0, $question_index);
+            return $host . substr($_SERVER['REQUEST_URI'], 0, $q_pos);
         }
     }
 

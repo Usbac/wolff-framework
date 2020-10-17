@@ -68,13 +68,13 @@ final class Container implements ContainerInterface
      */
     public static function get(string $key, array $args = [])
     {
-        if (!self::has($key)) {
+        $service = self::$services[$key];
+
+        if (!isset($service)) {
             return null;
         }
 
         //Service
-        $service = self::$services[$key];
-
         if (!$service['singleton']) {
             if (is_callable($service['value'])) {
                 return call_user_func_array($service['value'], $args);

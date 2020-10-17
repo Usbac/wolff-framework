@@ -128,9 +128,9 @@ final class Kernel
             $path = explode('@', $this->function);
             $this->controller = $path[0];
             $this->method = empty($path[1]) ? 'index' : $path[1];
-        } elseif (($slash_index = strrpos($this->url, '/')) > 0) {
-            $this->controller = substr($this->url, 0, $slash_index);
-            $this->method = substr($this->url, $slash_index + 1);
+        } elseif (($slash_pos = strrpos($this->url, '/')) > 0) {
+            $this->controller = substr($this->url, 0, $slash_pos);
+            $this->method = substr($this->url, $slash_pos + 1);
         } else {
             $this->controller = $this->url;
             $this->method = 'index';
@@ -255,8 +255,8 @@ final class Kernel
         $url = ltrim($url, '/');
 
         //Remove parameters
-        if (($q_index = strpos($url, '?')) !== false) {
-            $url = substr($url, 0, $q_index);
+        if (($q_pos = strpos($url, '?')) !== false) {
+            $url = substr($url, 0, $q_pos);
         }
 
         //Redirection

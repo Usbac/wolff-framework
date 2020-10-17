@@ -185,13 +185,11 @@ final class Maintenance
      */
     public static function hasAccess()
     {
-        $allowed_ips = self::getAllowedIPs();
-
-        if ($allowed_ips === false) {
+        if (($ips = self::getAllowedIPs()) === false) {
             return false;
         }
 
-        return in_array(Helper::getClientIP(), $allowed_ips);
+        return in_array(Helper::getClientIP(), $ips);
     }
 
 

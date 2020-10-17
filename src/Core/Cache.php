@@ -9,7 +9,8 @@ final class Cache
 
     const EXISTS_ERROR = 'Cache file \'%s\' doesn\'t exists';
     const FOLDER = 'cache';
-    const FILENAME_FORMAT = '%s.tmp';
+    const FILE_EXT = 'tmp';
+    const FILENAME_FORMAT = '%s.' . self::FILE_EXT;
     const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
 
@@ -27,20 +28,17 @@ final class Cache
      */
     public static function init(bool $enabled = true)
     {
-        self::$enabled = $enabled;
-
-        if (!self::$enabled) {
+        if ((self::$enabled = $enabled) === false) {
             return;
         }
 
-        $files = glob(self::getDir('*.php'));
         $time = time();
 
-        foreach ($files as $file) {
-            $modification_time = filemtime($file);
+        foreach (glob(self::getDir('*.' . self::FILE_EXT)) as $file) {
+            $mod_time = filemtime($file);
 
-            if ($modification_time !== false &&
-                $time - $modification_time > self::EXPIRATION_TIME) {
+            if ($mod_time !== false &&
+                $time - $mod_time > self::EXPIRATION_TIME) {
                 unlink($file);
             }
         }
@@ -137,14 +135,13 @@ final class Cache
     public static function delete(string $dir)
     {
         $file_path = self::getDir(self::getFilename($dir));
+        $result = is_file($file_path);
 
-        if (is_file($file_path)) {
+        if ($result) {
             unlink($file_path);
-
-            return true;
         }
 
-        return false;
+        return $result;
     }
 
 
@@ -153,9 +150,7 @@ final class Cache
      */
     public static function clear()
     {
-        $files = glob(self::getDir() . '/*');
-
-        foreach ($files as $file) {
+        foreach (glob(self::getDir() . '/*') as $file) {
             if (is_file($file)) {
                 unlink($file);
             }

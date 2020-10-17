@@ -8,6 +8,8 @@ use Wolff\Exception\FileNotReadableException;
 final class Config
 {
 
+    const ENV_LINE_REGEX = "/'(.*)'|\"(.*)\"|(^[^#]+)/";
+
     /**
      * List of configuration variables
      * @var array
@@ -75,14 +77,13 @@ final class Config
      */
     private static function parseEnvLine(string $line)
     {
-        if (!($index_equal = strpos($line, '='))) {
+        if (!($equal_pos = strpos($line, '='))) {
             return;
         }
 
-        $key = trim(substr($line, 0, $index_equal));
-        $val = trim(substr($line, $index_equal + 1));
-        // Anything between or not single/double quotes, excluding the hashtag character after it
-        preg_match("/'(.*)'|\"(.*)\"|(^[^#]+)/", $val, $matches);
+        $key = trim(substr($line, 0, $equal_pos));
+        $val = trim(substr($line, $equal_pos + 1));
+        preg_match(self::ENV_LINE_REGEX, $val, $matches);
         $val = trim($matches[0] ?? 'null');
         $val = self::getVal($val);
 

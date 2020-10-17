@@ -98,11 +98,9 @@ final class Session
      */
     public static function get(string $key = null)
     {
-        if (!isset($key)) {
-            return $_SESSION;
-        }
-
-        return $_SESSION[$key] ?? null;
+        return !isset($key) ?
+            $_SESSION :
+            ($_SESSION[$key] ?? null);
     }
 
 
@@ -157,7 +155,7 @@ final class Session
             return gmdate(self::DATE_FORMAT, $remaining > 0 ? $remaining : 0);
         }
 
-        return ($remaining > 0) ? $remaining : 0;
+        return $remaining > 0 ? $remaining : 0;
     }
 
 

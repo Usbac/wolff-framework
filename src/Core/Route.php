@@ -36,26 +36,26 @@ final class Route
     ];
 
     /**
-     * List of routes.
+     * List of routes
      *
      * @var array
      */
     private static $routes = [];
 
     /**
-     * List of routes for status codes.
+     * List of routes for status codes
      */
     private static $codes = [];
 
     /**
-     * List of blocked routes.
+     * List of blocked routes
      *
      * @var array
      */
     private static $blocked = [];
 
     /**
-     * List of redirects.
+     * List of redirects
      *
      * @var array
      */

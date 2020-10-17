@@ -16,33 +16,33 @@ class DB
     ];
 
     /**
-     * The default connection credentials.
+     * The default connection credentials
      */
     protected static $credentials;
 
     /**
-     * DB connection.
+     * DB connection
      *
      * @var PDO
      */
     protected $connection;
 
     /**
-     * The last query executed.
+     * The last query executed
      *
      * @var string
      */
     protected $last_sql;
 
     /**
-     * The arguments of the last query executed.
+     * The arguments of the last query executed
      *
      * @var array
      */
     protected $last_args;
 
     /**
-     * The last PDO statement executed.
+     * The last PDO statement executed
      *
      * @var \PDOStatement
      */

@@ -8,7 +8,7 @@ final class Query
 {
 
     /**
-     * The query statement.
+     * The query statement
      *
      * @var \PDOStatement
      */

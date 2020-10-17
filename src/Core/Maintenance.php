@@ -17,14 +17,14 @@ final class Maintenance
     private static $enabled = false;
 
     /**
-     * Filename of the ip whitelist file.
+     * Filename of the ip whitelist file
      *
      * @var string
      */
     private static $file = null;
 
     /**
-     * Function to execute in maintenance mode.
+     * Function to execute in maintenance mode
      *
      * @var \Closure
      */

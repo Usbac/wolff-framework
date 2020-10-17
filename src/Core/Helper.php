@@ -6,7 +6,7 @@ final class Helper
 {
 
     /**
-     * The root directory of the current project.
+     * The root directory of the current project
      * @var string
      */
     private static $base_path = null;

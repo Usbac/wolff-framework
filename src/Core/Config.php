@@ -104,7 +104,7 @@ final class Config
             case 'false': return false;
             case 'null': return null;
             case 'empty': return '';
-            default: Helper::removeQuotes($val);
+            default: return Helper::removeQuotes($val);
         }
     }
 }

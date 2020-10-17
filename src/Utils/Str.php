@@ -238,27 +238,6 @@ final class Str
 
 
     /**
-     * Converts a string with any encoding to UTF-8 and returns it
-     * Keep in mind that the string encoding detection is not perfect
-     *
-     * @param  string  $str  the string
-     *
-     * @return string the string encoded in UTF-8
-     */
-    public static function toUtf8(string $str)
-    {
-        $encoding = mb_detect_encoding($str, mb_detect_order(), true);
-        $encoded = iconv($encoding, 'UTF-8', $str);
-
-        if (empty($encoded)) {
-            return utf8_encode($str);
-        }
-
-        return $encoded;
-    }
-
-
-    /**
      * Returns true if a string starts with another string, false otherwise
      *
      * @param  string  $str  the string
@@ -312,31 +291,27 @@ final class Str
      */
     public static function after(string $str, string $needle)
     {
-        if (!self::contains($str, $needle)) {
-            return '';
-        }
-
-        return mb_substr($str, mb_strpos($str, $needle) + mb_strlen($needle));
+        return self::contains($str, $needle) ?
+            mb_substr($str, mb_strpos($str, $needle) + mb_strlen($needle)) :
+            '';
     }
 
 
     /**
      * Returns everything before the specified substring,
-     * or false if the substring is not in the string.
+     * or false if the substring is not in the string
      *
      * @param  string  $str  the string
      * @param  string  $needle  the substring
      *
      * @return string a string with everything before the specified substring,
-     * or false if the substring is not in the string.
+     * or false if the substring is not in the string
      */
     public static function before(string $str, string $needle)
     {
-        if (!self::contains($str, $needle)) {
-            return '';
-        }
-
-        return mb_substr($str, 0, mb_strpos($str, $needle));
+        return self::contains($str, $needle) ?
+            mb_substr($str, 0, mb_strpos($str, $needle)) :
+            '';
     }
 
 

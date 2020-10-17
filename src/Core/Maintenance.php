@@ -34,11 +34,11 @@ final class Maintenance
     /**
      * Sets the function to execute in maintenance mode.
      *
-     * @param  \Closure  $function  the function
+     * @param  \Closure  $func  the function
      */
-    public static function set(\Closure $function)
+    public static function set(\Closure $func)
     {
-        self::$function = $function;
+        self::$function = $func;
     }
 
 

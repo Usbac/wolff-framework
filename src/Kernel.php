@@ -37,28 +37,28 @@ final class Kernel
     private $config;
 
     /**
-     * The current url.
+     * The current url
      *
      * @var string
      */
     private $url;
 
     /**
-     * The function associated to the current url.
+     * The function associated to the current url
      *
      * @var object
      */
     private $function;
 
     /**
-     * The controller name.
+     * The controller name
      *
      * @var string
      */
     private $controller;
 
     /**
-     * The controller method name.
+     * The controller method name
      *
      * @var string
      */

@@ -96,9 +96,7 @@ final class Helper
 
         if (!empty($client_ip)) {
             return $client_ip;
-        }
-
-        if (!empty($forwarded)) {
+        } elseif (!empty($forwarded)) {
             return $forwarded;
         }
 

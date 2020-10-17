@@ -8,21 +8,21 @@ final class Pagination
     const PLACEHOLDER = '{page}';
 
     /**
-     * The total of elements.
+     * The total of elements
      *
      * @var int
      */
     private $total;
 
     /**
-     * The total of elements per page.
+     * The total of elements per page
      *
      * @var int
      */
     private $per_page;
 
     /**
-     * The current page.
+     * The current page
      *
      * @var int
      */
@@ -30,21 +30,21 @@ final class Pagination
 
     /**
      * The number of pages that will
-     * be beside the current page.
+     * be beside the current page
      *
      * @var int
      */
     private $side_pages_n;
 
     /**
-     * The URL format of the pages.
+     * The URL format of the pages
      *
      * @var string
      */
     private $url_format;
 
     /**
-     * Show or not the first and last page.
+     * Show or not the first and last page
      *
      * @var bool
      */

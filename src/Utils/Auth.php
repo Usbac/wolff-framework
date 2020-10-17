@@ -19,7 +19,7 @@ final class Auth extends \Wolff\Core\DB
     ];
 
     /**
-     * The database table to be used.
+     * The database table to be used
      *
      * @var string
      */
@@ -27,7 +27,7 @@ final class Auth extends \Wolff\Core\DB
 
     /**
      * The name of the unique column
-     * that cannot be repeated.
+     * that cannot be repeated
      *
      * @var string
      */
@@ -42,7 +42,7 @@ final class Auth extends \Wolff\Core\DB
     private $last_user = null;
 
     /**
-     * The last inserted user id.
+     * The last inserted user id
      *
      * @var int
      */
@@ -164,7 +164,9 @@ final class Auth extends \Wolff\Core\DB
             $conditions[] = "$key = :$key";
         }
 
-        $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE " . implode(' AND ', $conditions));
+        $conditions = implode(' AND ', $conditions);
+
+        $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE $conditions");
         $stmt->execute($data);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 

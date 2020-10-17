@@ -6,21 +6,21 @@ final class Validation
 {
 
     /**
-     * The data to evaluate.
+     * The data to evaluate
      *
      * @var array
      */
     private $data = [];
 
     /**
-     * The fields rules.
+     * The fields rules
      *
      * @var array
      */
     private $fields = [];
 
     /**
-     * The fields rules.
+     * The fields rules
      *
      * @var array
      */
@@ -123,18 +123,12 @@ final class Validation
     private function compliesVal(string $rule, $rule_val, $val)
     {
         switch ($rule) {
-            case 'minlen':
-                return strlen($val) >= $rule_val;
-            case 'maxlen':
-                return strlen($val) <= $rule_val;
-            case 'minval':
-                return $val >= $rule_val;
-            case 'maxval':
-                return $val <= $rule_val;
-            case 'regex':
-                return preg_match($rule_val, $val);
-            default:
-                return true;
+            case 'minlen': return strlen($val) >= $rule_val;
+            case 'maxlen': return strlen($val) <= $rule_val;
+            case 'minval': return $val >= $rule_val;
+            case 'maxval': return $val <= $rule_val;
+            case 'regex': return preg_match($rule_val, $val);
+            default: return true;
         }
     }
 

@@ -43,11 +43,9 @@ final class Config
      */
     public static function get(string $key = null)
     {
-        if (!isset($key)) {
-            return self::$data;
-        }
-
-        return self::$data[$key];
+        return !isset($key) ?
+            self::$data :
+            self::$data[$key];
     }
 
 
@@ -102,16 +100,11 @@ final class Config
     private static function getVal(string $val)
     {
         switch ($val) {
-            case 'true':
-                return true;
-            case 'false':
-                return false;
-            case 'null':
-                return null;
-            case 'empty':
-                return '';
+            case 'true': return true;
+            case 'false': return false;
+            case 'null': return null;
+            case 'empty': return '';
+            default: Helper::removeQuotes($val);
         }
-
-        return Helper::removeQuotes($val);
     }
 }

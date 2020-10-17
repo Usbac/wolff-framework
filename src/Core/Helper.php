@@ -91,15 +91,15 @@ final class Helper
      */
     public static function getClientIP()
     {
-        $http_client_ip = filter_var($_SERVER['HTTP_CLIENT_IP'] ?? '', FILTER_VALIDATE_IP);
-        $http_forwarded = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '', FILTER_VALIDATE_IP);
+        $client_ip = filter_var($_SERVER['HTTP_CLIENT_IP'] ?? '', FILTER_VALIDATE_IP);
+        $forwarded = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '', FILTER_VALIDATE_IP);
 
-        if (!empty($http_client_ip)) {
-            return $http_client_ip;
+        if (!empty($client_ip)) {
+            return $client_ip;
         }
 
-        if (!empty($http_forwarded)) {
-            return $http_forwarded;
+        if (!empty($forwarded)) {
+            return $forwarded;
         }
 
         return $_SERVER['REMOTE_ADDR'] ?? '';

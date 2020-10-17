@@ -142,25 +142,22 @@ class Request implements RequestInterface
         }
 
         $dir = Helper::getRoot($arr['dir'] ?? '');
+
         if (isset($arr['dir']) && !is_dir($dir)) {
             throw new FileNotFoundException($dir);
-        }
-
-        if (isset($arr['extensions']) && !is_string($arr['extensions'])) {
+        } elseif (isset($arr['extensions']) && !is_string($arr['extensions'])) {
             throw new InvalidArgumentException('extensions', 'a string');
-        }
-
-        if (isset($arr['max_size']) && !is_numeric($arr['max_size'])) {
+        } elseif (isset($arr['max_size']) && !is_numeric($arr['max_size'])) {
             throw new InvalidArgumentException('max_size', 'a numeric value');
         }
 
-        $extensions = isset($arr['extensions']) ?
+        $exts = isset($arr['extensions']) ?
             array_map('trim', explode(',', $arr['extensions'])) :
             [];
 
         $this->file_options = [
             'dir'        => $dir,
-            'extensions' => $extensions,
+            'extensions' => $exts,
             'max_size'   => ($arr['max_size'] ?? 0) * 1024,
             'override'   => boolval($arr['override'] ?? true)
         ];

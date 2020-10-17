@@ -67,14 +67,16 @@ final class Middleware
         $url_length = count($url) - 1;
 
         foreach ($middlewares as $middleware) {
-            if (Helper::matchesRoute($middleware['url'], $url, $url_length)) {
-                self::$next = false;
-                $result = call_user_func_array($middleware['function'], $args);
-                array_push($results, $result);
+            if (!Helper::matchesRoute($middleware['url'], $url, $url_length)) {
+                continue;
+            }
 
-                if (!self::$next) {
-                    break;
-                }
+            self::$next = false;
+            $result = call_user_func_array($middleware['function'], $args);
+            array_push($results, $result);
+
+            if (!self::$next) {
+                break;
             }
         }
 

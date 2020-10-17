@@ -28,7 +28,7 @@ final class Cache
      */
     public static function init(bool $enabled = true)
     {
-        if ((self::$enabled = $enabled) === false) {
+        if (!(self::$enabled = $enabled)) {
             return;
         }
 

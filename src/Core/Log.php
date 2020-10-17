@@ -82,7 +82,7 @@ final class Log
      */
     public function setFolder(string $folder = self::DEFAULT_FOLDER)
     {
-        $this->folder = $folder;
+        $this->folder = Helper::getRoot($folder);
     }
 
 
@@ -125,8 +125,11 @@ final class Log
             return;
         }
 
-        $message = Str::interpolate($message, $values);
-        $log = sprintf(self::MSG_FORMAT, date($this->date_format), Helper::getClientIP(), $level, $message);
+        $log = sprintf(self::MSG_FORMAT,
+            date($this->date_format),
+            Helper::getClientIP(),
+            $level,
+            Str::interpolate($message, $values));
 
         $this->mkdir();
         $this->writeToFile($log);
@@ -138,10 +141,8 @@ final class Log
      */
     private function mkdir()
     {
-        $folder_path = Helper::getRoot($this->folder);
-
-        if (!file_exists($folder_path)) {
-            mkdir($folder_path, self::FOLDER_PERMISSIONS, true);
+        if (!file_exists($this->folder)) {
+            mkdir($this->folder, self::FOLDER_PERMISSIONS, true);
         }
     }
 
@@ -153,7 +154,7 @@ final class Log
      */
     private function writeToFile(string $data)
     {
-        file_put_contents(Helper::getRoot($this->getFilename()), $data . PHP_EOL, FILE_APPEND);
+        file_put_contents($this->getFilename(), $data . PHP_EOL, FILE_APPEND);
     }
 
 

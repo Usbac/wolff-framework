@@ -53,15 +53,15 @@ final class Cache
      */
     public static function get(string $dir): string
     {
-        $file_path = self::getDir(self::getFilename($dir));
+        $file_path = self::getFilename($dir);
 
-        if (file_exists($file_path)) {
-            return file_get_contents($file_path);
+        if (!file_exists($file_path)) {
+            throw new FileNotFoundException(
+                sprintf(self::EXISTS_ERROR, $file_path)
+            );
         }
 
-        throw new FileNotFoundException(
-            sprintf(self::EXISTS_ERROR, $file_path)
-        );
+        return file_get_contents($file_path);
     }
 
 
@@ -75,7 +75,7 @@ final class Cache
      */
     public static function set(string $dir, string $content): string
     {
-        $file_path = self::getDir(self::getFilename($dir));
+        $file_path = self::getFilename($dir);
 
         if (!file_exists($file_path)) {
             self::mkdir();
@@ -108,7 +108,7 @@ final class Cache
      */
     public static function has(string $dir): bool
     {
-        return is_file(self::getDir(self::getFilename($dir)));
+        return is_file(self::getFilename($dir));
     }
 
 
@@ -121,14 +121,13 @@ final class Cache
      */
     public static function delete(string $dir): bool
     {
-        $file_path = self::getDir(self::getFilename($dir));
-        $result = is_file($file_path);
+        $file_path = self::getFilename($dir);
 
-        if ($result) {
-            unlink($file_path);
+        if (is_file($file_path)) {
+            return unlink($file_path);
         }
 
-        return $result;
+        return false;
     }
 
 
@@ -163,7 +162,8 @@ final class Cache
      */
     private static function getFilename(string $dir): string
     {
-        return sprintf(self::FILENAME_FORMAT, str_replace('/', '_', $dir));
+        $filename = sprintf(self::FILENAME_FORMAT, str_replace('/', '_', $dir));
+        return self::getDir($filename);
     }
 
 

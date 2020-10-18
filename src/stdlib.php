@@ -372,22 +372,6 @@ namespace {
         }
     }
 
-    if (!function_exists('local')) {
-
-        /**
-         * Returns true if the current script is running in localhost,
-         * false otherwise
-         *
-         * @return bool true if the current script is running in localhost,
-         * false otherwise
-         */
-        function local()
-        {
-            $addr = $_SERVER['REMOTE_ADDR'] ?? '::1';
-            return $addr === '127.0.0.1' || $addr === '::1';
-        }
-    }
-
     if (!function_exists('average')) {
 
         /**
@@ -490,24 +474,6 @@ namespace {
         function isFloat($float)
         {
             return filter_var($float, FILTER_VALIDATE_FLOAT) !== false;
-        }
-    }
-
-    if (!function_exists('isBool')) {
-
-        /**
-         * Returns true if the given variable complies with a boolean,
-         * false otherwise
-         * Only the numeric values 1 and 0, and the strings
-         * 'true', 'false', '1' and '0' are counted as boolean.
-         *
-         * @param  mixed  $bool  the variable
-         */
-        function isBool($bool)
-        {
-            $bool = strval($bool);
-            return $bool === 'true' || $bool === 'false' ||
-                $bool === '1' || $bool === '0';
         }
     }
 

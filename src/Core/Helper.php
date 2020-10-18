@@ -110,23 +110,23 @@ final class Helper
      *
      * @param  string  $route  the route that must be matched.
      * @param  array  $url  the url to test.
-     * @param  int  $url_length  the url length.
+     * @param  int  $url_len  the url length.
      *
      * @return bool true if the given url array matches the route array,
      * false otherwise.
      */
-    public static function matchesRoute(string $route, array $url, int $url_length)
+    public static function matchesRoute(string $route, array $url, int $url_len)
     {
         $route = explode('/', $route);
-        $route_length = count($route) - 1;
+        $route_len = count($route) - 1;
 
-        for ($i = 0; $i <= $route_length && $i <= $url_length; $i++) {
+        for ($i = 0; $i <= $route_len && $i <= $url_len; $i++) {
             if ($route[$i] !== $url[$i] && $route[$i] !== '*') {
                 break;
             }
 
             if ($route[$i] === '*' ||
-                ($i === $url_length && $i === $route_length)) {
+                ($i === $url_len && $i === $route_len)) {
                 return true;
             }
         }

@@ -133,15 +133,12 @@ final class Route
     {
         $code = http_response_code();
 
-        if (!isset(self::$codes[$code]) ||
-            !is_callable(self::$codes[$code])) {
-            return;
+        if (isset(self::$codes[$code]) && is_callable(self::$codes[$code])) {
+            call_user_func_array(self::$codes[$code], [
+                $req,
+                $res
+            ]);
         }
-
-        call_user_func_array(self::$codes[$code], [
-            $req,
-            $res
-        ]);
     }
 
 
@@ -155,7 +152,7 @@ final class Route
     public static function getFunction(string $url)
     {
         $current = array_filter(explode('/', $url));
-        $current_length = count($current) - 1;
+        $current_len = count($current) - 1;
 
         if (empty(self::$routes)) {
             return null;
@@ -167,20 +164,20 @@ final class Route
             }
 
             $route = array_filter(explode('/', $key));
-            $route_length = count($route) - 1;
+            $route_len = count($route) - 1;
 
             if (empty($current) && empty($route)) {
-                return self::processRoute($current, $route);
+                return self::processRoute($current, $key, $route);
             }
 
-            for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
+            for ($i = 0; $i <= $route_len && $i <= $current_len; $i++) {
                 if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
                     break;
                 }
 
-                if (($i === $route_length || ($i + 1 === $route_length && self::isOptionalGet($route[$i + 1]))) &&
-                    $i === $current_length) {
-                    return self::processRoute($current, $route);
+                if (($i === $route_len || ($i + 1 === $route_len && self::isOptionalGet($route[$i + 1]))) &&
+                    $i === $current_len) {
+                    return self::processRoute($current, $key, $route);
                 }
             }
         }
@@ -195,17 +192,17 @@ final class Route
      * based on the route
      *
      * @param  array  $current  the current route array (exploded by /)
-     *
+     * @param  string  $key  the route key (the route array imploded)
      * @param  array  $route  the registered route array which matches the
      * current route (exploded by /)
      *
      * @return mixed the route function
      */
-    private static function processRoute(array $current, array $route)
+    private static function processRoute(array $current, string $key, array $route)
     {
         self::mapParameters($current, $route);
 
-        $route = self::$routes[implode('/', $route)];
+        $route = self::$routes[$key];
         header("Content-Type: $route[content_type]");
         if (isset($route['status'])) {
             http_response_code($route['status']);
@@ -226,10 +223,10 @@ final class Route
      */
     private static function mapParameters(array $current, array $route)
     {
-        $current_length = count($current) - 1;
-        $route_length = count($route) - 1;
+        $current_len = count($current) - 1;
+        $route_len = count($route) - 1;
 
-        for ($i = 0; $i <= $route_length && $i <= $current_length; $i++) {
+        for ($i = 0; $i <= $route_len && $i <= $current_len; $i++) {
             if (self::isOptionalGet($route[$i])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
             } elseif (self::isGet($route[$i])) {
@@ -237,7 +234,7 @@ final class Route
             }
 
             //Finish if last GET variable from url is optional
-            if ($i + 1 === $route_length && $i === $current_length &&
+            if ($i + 1 === $route_len && $i === $current_len &&
                 self::isOptionalGet($route[$i + 1])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
                 return;
@@ -341,10 +338,10 @@ final class Route
     public static function isBlocked(string $url)
     {
         $url = explode('/', $url);
-        $url_length = count($url) - 1;
+        $url_len = count($url) - 1;
 
         foreach (self::$blocked as $blocked) {
-            if (Helper::matchesRoute($blocked, $url, $url_length)) {
+            if (Helper::matchesRoute($blocked, $url, $url_len)) {
                 return true;
             }
         }

@@ -7,8 +7,8 @@ use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
 /**
- * @method static before(string $url, \Closure $function)
- * @method static after(string $url, \Closure $function)
+ * static @method before(string $url, \Closure $function)
+ * static @method after(string $url, \Closure $function)
  */
 final class Middleware
 {
@@ -64,10 +64,10 @@ final class Middleware
 
         $results = [];
         $url = explode('/', rtrim($url, '/'));
-        $url_length = count($url) - 1;
+        $url_len = count($url) - 1;
 
         foreach ($middlewares as $middleware) {
-            if (!Helper::matchesRoute($middleware['url'], $url, $url_length)) {
+            if (!Helper::matchesRoute($middleware['url'], $url, $url_len)) {
                 continue;
             }
 

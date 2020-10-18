@@ -150,7 +150,7 @@ final class Route
     public static function getFunction(string $url)
     {
         $current = array_filter(explode('/', $url));
-        $current_len = count($current) - 1;
+        $len = count($current) - 1;
 
         foreach (self::$routes as $key => $val) {
             if (!self::isValidRoute($key)) {
@@ -158,25 +158,46 @@ final class Route
             }
 
             $route = array_filter(explode('/', $key));
-            $route_len = count($route) - 1;
 
-            if (empty($current) && empty($route)) {
+            if (self::matchesRoute($current, $len, $route, count($route) - 1)) {
                 return self::processRoute($current, $key, $route);
-            }
-
-            for ($i = 0; $i <= $route_len && $i <= $current_len; $i++) {
-                if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
-                    break;
-                }
-
-                if (($i === $route_len || ($i + 1 === $route_len && self::isOptionalGet($route[$i + 1]))) &&
-                    $i === $current_len) {
-                    return self::processRoute($current, $key, $route);
-                }
             }
         }
 
         return null;
+    }
+
+
+    /**
+     * Returns true if the current route matches the given one, false
+     * otherwise
+     *
+     * @param  array  $current  the current route array
+     * @param  int  $current_len  the size of the current route array
+     * @param  array  $route  the route array to test
+     * @param  int  $route_len  the size of the route array to test
+     *
+     * @return bool true if the current route matches the given one, false
+     * otherwise
+     */
+    private static function matchesRoute(array $current, int $current_len, array $route, int $route_len)
+    {
+        if (empty($current) && empty($route)) {
+            return true;
+        }
+
+        for ($i = 0; $i <= $route_len && $i <= $current_len; $i++) {
+            if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
+                break;
+            }
+
+            if (($i === $route_len || ($i + 1 === $route_len && self::isOptionalGet($route[$i + 1]))) &&
+                $i === $current_len) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

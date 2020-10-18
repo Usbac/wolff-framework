@@ -18,6 +18,9 @@ use Wolff\Core\Template;
 final class Kernel
 {
 
+    const ACCESS_CLOSURE = 1;
+    const ACCESS_METHOD = 2;
+    const ACCESS_CONTROLLER = 3;
     const DEFAULT_CONFIG = [
         'db'             => [],
         'language'       => 'english',
@@ -164,8 +167,10 @@ final class Kernel
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
         } else {
-            if ($this->isAccessible()) {
-                $this->load();
+            $access_code = $this->getAccessCode();
+
+            if ($access_code) {
+                $this->load($access_code);
             } else {
                 http_response_code(404);
             }
@@ -179,22 +184,28 @@ final class Kernel
 
     /**
      * Loads the current route and its middlewares
+     *
+     * @param  int  $access_code  the access code
      */
-    private function load()
+    private function load(int $access_code)
     {
-        $params = [
+        $args = [
             $this->req,
             $this->res
         ];
 
         $this->res->append(Middleware::loadBefore($this->url, $this->req));
 
-        if ($this->function instanceof \Closure) {
-            call_user_func_array($this->function, $params);
-        } elseif (Controller::hasMethod($this->controller, $this->method)) {
-            Controller::method($this->controller, $this->method, $params);
-        } elseif (Controller::exists($this->url)) {
-            Controller::method($this->url, 'index', $params);
+        switch ($access_code) {
+            case self::ACCESS_CLOSURE:
+                call_user_func_array($this->function, $args);
+                break;
+            case self::ACCESS_METHOD:
+                Controller::method($this->controller, $this->method, $args);
+                break;
+            case self::ACCESS_CONTROLLER:
+                Controller::method($this->url, 'index', $args);
+                break;
         }
 
         $this->res->append(Middleware::loadAfter($this->url, $this->req));
@@ -202,18 +213,23 @@ final class Kernel
 
 
     /**
-     * Returns true if the current route is accessible,
-     * false otherwise
+     * Returns the access code of the current route
      *
-     * @return bool true if the current route is accessible,
-     * false otherwise
+     * @return int the access code of the current route
      */
-    private function isAccessible()
+    private function getAccessCode()
     {
-        return !Route::isBlocked($this->url) &&
-            ($this->function instanceof \Closure ||
-            Controller::hasMethod($this->controller, $this->method) ||
-            Controller::exists($this->url));
+        if (Route::isBlocked($this->url)) {
+            return 0;
+        } elseif ($this->function instanceof \Closure) {
+            return self::ACCESS_CLOSURE;
+        } elseif (Controller::hasMethod($this->controller, $this->method)) {
+            return self::ACCESS_METHOD;
+        } elseif (Controller::exists($this->url)) {
+            return self::ACCESS_CONTROLLER;
+        }
+
+        return 0;
     }
 
 

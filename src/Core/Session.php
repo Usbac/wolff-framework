@@ -146,16 +146,14 @@ final class Session
      */
     public static function getVarTime(string $key, bool $gmdate = false)
     {
-        $remaining = 0;
-        if (isset($_SESSION['vars_tmp_time'][$key])) {
-            $remaining = $_SESSION['vars_tmp_time'][$key] - time();
-        }
+        $remaining = isset($_SESSION['vars_tmp_time'][$key]) ?
+            $_SESSION['vars_tmp_time'][$key] - time() :
+            0;
+        $remaining = max($remaining, 0);
 
-        if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, $remaining > 0 ? $remaining : 0);
-        }
-
-        return $remaining > 0 ? $remaining : 0;
+        return $gmdate ?
+            gmdate(self::DATE_FORMAT, $remaining) :
+            $remaining;
     }
 
 
@@ -228,13 +226,11 @@ final class Session
     public static function getRemainingTime(bool $gmdate = false)
     {
         $end = $_SESSION['end_time'] ?? 0;
-        $remaining = $end - time();
+        $remaining = max($end - time(), 0);
 
-        if ($gmdate) {
-            return gmdate(self::DATE_FORMAT, ($remaining > 0) ? $remaining : 0);
-        }
-
-        return $remaining > 0 ? $remaining : 0;
+        return $gmdate ?
+            gmdate(self::DATE_FORMAT, $remaining) :
+            $remaining;
     }
 
 

@@ -247,7 +247,8 @@ final class Route
      * request method matches the current methods
      *
      * @param  string  $key  the route key
-     * @return boolean true if the route exists and its
+     *
+     * @return bool true if the route exists and its
      * request method matches the current methods
      */
     private static function isValidRoute($key): bool

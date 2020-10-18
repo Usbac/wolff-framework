@@ -61,7 +61,7 @@ class Controller
      *
      * @param  string  $path  the path of the controller
      *
-     * @return boolean true if the controller exists, false otherwise
+     * @return bool true if the controller exists, false otherwise
      */
     public static function exists(string $path): bool
     {
@@ -75,7 +75,7 @@ class Controller
      * @param  string  $path  the controller path
      * @param  string  $method  the controller method name
      *
-     * @return boolean true if the controller's method exists, false otherwise
+     * @return bool true if the controller's method exists, false otherwise
      */
     public static function hasMethod(string $path, string $method): bool
     {

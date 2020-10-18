@@ -66,7 +66,7 @@ final class Maintenance
     /**
      * Sets the maintenance status
      *
-     * @param  bool  $enabled  True for enabling the maintenance mode,
+     * @param  bool  $enabled  true for enabling the maintenance mode,
      * false for disabling it
      */
     public static function setStatus(bool $enabled): void
@@ -80,16 +80,16 @@ final class Maintenance
      *
      * @throws \Wolff\Exception\FileNotReadableException
      *
-     * @return array|false An array of the IPs in the whitelist
+     * @return array an array of the IPs in the whitelist
      */
-    public static function getAllowedIPs()
+    public static function getAllowedIPs(): array
     {
         if (!isset(self::$file)) {
             self::setFile();
         }
 
         if (!is_file(self::$file)) {
-            return false;
+            return [];
         } elseif (!is_readable(self::$file)) {
             throw new FileNotReadableException(self::$file);
         }
@@ -183,11 +183,7 @@ final class Maintenance
      */
     public static function hasAccess(): bool
     {
-        if (($ips = self::getAllowedIPs()) === false) {
-            return false;
-        }
-
-        return in_array(Helper::getClientIP(), $ips);
+        return in_array(Helper::getClientIP(), self::getAllowedIPs());
     }
 
 
@@ -197,7 +193,7 @@ final class Maintenance
      * @param \Wolff\Core\Http\Request $req Reference to the request object
      * @param \Wolff\Core\Http\Response $res Reference to the response object
      */
-    public static function call(Http\Request &$req, Http\Response &$res)
+    public static function call(Http\Request &$req, Http\Response &$res): void
     {
         if (isset(self::$function)) {
             call_user_func_array(self::$function, [

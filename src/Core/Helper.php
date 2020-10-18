@@ -141,7 +141,7 @@ final class Helper
      * @param  string  $str  the string
      * @param  string  $needle  the substring
      *
-     * @return boolean true if a string ends with another string, false otherwise
+     * @return bool true if a string ends with another string, false otherwise
      */
     public static function endsWith(string $str, string $needle): bool
     {

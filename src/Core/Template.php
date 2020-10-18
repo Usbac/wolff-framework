@@ -378,7 +378,7 @@ final class Template
 
         foreach ($matches[1] as $key => $val) {
             $lang = trim($val[0], '"\'');
-            $content = str_replace($matches[0][$key][0], Language::get($lang), $content);
+            $content = str_replace($matches[0][$key][0], Language::get($lang) ?? '', $content);
         }
 
         return $content;

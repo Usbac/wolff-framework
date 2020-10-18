@@ -11,7 +11,6 @@ final class Cache
     const FOLDER = 'cache';
     const FILE_EXT = 'tmp';
     const FILENAME_FORMAT = '%s.' . self::FILE_EXT;
-    const EXPIRATION_TIME = 604800; //One week
     const FOLDER_PERMISSIONS = 0755;
 
     /**
@@ -22,26 +21,14 @@ final class Cache
 
 
     /**
-     * Deletes all the cache files that have expired
+     * Sets the cache status
      *
-     * @param  bool  $enabled  the cache status
+     * @param  bool  $enabled  True for enabling the cache system,
+     * false for disabling it
      */
-    public static function init(bool $enabled = true)
+    public static function setStatus(bool $enabled = true)
     {
-        if (!(self::$enabled = $enabled)) {
-            return;
-        }
-
-        $time = time();
-
-        foreach (glob(self::getDir('*.' . self::FILE_EXT)) as $file) {
-            $mod_time = filemtime($file);
-
-            if ($mod_time !== false &&
-                $time - $mod_time > self::EXPIRATION_TIME) {
-                unlink($file);
-            }
-        }
+        self::$enabled = $enabled;
     }
 
 
@@ -146,12 +133,21 @@ final class Cache
 
 
     /**
-     * Deletes all of the cache files
+     * Deletes all of the cache files.
+     * If no seconds parameter is given all files will be deleted.
+     *
+     * @param  [int]  $seconds  the minimum time in seconds
+     * that a file needs to have since its last modification
+     * to be deleted
      */
-    public static function clear()
+    public static function clear(int $seconds = 0)
     {
-        foreach (glob(self::getDir() . '/*') as $file) {
-            if (is_file($file)) {
+        $time = time();
+
+        foreach (glob(self::getDir('*.' . self::FILE_EXT)) as $file) {
+            $mod_time = filemtime($file);
+
+            if ($mod_time !== false && ($time - $mod_time) > $seconds) {
                 unlink($file);
             }
         }

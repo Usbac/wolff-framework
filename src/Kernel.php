@@ -128,8 +128,8 @@ final class Kernel
     private function initComponents()
     {
         Config::init($this->config);
-        Cache::init($this->config['cache_on']);
         DB::setCredentials($this->config['db']);
+        Cache::setStatus($this->config['cache_on']);
         Template::setStatus($this->config['template_on']);
         Maintenance::setStatus($this->config['maintenance_on']);
         Language::setDefault($this->config['language']);

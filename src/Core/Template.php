@@ -3,6 +3,7 @@
 namespace Wolff\Core;
 
 use Wolff\Core\Helper;
+use Wolff\Core\Language;
 use Wolff\Utils\Str;
 use Wolff\Exception\FileNotFoundException;
 use Wolff\Exception\InvalidArgumentException;
@@ -28,6 +29,7 @@ final class Template
         'tag'        => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
         'function'   => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
         'include'    => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
+        'language'   => '/' . self::NOT_RAW . '@lang\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'for'        => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
         'csrf'       => '/' . self::NOT_RAW . '@csrf/',
 
@@ -68,7 +70,7 @@ final class Template
     /**
      * Sets the template engine status
      *
-     * @param  bool  $enabled  True for enabling the template engine,
+     * @param  bool  $enabled  true for enabling the template engine,
      * false for disabling it
      */
     public static function setStatus(bool $enabled = true): void
@@ -88,46 +90,28 @@ final class Template
 
 
     /**
-     * Returns the view content rendered or false in case of errors.
+     * Returns the view content rendered.
      * The template format will be applied only if the template is enabled.
      *
      * @param  string  $dir  the view directory
      * @param  array  $data  the data array present in the view
      * @param  bool  $cache  use or not the cache system
      *
-     * @return string|bool the view content rendered or false in case of errors.
+     * @return string the view content rendered
      */
-    public static function getRender(string $dir, array $data, bool $cache)
+    public static function getRender(string $dir, array $data, bool $cache): string
     {
-        if (is_array($data)) {
-            extract($data);
-            unset($data);
-        }
-
+        extract($data);
+        unset($data);
         ob_start();
 
-        //Cache
         if ($cache && Cache::isEnabled()) {
-            if (Cache::has($dir)) {
-                $content = Cache::get($dir);
-            } else {
-                $content = self::getContent($dir);
-
-                if (self::$enabled) {
-                    $content = self::replaceAll($content);
-                }
-            }
-
-            include(Cache::set($dir, $content));
+            include(Cache::set($dir, Cache::has($dir) ?
+                Cache::get($dir) :
+                self::getContent($dir)));
         } else {
             $tmp_file = tmpfile();
-            $content = self::getContent($dir);
-
-            if (self::$enabled) {
-                $content = self::replaceAll($content);
-            }
-
-            fwrite($tmp_file, $content);
+            fwrite($tmp_file, self::getContent($dir));
             include(stream_get_meta_data($tmp_file)['uri']);
             fclose($tmp_file);
         }
@@ -153,13 +137,9 @@ final class Template
         extract($data);
         unset($data);
 
-        if ($cache && Cache::isEnabled() && Cache::has($dir)) {
-            return Cache::get($dir);
-        }
-
-        $content = self::getContent($dir);
-
-        return self::$enabled ? self::replaceAll($content) : $content;
+        return $cache && Cache::isEnabled() && Cache::has($dir) ?
+            Cache::get($dir) :
+            self::getContent($dir);
     }
 
 
@@ -182,7 +162,11 @@ final class Template
             );
         }
 
-        return file_get_contents($file_path);
+        $content = file_get_contents($file_path);
+
+        return self::$enabled ?
+            self::replaceAll($content) :
+            $content;
     }
 
 
@@ -219,6 +203,7 @@ final class Template
         $content = self::replaceIncludes($content);
         $content = self::replaceImports($content);
         $content = self::replaceComments($content);
+        $content = self::replaceLanguages($content);
         $content = self::replaceFunctions($content);
         $content = self::replaceCycles($content);
         $content = self::replaceTags($content);
@@ -246,7 +231,7 @@ final class Template
             return $content;
         }
 
-        $input = '<input type="hidden" name="' . WOLFF_CONFIG['csrf_key'] .'" value="' . self::getCsrfToken() . '"/>';
+        $input = '<input type="hidden" name="' . WOLFF_CONFIG['csrf_key'] . '" value="' . self::getCsrfToken() . '"/>';
         return preg_replace(self::FORMAT['csrf'], $input, $content);
     }
 
@@ -374,6 +359,26 @@ final class Template
     {
         foreach (self::$templates as $template) {
             $content = $template($content);
+        }
+
+        return $content;
+    }
+
+
+    /**
+     * Applies the template language
+     *
+     * @param  string  $content  the view content
+     *
+     * @return string the view content with the language formatted
+     */
+    private static function replaceLanguages($content): string
+    {
+        preg_match_all(self::FORMAT['language'], $content, $matches, PREG_OFFSET_CAPTURE);
+
+        foreach ($matches[1] as $key => $val) {
+            $lang = trim($val[0], '"\'');
+            $content = str_replace($matches[0][$key][0], Language::get($lang), $content);
         }
 
         return $content;

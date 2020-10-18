@@ -2,15 +2,13 @@
 
 namespace Wolff\Core;
 
-use Wolff\Utils\Str;
-use Wolff\Exception\BadControllerCallException;
+use BadMethodCallException;
 
 class Controller
 {
 
     const NAMESPACE = 'Controller\\';
-    const ERROR_CONTROLLER_EXISTS = 'The controller class \'%s\' does not exists';
-    const ERROR_METHOD_EXISTS = 'The controller class \'%s\' does not have a \'%s\' method';
+    const ERROR_EXISTS = 'The controller class \'%s\' or its method \'%s\'does not exists';
 
 
     /**
@@ -20,15 +18,11 @@ class Controller
      *
      * @return \Wolff\Core\Controller the controller
      */
-    public static function get(string $path)
+    public static function get(string $path = null)
     {
-        $path = Str::sanitizePath($path);
-
-        if (($controller = self::getController($path)) === null) {
-            throw new BadControllerCallException(self::ERROR_CONTROLLER_EXISTS, $path);
-        }
-
-        return $controller;
+        return isset($path) ?
+            self::getController($path) :
+            new Controller;
     }
 
 
@@ -48,7 +42,9 @@ class Controller
         $controller = self::getController($path);
 
         if (!method_exists($controller, $method)) {
-            throw new BadControllerCallException(self::ERROR_METHOD_EXISTS, $path, $method);
+            throw new BadMethodCallException(
+                sprintf(self::ERROR_EXISTS, $path, $method)
+            );
         }
 
         return call_user_func_array([ $controller, $method ], $args);
@@ -81,11 +77,8 @@ class Controller
     {
         $path = self::getClassname($path);
 
-        if (method_exists($path, $method)) {
-            return (new \ReflectionMethod($path, $method))->isPublic();
-        }
-
-        return false;
+        return method_exists($path, $method) &&
+            (new \ReflectionMethod($path, $method))->isPublic();
     }
 
 
@@ -103,16 +96,12 @@ class Controller
     /**
      * Returns a controller initialized
      *
-     * @param  string|null  $path  the controller path
+     * @param  string  $path  the controller path
      *
      * @return object|null a controller initialized
      */
-    private static function getController(string $path = null)
+    private static function getController(string $path)
     {
-        if (!isset($path)) {
-            return new Controller;
-        }
-
         $class = self::getClassname($path);
 
         return class_exists($class) ? new $class : null;

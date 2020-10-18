@@ -78,8 +78,6 @@ final class Maintenance
     /**
      * Returns an array of the IPs in the whitelist
      *
-     * @throws \Wolff\Exception\FileNotReadableException
-     *
      * @return array an array of the IPs in the whitelist
      */
     public static function getAllowedIPs(): array
@@ -88,20 +86,14 @@ final class Maintenance
             self::setFile();
         }
 
-        if (!is_file(self::$file)) {
-            return [];
-        } elseif (!is_readable(self::$file)) {
-            throw new FileNotReadableException(self::$file);
-        }
-
-        return explode(PHP_EOL, file_get_contents(self::$file));
+        return is_readable(self::$file) ?
+            explode(PHP_EOL, file_get_contents(self::$file)) :
+            [];
     }
 
 
     /**
      * Adds an IP to the whitelist
-     *
-     * @throws \Wolff\Exception\FileNotReadableException
      *
      * @param  string  $ip  the IP to add
      *
@@ -119,19 +111,7 @@ final class Maintenance
 
         self::createFile();
 
-        if (!file_get_contents(self::$file)) {
-            if (is_writable(self::$file)) {
-                file_put_contents(self::$file, $ip);
-
-                return true;
-            }
-
-            throw new FileNotReadableException(self::$file);
-        }
-
-        file_put_contents(self::$file, PHP_EOL . $ip, FILE_APPEND | LOCK_EX);
-
-        return true;
+        return file_put_contents(self::$file, PHP_EOL . $ip, FILE_APPEND | LOCK_EX) !== false;
     }
 
 
@@ -158,9 +138,8 @@ final class Maintenance
 
         $ips = array_filter(explode(PHP_EOL, file_get_contents(self::$file)));
         Helper::arrayRemove($ips, $ip);
-        file_put_contents(self::$file, implode(PHP_EOL, $ips));
 
-        return true;
+        return file_put_contents(self::$file, implode(PHP_EOL, $ips)) !== false;
     }
 
 

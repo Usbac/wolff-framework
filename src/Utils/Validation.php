@@ -32,9 +32,9 @@ final class Validation
      *
      * @param  array  $data  the data array
      *
-     * @return self
+     * @return this
      */
-    public function setData(array $data)
+    public function setData(array $data): Validation
     {
         $this->data = $data;
         return $this;
@@ -47,9 +47,9 @@ final class Validation
      * @param  array  $fields  the associative array
      * with the fields rules
      *
-     * @return self
+     * @return this
      */
-    public function setFields(array $fields)
+    public function setFields(array $fields): Validation
     {
         $this->fields = $fields;
         return $this;
@@ -62,7 +62,7 @@ final class Validation
      *
      * @return array an associative array with all the invalid values
      */
-    public function getInvalidValues()
+    public function getInvalidValues(): array
     {
         $this->isValid();
         return $this->invalid_values;
@@ -76,7 +76,7 @@ final class Validation
      * @return bool true if the current data complies all the fields rules,
      * false otherwise
      */
-    public function isValid()
+    public function isValid(): bool
     {
         foreach ($this->fields as $key => $val) {
             $this->validateField($key);
@@ -94,7 +94,7 @@ final class Validation
      * @param  string  $key  the data key value to evaluate
      * with the field rules
      */
-    private function validateField(string $key)
+    private function validateField(string $key): void
     {
         $val = $this->data[$key] ?? null;
 
@@ -120,7 +120,7 @@ final class Validation
      * @return bool true if the given value complies with the
      * specified rule, false otherwise
      */
-    private function compliesVal(string $rule, $rule_val, $val)
+    private function compliesVal(string $rule, $rule_val, $val): bool
     {
         switch ($rule) {
             case 'minlen': return strlen($val) >= $rule_val;
@@ -143,7 +143,7 @@ final class Validation
      * @return bool true if the given value complies with the
      * specified type, false otherwise
      */
-    private function compliesType(string $type, $val)
+    private function compliesType(string $type, $val): bool
     {
         switch ($type) {
             case 'email':
@@ -171,7 +171,7 @@ final class Validation
      * @param  string  $key  the value key
      * @param  string  $field  the field that the value doesn't complies
      */
-    private function addInvalidValue(string $key, string $field)
+    private function addInvalidValue(string $key, string $field): void
     {
         $this->invalid_values[$key][] = $field;
     }
@@ -190,7 +190,7 @@ final class Validation
      * @return bool true if the current data complies all the fields rules,
      * false otherwise
      */
-    public function check($fields, $data)
+    public function check($fields, $data): bool
     {
         return $this->setFields($fields)
                     ->setData($data)

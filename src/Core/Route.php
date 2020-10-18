@@ -68,7 +68,7 @@ final class Route
      * @param  string  $name the method name
      * @param  mixed  $args  the method arguments
      */
-    public static function __callStatic(string $name, $args)
+    public static function __callStatic(string $name, $args): void
     {
         $http_method = strtoupper($name);
         if (!in_array($http_method, self::HTTP_METHODS)) {
@@ -99,7 +99,7 @@ final class Route
      * @param  array  $data  the view data
      * @param  bool  $cache  use or not the cache system
      */
-    public static function view(string $url, string $view_path, array $data = [], bool $cache = true)
+    public static function view(string $url, string $view_path, array $data = [], bool $cache = true): void
     {
         $func = function () use ($view_path, $data, $cache) {
             View::render($view_path, $data, $cache);
@@ -117,7 +117,7 @@ final class Route
      * @param  \Closure  $func  mixed the function that must be executed
      * when getting the status code
      */
-    public static function code(int $code, \Closure $func)
+    public static function code(int $code, \Closure $func): void
     {
         self::$codes[$code] = $func;
     }
@@ -129,7 +129,7 @@ final class Route
      * @param \Wolff\Core\Http\Request $req Reference to the current request object
      * @param \Wolff\Core\Http\Response $res Reference to the current response object
      */
-    public static function execCode(Http\Request &$req, Http\Response &$res)
+    public static function execCode(Http\Request &$req, Http\Response &$res): void
     {
         $code = http_response_code();
 
@@ -217,7 +217,6 @@ final class Route
      *
      * @param  array  $current  the current route array
      * (exploded by /)
-     *
      * @param  array  $route  the registered route array
      * (exploded by /) which matches the current route
      */
@@ -251,7 +250,7 @@ final class Route
      * @return boolean true if the route exists and its
      * request method matches the current methods
      */
-    private static function isValidRoute($key)
+    private static function isValidRoute($key): bool
     {
         return self::$routes[$key] &&
             (self::$routes[$key]['method'] === '' ||
@@ -266,7 +265,7 @@ final class Route
      * @param  mixed  $func  mixed the function that must be executed when accessing the route
      * @param  int  $status  the HTTP response code
      */
-    public static function any(string $url, $func, int $status = self::STATUS_OK)
+    public static function any(string $url, $func, int $status = self::STATUS_OK): void
     {
         self::addRoute(Str::sanitizeURL($url), '', $func, $status);
     }
@@ -279,7 +278,7 @@ final class Route
      * @param  string  $to  the destiny url
      * @param  int  $code  The HTTP response code
      */
-    public static function redirect(string $from, string $to, int $code = self::STATUS_REDIRECT)
+    public static function redirect(string $from, string $to, int $code = self::STATUS_REDIRECT): void
     {
         self::$redirects[Str::sanitizeURL($from)] = [
             'destiny' => Str::sanitizeURL($to),
@@ -296,7 +295,7 @@ final class Route
      * @param  mixed  $function  the url function or controller name
      * @param  int|null  $status  the HTTP response code
      */
-    private static function addRoute($url, string $method, $function, $status)
+    private static function addRoute($url, string $method, $function, $status): void
     {
         $content_type = 'text/html';
 
@@ -322,7 +321,7 @@ final class Route
      *
      * @param  string  $url  the url
      */
-    public static function block(string $url)
+    public static function block(string $url): void
     {
         array_push(self::$blocked, Str::sanitizeURL($url));
     }
@@ -333,9 +332,9 @@ final class Route
      *
      * @param  string  $url  the url
      *
-     * @return boolean true if the url is blocked, false otherwise
+     * @return bool true if the url is blocked, false otherwise
      */
-    public static function isBlocked(string $url)
+    public static function isBlocked(string $url): bool
     {
         $url = explode('/', $url);
         $url_len = count($url) - 1;
@@ -355,9 +354,9 @@ final class Route
      *
      * @param  string  $url  the url
      *
-     * @return boolean true if the route exists, false otherwise
+     * @return bool true if the route exists, false otherwise
      */
-    public static function exists(string $url)
+    public static function exists(string $url): bool
     {
         $url = preg_replace(self::GET_FORMAT, '{}', $url);
         $routes = [];
@@ -375,9 +374,9 @@ final class Route
      *
      * @param  string  $str  the string
      *
-     * @return boolean true if the string has the format of a route GET variable, false otherwise
+     * @return bool true if the string has the format of a route GET variable, false otherwise
      */
-    private static function isGet(string $str)
+    private static function isGet(string $str): bool
     {
         return preg_match(self::GET_FORMAT, $str);
     }
@@ -388,9 +387,9 @@ final class Route
      *
      * @param  string  $str  the string
      *
-     * @return boolean true if the string has the format of an optional route GET variable, false otherwise
+     * @return bool true if the string has the format of an optional route GET variable, false otherwise
      */
-    private static function isOptionalGet(string $str)
+    private static function isOptionalGet(string $str): bool
     {
         return preg_match(self::OPTIONAL_GET_FORMAT, $str);
     }
@@ -402,7 +401,7 @@ final class Route
      * @param  string  $key  the variable key
      * @param  string  $value  the variable value
      */
-    private static function setGet(string $key, $value)
+    private static function setGet(string $key, $value): void
     {
         $key = preg_replace(self::GET_FORMAT, '$1', $key);
         $_GET[$key] = $value;
@@ -415,7 +414,7 @@ final class Route
      * @param  string  $key  the variable key
      * @param  string  $value  the variable value
      */
-    private static function setOptionalGetVar(string $key, $value = null)
+    private static function setOptionalGetVar(string $key, $value = null): void
     {
         $key = preg_replace(self::OPTIONAL_GET_FORMAT, '$1', $key);
         $_GET[$key] = $value ?? '';
@@ -426,7 +425,7 @@ final class Route
      * Returns all the available routes
      * @return array the available routes
      */
-    public static function getRoutes()
+    public static function getRoutes(): array
     {
         return self::$routes;
     }
@@ -436,7 +435,7 @@ final class Route
      * Returns all the available redirects
      * @return array the available redirects
      */
-    public static function getRedirects()
+    public static function getRedirects(): array
     {
         return self::$redirects;
     }
@@ -447,10 +446,10 @@ final class Route
      *
      * @param  string  $url  the route url
      *
-     * @return string|null the redirection url
+     * @return array|null the redirection url
      * or null if the specified route doesn't have a redirection
      */
-    public static function getRedirection(string $url)
+    public static function getRedirection(string $url): ?array
     {
         return self::$redirects[$url] ?? null;
     }
@@ -460,7 +459,7 @@ final class Route
      * Returns all the blocked routes
      * @return array the blocked routes
      */
-    public static function getBlocked()
+    public static function getBlocked(): array
     {
         return self::$blocked;
     }

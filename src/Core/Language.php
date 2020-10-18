@@ -22,7 +22,7 @@ final class Language
      *
      * @param  string  $lang  the default language to use
      */
-    public static function setDefault(string $lang)
+    public static function setDefault(string $lang): void
     {
         self::$default = $lang;
     }
@@ -72,7 +72,7 @@ final class Language
      *
      * @return string the path of a language file
      */
-    private static function getPath(string $dir, string $lang)
+    private static function getPath(string $dir, string $lang): string
     {
         return Helper::getRoot(sprintf(self::PATH_FORMAT, $lang, $dir));
     }
@@ -88,7 +88,7 @@ final class Language
      * @return bool true if the specified language exists,
      * false otherwise
      */
-    public static function exists(string $dir, string $lang = null)
+    public static function exists(string $dir, string $lang = null): bool
     {
         return file_exists(self::getPath($dir, $lang ?? self::$default));
     }

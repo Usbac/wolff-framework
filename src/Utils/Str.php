@@ -27,7 +27,7 @@ final class Str
      *
      * @return string the url sanitized
      */
-    public static function sanitizeUrl(string $url)
+    public static function sanitizeUrl(string $url): string
     {
         return filter_var(rtrim($url, '/'), FILTER_SANITIZE_URL);
     }
@@ -40,7 +40,7 @@ final class Str
      *
      * @return string the email sanitized
      */
-    public static function sanitizeEmail(string $email)
+    public static function sanitizeEmail(string $email): string
     {
         return filter_var(trim($email), FILTER_SANITIZE_EMAIL);
     }
@@ -53,7 +53,7 @@ final class Str
      *
      * @return string the integer sanitized
      */
-    public static function sanitizeInt(string $int)
+    public static function sanitizeInt(string $int): string
     {
         return filter_var($int, FILTER_SANITIZE_NUMBER_INT);
     }
@@ -66,7 +66,7 @@ final class Str
      *
      * @return string the float sanitized
      */
-    public static function sanitizeFloat(string $float)
+    public static function sanitizeFloat(string $float): string
     {
         return filter_var($float, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     }
@@ -79,7 +79,7 @@ final class Str
      *
      * @return string the path sanitized
      */
-    public static function sanitizePath(string $path)
+    public static function sanitizePath(string $path): string
     {
         return preg_replace('/[^a-zA-Z0-9_\-\/. ]/', '', $path);
     }
@@ -90,10 +90,11 @@ final class Str
      * quotes surrounding it
      *
      * @param  string  $str  the string
+     *
      * @return string the string without single or double
      * quotes surrounding it
      */
-    public static function removeQuotes(string $str)
+    public static function removeQuotes(string $str): string
     {
         return Helper::removeQuotes($str);
     }
@@ -106,7 +107,7 @@ final class Str
      *
      * @return string the url friendly string
      */
-    public static function slug(string $str)
+    public static function slug(string $str): string
     {
         //Trim whitespaces and change special characters by their normal counterpart
         $str = strtr(trim($str), self::SLUG_CHARS);
@@ -129,7 +130,7 @@ final class Str
      *
      * @return string a random generated token
      */
-    public static function token(int $length = 16)
+    public static function token(int $length = 16): string
     {
         return bin2hex(random_bytes($length / 2));
     }
@@ -144,7 +145,7 @@ final class Str
      * @return bool Returns true if the given string is a valid email,
      * false otherwise
      */
-    public static function isEmail(string $email)
+    public static function isEmail(string $email): bool
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
@@ -159,7 +160,7 @@ final class Str
      * @return bool Returns true if the given string contains only
      * alphanumeric characters, false otherwise
      */
-    public static function isAlphanumeric(string $str)
+    public static function isAlphanumeric(string $str): bool
     {
         return preg_match('/^[\w-]*$/', $str) == true;
     }
@@ -174,7 +175,7 @@ final class Str
      * @return bool Returns true if the given string contains only
      * letters, false otherwise
      */
-    public static function isAlpha(string $str)
+    public static function isAlpha(string $str): bool
     {
         return preg_match('/[^A-Za-z]+/', $str) == false;
     }
@@ -187,9 +188,9 @@ final class Str
      * @param  string  $str  the string
      * @param  string  $needle  the substring you are looking for
      *
-     * @return boolean true if the substring is present in the other string, false otherwise
+     * @return bool true if the substring is present in the other string, false otherwise
      */
-    public static function contains(string $str, string $needle)
+    public static function contains(string $str, string $needle): bool
     {
         return mb_strpos($str, $needle) !== false;
     }
@@ -205,7 +206,7 @@ final class Str
      *
      * @return string the string with its placeholders replaced by context values
      */
-    public static function interpolate(string $str, array $values)
+    public static function interpolate(string $str, array $values): string
     {
         foreach ($values as $key => $val) {
             if (!is_object($val)) {
@@ -228,7 +229,7 @@ final class Str
      * @return string the string with the indicated substrings swapped
      * or false in case of errors.
      */
-    public static function swap(string $str, string $first_str, string $second_str)
+    public static function swap(string $str, string $first_str, string $second_str): string
     {
         return strtr($str, [
             $first_str  => $second_str,
@@ -245,7 +246,7 @@ final class Str
      *
      * @return boolean true if a string starts with another string, false otherwise
      */
-    public static function startsWith(string $str, string $needle)
+    public static function startsWith(string $str, string $needle): bool
     {
         return mb_strpos($str, $needle) === 0;
     }
@@ -259,7 +260,7 @@ final class Str
      *
      * @return boolean true if a string ends with another string, false otherwise
      */
-    public static function endsWith(string $str, string $needle)
+    public static function endsWith(string $str, string $needle): bool
     {
         return Helper::endsWith($str, $needle);
     }
@@ -273,7 +274,7 @@ final class Str
      *
      * @return string the string with the indicated substring removed
      */
-    public static function remove(string $str, string $needle)
+    public static function remove(string $str, string $needle): string
     {
         return str_replace($needle, '', $str);
     }
@@ -289,7 +290,7 @@ final class Str
      * @return string a string with everything after the specified substring,
      * or false if the substring is not in the string.
      */
-    public static function after(string $str, string $needle)
+    public static function after(string $str, string $needle): string
     {
         return self::contains($str, $needle) ?
             mb_substr($str, mb_strpos($str, $needle) + mb_strlen($needle)) :
@@ -307,7 +308,7 @@ final class Str
      * @return string a string with everything before the specified substring,
      * or false if the substring is not in the string
      */
-    public static function before(string $str, string $needle)
+    public static function before(string $str, string $needle): string
     {
         return mb_substr($str, 0, mb_strpos($str, $needle));
     }
@@ -321,7 +322,7 @@ final class Str
      *
      * @return string a truncated string with the specified length
      */
-    public static function limit(string $str, int $limit)
+    public static function limit(string $str, int $limit): string
     {
         return mb_strimwidth($str, 0, $limit, '', self::ENCODING);
     }
@@ -334,7 +335,7 @@ final class Str
      *
      * @return string the given paths concatenated
      */
-    public static function concatPath(...$paths)
+    public static function concatPath(...$paths): string
     {
         $final = [];
 
@@ -357,7 +358,7 @@ final class Str
      *
      * @return string all the given strings concatenated into one
      */
-    public static function concat(...$strings)
+    public static function concat(...$strings): string
     {
         $aux = '';
 
@@ -378,7 +379,7 @@ final class Str
      *
      * @return string the given value as a string
      */
-    public static function toString($var)
+    public static function toString($var): string
     {
         //Boolean
         if (is_bool($var)) {

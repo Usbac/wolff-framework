@@ -82,7 +82,7 @@ final class Pagination
      *
      * @return array the pagination array
      */
-    public function get()
+    public function get(): array
     {
         $total_pages = ceil($this->total / $this->per_page);
         $begin = $this->page - $this->side_pages_n;
@@ -112,7 +112,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function setTotal(int $total)
+    public function setTotal(int $total): Pagination
     {
         $this->total = $total;
 
@@ -127,7 +127,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function setPageSize(int $per_page)
+    public function setPageSize(int $per_page): Pagination
     {
         $this->per_page = $per_page;
 
@@ -142,7 +142,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function setPage(int $page = 0)
+    public function setPage(int $page = 0): Pagination
     {
         $this->page = $page;
 
@@ -159,7 +159,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function setSidePages(int $side_pages_n = 5)
+    public function setSidePages(int $side_pages_n = 5): Pagination
     {
         $this->side_pages_n = $side_pages_n;
 
@@ -176,7 +176,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function setUrl(string $url_format)
+    public function setUrl(string $url_format): Pagination
     {
         $this->url_format = $url_format;
 
@@ -193,7 +193,7 @@ final class Pagination
      *
      * @return Pagination this
      */
-    public function showEnds(bool $show_ends = true)
+    public function showEnds(bool $show_ends = true): Pagination
     {
         $this->show_ends = $show_ends;
 
@@ -206,7 +206,7 @@ final class Pagination
      *
      * @param  array  &$pagination  the pagination array
      */
-    private function addEnds(array &$pagination)
+    private function addEnds(array &$pagination): void
     {
         if (!isset($pagination[0])) {
             return;
@@ -232,7 +232,7 @@ final class Pagination
      *
      * @return array A new page based in the given index
      */
-    private function getNewPage(int $i)
+    private function getNewPage(int $i): array
     {
         return [
             'index'        => $i,

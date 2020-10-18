@@ -71,7 +71,7 @@ final class Template
      * @param  bool  $enabled  True for enabling the template engine,
      * false for disabling it
      */
-    public static function setStatus(bool $enabled = true)
+    public static function setStatus(bool $enabled = true): void
     {
         self::$enabled = $enabled;
     }
@@ -81,7 +81,7 @@ final class Template
      * Returns true if the template system is enabled, false otherwise
      * @return bool true if the template system is enabled, false otherwise
      */
-    public static function isEnabled()
+    public static function isEnabled(): bool
     {
         return self::$enabled;
     }
@@ -148,7 +148,7 @@ final class Template
      *
      * @return string the view content with the template format applied
      */
-    public static function get(string $dir, array $data, bool $cache)
+    public static function get(string $dir, array $data, bool $cache): string
     {
         extract($data);
         unset($data);
@@ -172,7 +172,7 @@ final class Template
      *
      * @return string The content of a view file
      */
-    private static function getContent($dir)
+    private static function getContent($dir): string
     {
         $file_path = self::getPath($dir);
 
@@ -193,7 +193,7 @@ final class Template
      *
      * @return string the complete view file path
      */
-    public static function getPath(string $dir)
+    public static function getPath(string $dir): string
     {
         $path_format =
             Helper::endsWith($dir, '.php') ||
@@ -212,7 +212,7 @@ final class Template
      *
      * @return string the view content with the template replaced
      */
-    private static function replaceAll(string $content)
+    private static function replaceAll(string $content): string
     {
         $content = self::replaceCsrf($content);
         $content = self::replaceExtend($content);
@@ -238,7 +238,7 @@ final class Template
      * @return string the view content with
      * the inputs that prevent csrf
      */
-    private static function replaceCsrf(string $content)
+    private static function replaceCsrf(string $content): string
     {
         preg_match(self::FORMAT['csrf'], $content, $matches);
 
@@ -257,7 +257,7 @@ final class Template
      *
      * @return string the csrf token
      */
-    private static function getCsrfToken()
+    private static function getCsrfToken(): string
     {
         $key = WOLFF_CONFIG['csrf_key'];
         if (!isset($_COOKIE[$key])) {
@@ -280,7 +280,7 @@ final class Template
      * @return string the content of the given child view with the parent block imports replaced
      * by its content
      */
-    private static function replaceParentBlockImports(string $content, string $parent_content)
+    private static function replaceParentBlockImports(string $content, string $parent_content): string
     {
         preg_match_all(self::FORMAT['parent_block'], $content, $parent_blocks);
 
@@ -305,7 +305,7 @@ final class Template
      * @return string the content of the given parent with its blocks replaced by the content
      * defined in the child view
      */
-    private static function replaceParentBlocksWithChildContent(string $content, string $parent_content)
+    private static function replaceParentBlocksWithChildContent(string $content, string $parent_content): string
     {
         preg_match_all(self::FORMAT['block'], $content, $child_blocks);
 
@@ -326,7 +326,7 @@ final class Template
      * @return string the child view content rendered
      * based on its parent
      */
-    private static function replaceExtend(string $content)
+    private static function replaceExtend(string $content): string
     {
         preg_match(self::FORMAT['extends'], $content, $matches);
 
@@ -353,7 +353,7 @@ final class Template
      *
      * @param  mixed  $function  the function with the custom template
      */
-    public static function custom($function)
+    public static function custom($function): void
     {
         if (!is_callable($function)) {
             throw new InvalidArgumentException('function', 'callable');
@@ -370,7 +370,7 @@ final class Template
      *
      * @return string the view content with the custom templates formatted
      */
-    private static function replaceCustom(string $content)
+    private static function replaceCustom(string $content): string
     {
         foreach (self::$templates as $template) {
             $content = $template($content);
@@ -387,7 +387,7 @@ final class Template
      *
      * @return string the view content with the includes formatted
      */
-    private static function replaceIncludes($content)
+    private static function replaceIncludes($content): string
     {
         preg_match_all(self::FORMAT['include'], $content, $matches, PREG_OFFSET_CAPTURE);
 
@@ -407,7 +407,7 @@ final class Template
      *
      * @return string the view content with the import tags formatted
      */
-    private static function replaceImports($content)
+    private static function replaceImports($content): string
     {
         $content = preg_replace(self::FORMAT['style'], '<link rel="stylesheet" type="text/css" href=$4/>', $content);
         $content = preg_replace(self::FORMAT['script'], '<script type="text/javascript" src=$4></script>', $content);
@@ -424,7 +424,7 @@ final class Template
      *
      * @return string the view content with the functions formatted
      */
-    private static function replaceFunctions($content)
+    private static function replaceFunctions($content): string
     {
         foreach (self::FUNCTIONS as $original => $replacement) {
             $original = str_replace('(.*)', $original, self::FORMAT['function']);
@@ -442,7 +442,7 @@ final class Template
      *
      * @return string the view content with the tags formatted
      */
-    private static function replaceTags($content)
+    private static function replaceTags($content): string
     {
         $content = preg_replace(self::FORMAT['echo'], '<?php echo htmlspecialchars($2, ENT_QUOTES) ?>', $content);
         $content = preg_replace(self::FORMAT['plain_echo'], '<?php echo $2 ?>', $content);
@@ -459,7 +459,7 @@ final class Template
      *
      * @return string the view content with the cycles formatted
      */
-    private static function replaceCycles($content)
+    private static function replaceCycles($content): string
     {
         $content = preg_replace(self::FORMAT['for'], '<?php for ($3 = $6; $3 <= $9; $3++): ?>', $content);
 
@@ -474,7 +474,7 @@ final class Template
      *
      * @return string the view content without the comments
      */
-    private static function replaceComments($content)
+    private static function replaceComments($content): string
     {
         return preg_replace(self::FORMAT['comment'], '', $content);
     }
@@ -487,7 +487,7 @@ final class Template
      *
      * @return string the view content with the raw tag removed from the rest of the tags
      */
-    private static function replaceRaws($content)
+    private static function replaceRaws($content): string
     {
         foreach (self::FORMAT as $format) {
             $format = trim($format, '/');

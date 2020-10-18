@@ -74,7 +74,7 @@ class DB
      *
      * @return PDO|null the PDO connection
      */
-    private static function getConnection(array $data, array $options)
+    private static function getConnection(array $data, array $options): ?PDO
     {
         if (empty($data['dsn']) || empty($options)) {
             return null;
@@ -98,7 +98,7 @@ class DB
      *
      * @param  array  $data  The connection default credentials
      */
-    public static function setCredentials(array $data)
+    public static function setCredentials(array $data): void
     {
         self::$credentials = $data;
     }
@@ -108,7 +108,7 @@ class DB
      * Returns the PDO connection
      * @return PDO the PDO connection
      */
-    public function getPdo()
+    public function getPdo(): ?PDO
     {
         return $this->connection;
     }
@@ -118,7 +118,7 @@ class DB
      * Returns the last query executed
      * @return string the last query executed
      */
-    public function getLastSql()
+    public function getLastSql(): string
     {
         return $this->last_sql;
     }
@@ -128,7 +128,7 @@ class DB
      * Returns the arguments of the last query executed
      * @return array the arguments of the last query executed
      */
-    public function getLastArgs()
+    public function getLastArgs(): array
     {
         return $this->last_args;
     }
@@ -138,7 +138,7 @@ class DB
      * Returns the last prepared PDO statement
      * @return \PDOStatement the last prepared PDO statement
      */
-    public function getLastStmt()
+    public function getLastStmt(): \PDOStatement
     {
         return $this->last_stmt;
     }
@@ -148,7 +148,7 @@ class DB
      * Returns the last inserted id in the database
      * @return string the last inserted id in the database
      */
-    public function getLastId()
+    public function getLastId(): string
     {
         return $this->connection->lastInsertId();
     }
@@ -158,7 +158,7 @@ class DB
      * Returns the number of rows affected by the last query
      * @return int|null the number of rows affected by the last query
      */
-    public function getAffectedRows()
+    public function getAffectedRows(): ?int
     {
         return $this->last_stmt ? $this->last_stmt->rowCount() : null;
     }
@@ -220,7 +220,7 @@ class DB
      *
      * @return bool true if the specified table exists in the database, false otherwise
      */
-    public function tableExists(string $table)
+    public function tableExists(string $table): bool
     {
         $table = $this->escape($table);
 
@@ -242,7 +242,7 @@ class DB
      * @return bool true if the specified column and table exists in the table of the database,
      * false otherwise
      */
-    public function columnExists(string $table, string $column)
+    public function columnExists(string $table, string $column): bool
     {
         $table = $this->escape($table);
         $column = $this->escape($column);
@@ -370,7 +370,7 @@ class DB
      *
      * @return int the query result
      */
-    public function count(string $table, string $conditions = null, ...$args)
+    public function count(string $table, string $conditions = null, ...$args): int
     {
         $query = "SELECT COUNT(*) FROM $table";
 
@@ -401,7 +401,7 @@ class DB
      *
      * @return bool true if the transaction has been made successfully, false otherwise
      */
-    public function moveRows(string $ori_table, string $dest_table, string $conditions = '1', $args = null)
+    public function moveRows(string $ori_table, string $dest_table, string $conditions = '1', $args = null): bool
     {
         $ori_table = $this->escape($ori_table);
         $dest_table = $this->escape($dest_table);
@@ -439,7 +439,7 @@ class DB
      *
      * @return bool true in case of success, false otherwise
      */
-    public function delete(string $table, string $conditions = null, ...$args)
+    public function delete(string $table, string $conditions = null, ...$args): bool
     {
         $table = $this->escape($table);
         $query = "DELETE FROM $table";
@@ -463,7 +463,7 @@ class DB
      *
      * @return string the string escaped
      */
-    protected function escape($str)
+    protected function escape($str): string
     {
         return preg_replace('/[^A-Za-z0-9_]+/', '', $str);
     }

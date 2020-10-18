@@ -36,7 +36,7 @@ final class Maintenance
      *
      * @param  \Closure  $func  the function
      */
-    public static function set(\Closure $func)
+    public static function set(\Closure $func): void
     {
         self::$function = $func;
     }
@@ -47,7 +47,7 @@ final class Maintenance
      *
      * @param  string  $path  the file path
      */
-    public static function setFile(string $path = self::DEFAULT_FILE)
+    public static function setFile(string $path = self::DEFAULT_FILE): void
     {
         self::$file = Helper::getRoot($path);
     }
@@ -57,7 +57,7 @@ final class Maintenance
      * Returns true if the maintenance mode is enabled, false otherwise
      * @return bool true if the maintenance mode is enabled, false otherwise
      */
-    public static function isEnabled()
+    public static function isEnabled(): bool
     {
         return self::$enabled;
     }
@@ -69,7 +69,7 @@ final class Maintenance
      * @param  bool  $enabled  True for enabling the maintenance mode,
      * false for disabling it
      */
-    public static function setStatus(bool $enabled)
+    public static function setStatus(bool $enabled): void
     {
         self::$enabled = $enabled;
     }
@@ -107,7 +107,7 @@ final class Maintenance
      *
      * @return bool true if the IP has been added, false otherwise
      */
-    public static function addAllowedIP(string $ip)
+    public static function addAllowedIP(string $ip): bool
     {
         if (!isset(self::$file)) {
             self::setFile();
@@ -144,7 +144,7 @@ final class Maintenance
      *
      * @return bool true if the IP has been removed, false otherwise
      */
-    public static function removeAllowedIP(string $ip)
+    public static function removeAllowedIP(string $ip): bool
     {
         if (!isset(self::$file)) {
             self::setFile();
@@ -167,7 +167,7 @@ final class Maintenance
     /**
      * Create the text file with the IP whitelist
      */
-    private static function createFile()
+    private static function createFile(): void
     {
         if (!is_file(self::$file)) {
             file_put_contents(self::$file, '');
@@ -181,7 +181,7 @@ final class Maintenance
      * @return bool true if the current client IP is in the whitelist,
      * false otherwise
      */
-    public static function hasAccess()
+    public static function hasAccess(): bool
     {
         if (($ips = self::getAllowedIPs()) === false) {
             return false;

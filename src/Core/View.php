@@ -14,7 +14,7 @@ final class View
      * @param  array  $data  the view data
      * @param  bool  $cache  use or not the cache system
      */
-    public static function render(string $dir, array $data = [], bool $cache = true)
+    public static function render(string $dir, array $data = [], bool $cache = true): void
     {
         echo self::getRender($dir, $data, $cache);
     }
@@ -27,7 +27,7 @@ final class View
      *
      * @return string the original view content
      */
-    public static function getSource(string $dir)
+    public static function getSource(string $dir): string
     {
         $dir = Str::sanitizePath($dir);
         return file_get_contents(self::getPath($dir));
@@ -42,10 +42,10 @@ final class View
      * @param  array  $data  the data
      * @param  bool  $cache  use or not the cache system
      *
-     * @return mixed the view content with the template format applied
+     * @return string the view content with the template format applied
      * over it
      */
-    public static function get(string $dir, array $data = [], bool $cache = true)
+    public static function get(string $dir, array $data = [], bool $cache = true): string
     {
         $dir = Str::sanitizePath($dir);
         return Template::get($dir, $data, $cache);
@@ -61,7 +61,7 @@ final class View
      *
      * @return string the view content fully rendered
      */
-    public static function getRender(string $dir, array $data = [], bool $cache = true)
+    public static function getRender(string $dir, array $data = [], bool $cache = true): string
     {
         $dir = Str::sanitizePath($dir);
         return Template::getRender($dir, $data, $cache);
@@ -75,7 +75,7 @@ final class View
      *
      * @return string the complete view file path
      */
-    public static function getPath(string $dir)
+    public static function getPath(string $dir): string
     {
         return Template::getPath($dir);
     }
@@ -87,9 +87,9 @@ final class View
      *
      * @param  string  $dir  the directory of the view
      *
-     * @return boolean true if the view exists, false otherwise
+     * @return bool true if the view exists, false otherwise
      */
-    public static function exists(string $dir)
+    public static function exists(string $dir): bool
     {
         return file_exists(self::getPath($dir));
     }

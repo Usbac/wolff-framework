@@ -9,9 +9,10 @@ namespace {
          *
          * @param  int  $size  size (in bytes)
          * @param  int  $precision  number of digits after the decimal point
+         *
          * @return string the size as a human-readable string
          */
-        function bytesToString($size, $precision = 0)
+        function bytesToString($size, $precision = 0): string
         {
             $sizes = [ 'YB', 'ZB', 'EB', 'PB', 'TB', 'GB', 'MB', 'KB', 'B' ];
             $total = count($sizes);
@@ -34,7 +35,7 @@ namespace {
          *
          * @return bool true if the element has been removed, false otherwise
          */
-        function arrayRemove(array &$arr, $needle)
+        function arrayRemove(array &$arr, $needle): bool
         {
             return \Wolff\Core\Helper::arrayRemove($arr, $needle);
         }
@@ -52,7 +53,7 @@ namespace {
          * @return bool true if the current request is safe from csrf,
          * false otherwise
          */
-        function validateCsrf()
+        function validateCsrf(): bool
         {
             $key = WOLFF_CONFIG['csrf_key'];
 
@@ -75,7 +76,7 @@ namespace {
          *
          * @return string the absolute path
          */
-        function path(string $path = '')
+        function path(string $path = ''): string
         {
             return \Wolff\Core\Helper::getRoot($path);
         }
@@ -91,7 +92,7 @@ namespace {
          *
          * @return string the path as relative.
          */
-        function relativePath(string $path = '')
+        function relativePath(string $path = ''): string
         {
             $root = Wolff\Core\Helper::getRoot();
 
@@ -145,7 +146,7 @@ namespace {
          *
          * @return string the public directory of the project
          */
-        function getPublic(string $path = '')
+        function getPublic(string $path = ''): string
         {
             return \Wolff\Core\Helper::getRoot('public/' . ltrim($path, '/'));
         }
@@ -162,7 +163,7 @@ namespace {
          * @return bool true if the given array is associative,
          * false otherwise
          */
-        function isAssoc(array $arr)
+        function isAssoc(array $arr): bool
         {
             return \Wolff\Core\Helper::isAssoc($arr);
         }
@@ -206,7 +207,7 @@ namespace {
         /**
          * Print a string and die
          */
-        function echod(...$args)
+        function echod(...$args): void
         {
             foreach ($args as $arg) {
                 echo $arg;
@@ -221,7 +222,7 @@ namespace {
         /**
          * Print the given values in a nice looking way
          */
-        function printr(...$args)
+        function printr(...$args): void
         {
             echo '<pre>';
             array_map('print_r', $args);
@@ -234,7 +235,7 @@ namespace {
         /**
          * Print the given values in a nice looking way and die
          */
-        function printrd(...$args)
+        function printrd(...$args): void
         {
             echo '<pre>';
             array_map('print_r', $args);
@@ -248,7 +249,7 @@ namespace {
         /**
          * Var dump the given values and die
          */
-        function dumpd(...$args)
+        function dumpd(...$args): void
         {
             array_map('var_dump', $args);
             die;
@@ -263,7 +264,7 @@ namespace {
          * @param  string|null  $url  the url to redirect to
          * @param  int  $status  the HTTP status code
          */
-        function redirect(string $url = null, int $status = 302)
+        function redirect(string $url = null, int $status = 302): void
         {
             //Set url to the homepage when null
             if (!isset($url)) {
@@ -299,7 +300,7 @@ namespace {
          *
          * @return bool true if the given string is a Json, false otherwise
          */
-        function isJson(string $str)
+        function isJson(string $str): bool
         {
             json_decode($str);
             return json_last_error() === JSON_ERROR_NONE;
@@ -352,7 +353,7 @@ namespace {
          *
          * @return string the complete url relative to the local site
          */
-        function url(string $url = '')
+        function url(string $url = ''): string
         {
             $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 
@@ -392,7 +393,7 @@ namespace {
          * Returns the current client IP
          * @return string the current client IP
          */
-        function getClientIP()
+        function getClientIP(): string
         {
             return \Wolff\Core\Helper::getClientIP();
         }
@@ -404,7 +405,7 @@ namespace {
          * Returns the current page relative to the project url
          * @return string the current page relative to the project url
          */
-        function getCurrentPage()
+        function getCurrentPage(): string
         {
             $url = $_SERVER['REQUEST_URI'];
             $root = \Wolff\Core\Helper::getRoot();
@@ -425,7 +426,7 @@ namespace {
          * Returns the current page without arguments
          * @return string the current page without arguments
          */
-        function getPureCurrentPage()
+        function getPureCurrentPage(): string
         {
             $host = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 
@@ -443,7 +444,7 @@ namespace {
          * Returns the time between the page load start and the current time
          * @return float the time between the page load start and the current time
          */
-        function getBenchmark()
+        function getBenchmark(): float
         {
             return microtime(true) - WOLFF_CONFIG['start'];
         }
@@ -457,7 +458,7 @@ namespace {
          *
          * @param  mixed  $int  the variable
          */
-        function isInt($int)
+        function isInt($int): bool
         {
             return filter_var($int, FILTER_VALIDATE_INT) !== false;
         }
@@ -471,7 +472,7 @@ namespace {
          *
          * @param  mixed  $float  the variable
          */
-        function isFloat($float)
+        function isFloat($float): bool
         {
             return filter_var($float, FILTER_VALIDATE_FLOAT) !== false;
         }

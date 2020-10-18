@@ -39,7 +39,11 @@ final class Config
 
 
     /**
-     * Returns the configuration
+     * Returns all the configuration or the specified key
+     *
+     * @param  string  [$key]  the key of the configuration array to get
+     *
+     * @return mixed all the configuration or the specified key
      */
     public static function get(string $key = null)
     {
@@ -56,7 +60,7 @@ final class Config
      *
      * @param  string  $file_path  the environment file path
      */
-    private static function parseEnv(string $file_path)
+    private static function parseEnv(string $file_path): void
     {
         if (is_readable($file_path)) {
             $content = file_get_contents($file_path);
@@ -73,7 +77,7 @@ final class Config
      *
      * @param  string  $line  the line
      */
-    private static function parseEnvLine(string $line)
+    private static function parseEnvLine(string $line): void
     {
         if (!($equal_pos = strpos($line, '='))) {
             return;

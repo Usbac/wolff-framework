@@ -26,7 +26,7 @@ final class Cache
      * @param  bool  $enabled  True for enabling the cache system,
      * false for disabling it
      */
-    public static function setStatus(bool $enabled = true)
+    public static function setStatus(bool $enabled = true): void
     {
         self::$enabled = $enabled;
     }
@@ -36,7 +36,7 @@ final class Cache
      * Returns true if the cache is enabled, false otherwise
      * @return bool true if the cache is enabled, false otherwise
      */
-    public static function isEnabled()
+    public static function isEnabled(): bool
     {
         return self::$enabled;
     }
@@ -51,7 +51,7 @@ final class Cache
      *
      * @return string return the content of the cache file
      */
-    public static function get(string $dir)
+    public static function get(string $dir): string
     {
         $file_path = self::getDir(self::getFilename($dir));
 
@@ -73,7 +73,7 @@ final class Cache
      *
      * @return string the cache file path
      */
-    public static function set(string $dir, string $content)
+    public static function set(string $dir, string $content): string
     {
         $file_path = self::getDir(self::getFilename($dir));
 
@@ -91,7 +91,7 @@ final class Cache
     /**
      * Creates the cache folder if it doesn't exists
      */
-    public static function mkdir()
+    public static function mkdir(): void
     {
         if (!file_exists(self::getDir())) {
             mkdir(self::getDir(), self::FOLDER_PERMISSIONS, true);
@@ -106,7 +106,7 @@ final class Cache
      *
      * @return bool true if the cache exists, false otherwise
      */
-    public static function has(string $dir)
+    public static function has(string $dir): bool
     {
         return is_file(self::getDir(self::getFilename($dir)));
     }
@@ -119,7 +119,7 @@ final class Cache
      *
      * @return bool true if the item was successfully removed, false otherwise
      */
-    public static function delete(string $dir)
+    public static function delete(string $dir): bool
     {
         $file_path = self::getDir(self::getFilename($dir));
         $result = is_file($file_path);
@@ -140,7 +140,7 @@ final class Cache
      * that a file needs to have since its last modification
      * to be deleted
      */
-    public static function clear(int $seconds = 0)
+    public static function clear(int $seconds = 0): void
     {
         $time = time();
 
@@ -161,7 +161,7 @@ final class Cache
      *
      * @return string the cache format name of a file
      */
-    private static function getFilename(string $dir)
+    private static function getFilename(string $dir): string
     {
         return sprintf(self::FILENAME_FORMAT, str_replace('/', '_', $dir));
     }
@@ -174,7 +174,7 @@ final class Cache
      *
      * @return string the cache directory of the project
      */
-    private static function getDir(string $path = '')
+    private static function getDir(string $path = ''): string
     {
         return Helper::getRoot(self::FOLDER . '/' . $path);
     }

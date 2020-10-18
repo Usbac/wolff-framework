@@ -63,7 +63,7 @@ class Controller
      *
      * @return boolean true if the controller exists, false otherwise
      */
-    public static function exists(string $path)
+    public static function exists(string $path): bool
     {
         return class_exists(self::getClassname($path));
     }
@@ -77,7 +77,7 @@ class Controller
      *
      * @return boolean true if the controller's method exists, false otherwise
      */
-    public static function hasMethod(string $path, string $method)
+    public static function hasMethod(string $path, string $method): bool
     {
         $path = self::getClassname($path);
 
@@ -94,7 +94,7 @@ class Controller
      *
      * @return string The controller classname of the given path
      */
-    private static function getClassname(string $path)
+    private static function getClassname(string $path): string
     {
         return self::NAMESPACE . str_replace('/', '\\', $path);
     }

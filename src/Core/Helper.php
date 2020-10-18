@@ -20,7 +20,7 @@ final class Helper
      * @return string the string without single or double
      * quotes surrounding it
      */
-    public static function removeQuotes(string $str)
+    public static function removeQuotes(string $str): string
     {
         $len = strlen($str) - 1;
         if (($str[0] === '\'' && $str[$len] === '\'') ||
@@ -39,7 +39,7 @@ final class Helper
      *
      * @return string The absolute path
      */
-    public static function getRoot(string $path = '')
+    public static function getRoot(string $path = ''): string
     {
         if (!isset(self::$base_path)) {
             self::$base_path = str_replace('\\', '/', dirname(getcwd()));
@@ -58,7 +58,7 @@ final class Helper
      * @return bool true if the given array is associative,
      * false otherwise
      */
-    public static function isAssoc(array $arr)
+    public static function isAssoc(array $arr): bool
     {
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
@@ -72,7 +72,7 @@ final class Helper
      *
      * @return bool true if the element has been removed, false otherwise
      */
-    public static function arrayRemove(array &$arr, $needle)
+    public static function arrayRemove(array &$arr, $needle): bool
     {
         foreach ($arr as $key => $val) {
             if ($val == $needle) {
@@ -89,7 +89,7 @@ final class Helper
      * Returns the current client IP
      * @return string the current client IP
      */
-    public static function getClientIP()
+    public static function getClientIP(): string
     {
         $client_ip = filter_var($_SERVER['HTTP_CLIENT_IP'] ?? '', FILTER_VALIDATE_IP);
         $forwarded = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '', FILTER_VALIDATE_IP);
@@ -115,7 +115,7 @@ final class Helper
      * @return bool true if the given url array matches the route array,
      * false otherwise.
      */
-    public static function matchesRoute(string $route, array $url, int $url_len)
+    public static function matchesRoute(string $route, array $url, int $url_len): bool
     {
         $route = explode('/', $route);
         $route_len = count($route) - 1;
@@ -143,7 +143,7 @@ final class Helper
      *
      * @return boolean true if a string ends with another string, false otherwise
      */
-    public static function endsWith(string $str, string $needle)
+    public static function endsWith(string $str, string $needle): bool
     {
         return mb_substr($str, -mb_strlen($needle)) === $needle;
     }

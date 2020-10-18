@@ -71,7 +71,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @param  string  $table  the database table
      */
-    public function setTable(string $table = self::DEFAULT_TABLE)
+    public function setTable(string $table = self::DEFAULT_TABLE): void
     {
         $this->table = $this->escape($table);
     }
@@ -82,7 +82,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @param  array  $options  the password hash options
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -93,7 +93,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @return array the password hash options
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -104,7 +104,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @return int the last inserted id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->last_id;
     }
@@ -117,7 +117,7 @@ final class Auth extends \Wolff\Core\DB
      * @return array the currently authenticated
      * user's data
      */
-    public function getUser()
+    public function getUser(): array
     {
         return $this->last_user;
     }
@@ -129,7 +129,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @param string $unique_column the unique column name
      */
-    public function setUnique(string $unique_column)
+    public function setUnique(string $unique_column): void
     {
         $this->unique_column = $unique_column;
     }
@@ -147,7 +147,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the given user data exists in the database
      * and is valid, false otherwise
      */
-    public function login(array $data)
+    public function login(array $data): bool
     {
         if (empty($data) || !isAssoc($data) || !array_key_exists('password', $data)) {
             throw new InvalidArgumentException(
@@ -186,10 +186,10 @@ final class Auth extends \Wolff\Core\DB
      *
      * @param  array  $data  the array containing the user data
      *
-     * @return bool True if the registration has been successfully made,
+     * @return bool true if the registration has been successfully made,
      * false otherwise
      */
-    public function register(array $data)
+    public function register(array $data): bool
     {
         if (empty($data) || !isAssoc($data)) {
             throw new InvalidArgumentException('data', 'a non-empty associative array');
@@ -229,7 +229,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the password in the given user array matches
      * the given password, false otherwise
      */
-    private function isValidUser($user, $password)
+    private function isValidUser($user, $password): bool
     {
         return is_array($user) &&
             array_key_exists('password', $user) &&
@@ -247,7 +247,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the 'password' and the 'password_confirm' values
      * of the given array are equal, false otherwise
      */
-    private function passwordMatches(array $data)
+    private function passwordMatches(array $data): bool
     {
         return array_key_exists('password', $data) &&
             array_key_exists('password_confirm', $data) &&
@@ -265,7 +265,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @return string the hashed password
      */
-    private function getPassword(string $password)
+    private function getPassword(string $password): string
     {
         return password_hash($password, PASSWORD_BCRYPT, $this->options);
     }
@@ -279,7 +279,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the insertion has been successfully made,
      * false otherwise
      */
-    private function insertUser($data)
+    private function insertUser($data): bool
     {
         $array_keys = array_keys($data);
 

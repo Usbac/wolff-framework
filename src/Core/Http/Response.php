@@ -56,7 +56,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function write($content)
+    public function write($content): Response
     {
         $this->content = strval($content);
 
@@ -67,7 +67,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function append($content)
+    public function append($content): Response
     {
         $this->content .= strval($content);
 
@@ -78,7 +78,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function get()
+    public function get(): string
     {
         return $this->content;
     }
@@ -87,7 +87,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function setHeader(string $key, string $value)
+    public function setHeader(string $key, string $value): Response
     {
         $this->headers[trim($key)] = $value;
 
@@ -98,7 +98,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function setCode(int $status)
+    public function setCode(int $status): Response
     {
         $this->status_code = $status;
 
@@ -117,7 +117,7 @@ class Response implements ResponseInterface
         string $domain = '',
         bool $secure = false,
         bool $http_only = true
-    ) {
+    ): Response {
         if (isset($time) && array_key_exists($time, self::COOKIE_TIMES)) {
             $time = self::COOKIE_TIMES[strtoupper($time)];
         }
@@ -139,7 +139,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function unsetCookie(string $key)
+    public function unsetCookie(string $key): Response
     {
         array_push($this->cookies, [
             'key'       => $key,

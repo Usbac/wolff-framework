@@ -92,7 +92,7 @@ class Request implements RequestInterface
      *
      * @return array The headers parsed
      */
-    private function parseHeaders(array $server)
+    private function parseHeaders(array $server): array
     {
         $headers = [];
 
@@ -111,13 +111,13 @@ class Request implements RequestInterface
      * Returns an array of files instances based on the
      * given files array
      *
-     * @param array $arr the array of files
-     * @param array $options the array with the file options
+     * @param  array  $arr  the array of files
+     * @param  array  $options  the array with the file options
      *
      * @return array The array of files instances based on the
      * given files array
      */
-    private function getFiles(array $arr, array &$options)
+    private function getFiles(array $arr, array &$options): array
     {
         $files = [];
 
@@ -135,7 +135,7 @@ class Request implements RequestInterface
      * @param array $arr the array with the options
      * (dir, extensions, max_size, override)
      */
-    public function fileOptions(array $arr = [])
+    public function fileOptions(array $arr = []): void
     {
         if (isset($arr['dir']) && !is_string($arr['dir'])) {
             throw new InvalidArgumentException('dir', 'a string');
@@ -198,7 +198,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function has(string $key)
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->body);
     }
@@ -218,7 +218,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function hasFile(string $key)
+    public function hasFile(string $key): bool
     {
         return array_key_exists($key, $this->files);
     }
@@ -238,7 +238,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function hasCookie(string $key)
+    public function hasCookie(string $key): bool
     {
         return array_key_exists($key, $this->cookies);
     }
@@ -258,7 +258,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->server['REQUEST_METHOD'];
     }
@@ -267,7 +267,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUri()
+    public function getUri(): string
     {
         return substr($this->server['REQUEST_URI'], 0, strpos($this->server['REQUEST_URI'], '?'));
     }
@@ -276,7 +276,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getFullUri()
+    public function getFullUri(): string
     {
         return $this->server['REQUEST_URI'];
     }
@@ -285,7 +285,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function isSecure()
+    public function isSecure(): bool
     {
         return isset($this->server['HTTPS']) &&
             ($this->server['HTTPS'] == 'on' || $this->server['HTTPS'] == 1) ||

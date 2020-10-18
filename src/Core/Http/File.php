@@ -54,7 +54,7 @@ class File
      * @return bool True if the file has been uploaded,
      * false otherwise
      */
-    public function upload(string $name = null)
+    public function upload(string $name = null): bool
     {
         $path = $this->options['dir'] . '/' . ($name ?? $this->data['name']);
 
@@ -75,7 +75,7 @@ class File
      * @return bool True if the current file complies
      * with the current options, false otherwise
      */
-    private function complies(string $path)
+    private function complies(string $path): bool
     {
         $extension = pathinfo($this->data['name'], PATHINFO_EXTENSION);
 

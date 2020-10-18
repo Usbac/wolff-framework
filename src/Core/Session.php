@@ -11,7 +11,7 @@ final class Session
     /**
      * Starts the session
      */
-    public static function start()
+    public static function start(): void
     {
         session_start();
 
@@ -34,7 +34,7 @@ final class Session
      * Returns true if the current session has expired, false otherwise
      * @return bool true if the current session has expired, false otherwise
      */
-    public static function expired()
+    public static function expired(): bool
     {
         return isset($_SESSION['end_time']) && time() >= $_SESSION['end_time'];
     }
@@ -48,7 +48,7 @@ final class Session
      * @return bool true if the current IP address and the User-Agent are the same
      * than the IP address and User-Agent of the previous connection.
      */
-    private static function isValid()
+    private static function isValid(): bool
     {
         return isset($_SESSION['ip_address'], $_SESSION['user_agent']) &&
             $_SESSION['ip_address'] === Helper::getClientIP() &&
@@ -59,7 +59,7 @@ final class Session
     /**
      * Initializes all the session variables
      */
-    private static function init()
+    private static function init(): void
     {
         self::empty();
 
@@ -73,7 +73,7 @@ final class Session
     /**
      * Removes all the session variables that have expired
      */
-    private static function unsetExpiredVariables()
+    private static function unsetExpiredVariables(): void
     {
 
         if (!isset($_SESSION['vars_tmp_time']) ||
@@ -111,7 +111,7 @@ final class Session
      * @param  mixed  $value the variable value
      * @param  int|null  $time the variable live time in minutes
      */
-    public static function set(string $key, $value, int $time = null)
+    public static function set(string $key, $value, int $time = null): void
     {
         $_SESSION[$key] = $value;
 
@@ -130,7 +130,7 @@ final class Session
      *
      * @return bool true if the session variable exists, false otherwise
      */
-    public static function has(string $key)
+    public static function has(string $key): bool
     {
         return array_key_exists($key, $_SESSION);
     }
@@ -165,7 +165,7 @@ final class Session
      * @param  string  $key  the variable key
      * @param  int  $time  the variable live time in minutes
      */
-    public static function setVarTime(string $key, int $time = 1)
+    public static function setVarTime(string $key, int $time = 1): void
     {
         if (isset($_SESSION[$key])) {
             $_SESSION['vars_tmp_time'][$key] = time() + ($time * 60);
@@ -179,7 +179,7 @@ final class Session
      * @param  string  $key  the variable key
      * @param  int  $time  the variable time to add
      */
-    public static function addVarTime(string $key, int $time)
+    public static function addVarTime(string $key, int $time): void
     {
         $_SESSION['vars_tmp_time'][$key] += ($time * 60);
     }
@@ -190,7 +190,7 @@ final class Session
      *
      * @param  int  $time  the session live time to add
      */
-    public static function addTime(int $time)
+    public static function addTime(int $time): void
     {
         $_SESSION['end_time'] += $time * 60;
     }
@@ -202,7 +202,7 @@ final class Session
      *
      * @param  int  $time  the time
      */
-    public static function setTime(int $time)
+    public static function setTime(int $time): void
     {
         $_SESSION['end_time'] = time() + ($time * 60);
     }
@@ -243,7 +243,7 @@ final class Session
      *
      * @param  string  $key  the variable key
      */
-    public static function unset(string $key)
+    public static function unset(string $key): void
     {
         unset($_SESSION[$key]);
         unset($_SESSION['vars_tmp_time'][$key]);
@@ -253,7 +253,7 @@ final class Session
     /**
      * Removes the session data
      */
-    public static function empty()
+    public static function empty(): void
     {
         session_unset();
     }
@@ -262,7 +262,7 @@ final class Session
     /**
      * Destroys the session
      */
-    public static function kill()
+    public static function kill(): void
     {
         session_destroy();
     }

@@ -42,7 +42,7 @@ final class Query
      *
      * @return string the query results as a Json
      */
-    public function getJson()
+    public function getJson(): string
     {
         return json_encode($this->get());
     }
@@ -103,7 +103,7 @@ final class Query
      *
      * @return int the number of rows in the query results
      */
-    public function count()
+    public function count(): int
     {
         return count($this->get());
     }
@@ -126,7 +126,7 @@ final class Query
     /**
      * Var dump the query results
      */
-    public function dump()
+    public function dump(): void
     {
         var_dump($this->get());
     }
@@ -135,7 +135,7 @@ final class Query
     /**
      * Prints the query results in a nice looking way
      */
-    public function printr()
+    public function printr(): void
     {
         echo '<pre>';
         array_map('print_r', $this->get());
@@ -146,7 +146,7 @@ final class Query
     /**
      * Var dump the query results and die
      */
-    public function dumpd()
+    public function dumpd(): void
     {
         array_map('var_dump', $this->get());
         die;
@@ -156,7 +156,7 @@ final class Query
     /**
      * Prints the query results in a nice looking way and die
      */
-    public function printrd()
+    public function printrd(): void
     {
         $this->printr();
         die;

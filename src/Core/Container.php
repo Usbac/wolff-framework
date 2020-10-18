@@ -23,7 +23,7 @@ final class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public static function add(string $class, $value = null)
+    public static function add(string $class, $value = null): void
     {
         self::addService($class, $value, false);
     }
@@ -32,7 +32,7 @@ final class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public static function singleton(string $class, $value = null)
+    public static function singleton(string $class, $value = null): void
     {
         self::addService($class, $value, true);
     }
@@ -46,7 +46,7 @@ final class Container implements ContainerInterface
      * @param  bool  $singleton  true if the class will be treated as singleton,
      * false otherwise
      */
-    private static function addService(string $class, $value, bool $singleton)
+    private static function addService(string $class, $value, bool $singleton): void
     {
         if (is_null($value)) {
             $value = function () use ($class) {
@@ -97,7 +97,7 @@ final class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public static function has(string $key)
+    public static function has(string $key): bool
     {
         return array_key_exists($key, self::$services);
     }

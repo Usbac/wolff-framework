@@ -59,7 +59,7 @@ final class Log
      * @param  bool  $enabled  True for enabling the log system,
      * false for disabling it
      */
-    public function setStatus(bool $enabled = true)
+    public function setStatus(bool $enabled = true): void
     {
         $this->enabled = $enabled;
     }
@@ -69,7 +69,7 @@ final class Log
      * Returns true if the log is enabled, false otherwise
      * @return bool true if the log is enabled, false otherwise
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
@@ -80,7 +80,7 @@ final class Log
      *
      * @param  string  $folder  the log folder
      */
-    public function setFolder(string $folder = self::DEFAULT_FOLDER)
+    public function setFolder(string $folder = self::DEFAULT_FOLDER): void
     {
         $this->folder = Helper::getRoot($folder);
     }
@@ -91,7 +91,7 @@ final class Log
      *
      * @param  string  $date_format  the date format
      */
-    public function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT)
+    public function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT): void
     {
         $this->date_format = $date_format;
     }
@@ -119,7 +119,7 @@ final class Log
      * @param  string  $message the message
      * @param  array  $values  the values to interpolate
      */
-    private function log(string $level, string $message, array $values)
+    private function log(string $level, string $message, array $values): void
     {
         if (!$this->isEnabled()) {
             return;
@@ -139,7 +139,7 @@ final class Log
     /**
      * Creates the logs folder if it doesn't exists
      */
-    private function mkdir()
+    private function mkdir(): void
     {
         if (!file_exists($this->folder)) {
             mkdir($this->folder, self::FOLDER_PERMISSIONS, true);
@@ -152,7 +152,7 @@ final class Log
      *
      * @param  string  $data the content to append
      */
-    private function writeToFile(string $data)
+    private function writeToFile(string $data): void
     {
         file_put_contents($this->getFilename(), $data . PHP_EOL, FILE_APPEND);
     }
@@ -163,7 +163,7 @@ final class Log
      *
      * @return string the log filename
      */
-    private function getFilename()
+    private function getFilename(): string
     {
         return $this->folder . '/' . sprintf(self::FILENAME_FORMAT, date('m-d-Y'));
     }

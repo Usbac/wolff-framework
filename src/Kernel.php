@@ -99,7 +99,7 @@ final class Kernel
      *
      * @param  array  $config  the configuration
      */
-    private function initProperties(array $config = [])
+    private function initProperties(array $config = []): void
     {
         $this->config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->url = $this->getUrl();
@@ -125,7 +125,7 @@ final class Kernel
      * Initializes the main components based
      * on the current configuration
      */
-    private function initComponents()
+    private function initComponents(): void
     {
         Config::init($this->config);
         DB::setCredentials($this->config['db']);
@@ -140,7 +140,7 @@ final class Kernel
      * Sets the error reporting state
      * based on the current configuration.
      */
-    private function setErrors()
+    private function setErrors(): void
     {
         error_reporting($this->config['development_on'] ? E_ALL : 0);
         ini_set('display_errors', strval($this->config['development_on']));
@@ -151,7 +151,7 @@ final class Kernel
      * Includes the standard library if
      * it's active in the current configuration
      */
-    private function stdlib()
+    private function stdlib(): void
     {
         if ($this->config['stdlib_on']) {
             include_once('stdlib.php');
@@ -162,7 +162,7 @@ final class Kernel
     /**
      * Starts the loading of the page
      */
-    public function start()
+    public function start(): void
     {
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
@@ -187,7 +187,7 @@ final class Kernel
      *
      * @param  int  $access_code  the access code
      */
-    private function load(int $access_code)
+    private function load(int $access_code): void
     {
         $args = [
             $this->req,
@@ -217,7 +217,7 @@ final class Kernel
      *
      * @return int the access code of the current route
      */
-    private function getAccessCode()
+    private function getAccessCode(): int
     {
         if (Route::isBlocked($this->url)) {
             return 0;
@@ -238,7 +238,7 @@ final class Kernel
      *
      * @return string the current url processed
      */
-    private function getUrl()
+    private function getUrl(): string
     {
         $url = $_SERVER['REQUEST_URI'];
         $root = Helper::getRoot();

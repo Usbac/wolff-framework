@@ -47,7 +47,7 @@ final class Middleware
      *
      * @return string The middleware responses joined
      */
-    private static function load(string $type, string $url, Http\Request &$req = null)
+    private static function load(string $type, string $url, Http\Request &$req = null): string
     {
         $middlewares = self::${$type};
 
@@ -92,7 +92,7 @@ final class Middleware
      *
      * @return string The middleware responses
      */
-    public static function loadBefore(string $url, Http\Request $req = null)
+    public static function loadBefore(string $url, Http\Request $req = null): string
     {
         return self::load('before', $url, $req);
     }
@@ -106,7 +106,7 @@ final class Middleware
      *
      * @return string The middleware responses
      */
-    public static function loadAfter(string $url, Http\Request $req = null)
+    public static function loadAfter(string $url, Http\Request $req = null): string
     {
         return self::load('after', $url, $req);
     }
@@ -121,7 +121,7 @@ final class Middleware
      * @param  string  $type  the type of middlewares to load
      * @param  array  $args  the arguments
      */
-    public static function __callStatic(string $type, $args)
+    public static function __callStatic(string $type, $args): void
     {
         if ($type !== 'before' && $type !== 'after') {
             return;

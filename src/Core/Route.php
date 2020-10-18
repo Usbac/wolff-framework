@@ -65,7 +65,7 @@ final class Route
     /**
      * Proxy method to the HTTP Methods.
      *
-     * @param  string  $name the method name
+     * @param  string  $name  the method name
      * @param  mixed  $args  the method arguments
      */
     public static function __callStatic(string $name, $args): void
@@ -81,13 +81,11 @@ final class Route
             throw new InvalidArgumentException('function', 'of type string or an instance of \Closure');
         }
 
-        $url = Str::sanitizeURL($args[0]);
-        $func = $args[1];
         $status = isset($args[2]) && is_numeric($args[2]) ?
             (int)$args[2] :
             null;
 
-        self::addRoute($url, $http_method, $func, $status);
+        self::addRoute(Str::sanitizeURL($args[0]), $http_method, $args[1], $status);
     }
 
 
@@ -126,8 +124,8 @@ final class Route
     /**
      * Executes a code route based on the current status code
      *
-     * @param \Wolff\Core\Http\Request $req Reference to the current request object
-     * @param \Wolff\Core\Http\Response $res Reference to the current response object
+     * @param  \Wolff\Core\Http\Request  $req  reference to the current request object
+     * @param  \Wolff\Core\Http\Response  $res  reference to the current response object
      */
     public static function execCode(Http\Request &$req, Http\Response &$res): void
     {
@@ -153,10 +151,6 @@ final class Route
     {
         $current = array_filter(explode('/', $url));
         $current_len = count($current) - 1;
-
-        if (empty(self::$routes)) {
-            return null;
-        }
 
         foreach (self::$routes as $key => $val) {
             if (!self::isValidRoute($key)) {
@@ -253,9 +247,8 @@ final class Route
      */
     private static function isValidRoute($key): bool
     {
-        return self::$routes[$key] &&
-            (self::$routes[$key]['method'] === '' ||
-             self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD']);
+        return self::$routes[$key]['method'] === '' ||
+            self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD'];
     }
 
 
@@ -312,7 +305,7 @@ final class Route
             'function'     => $function,
             'method'       => $method,
             'status'       => $status,
-            'content_type' => $content_type
+            'content_type' => $content_type,
         ];
     }
 

@@ -17,6 +17,7 @@ final class Helper
      * quotes surrounding it
      *
      * @param  string  $str  the string
+     *
      * @return string the string without single or double
      * quotes surrounding it
      */

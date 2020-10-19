@@ -11,7 +11,7 @@ interface RequestInterface
      * @param  array  $query  the url parameters
      * @param  array  $body  the body parameters
      * @param  array  $files  the files
-     * @param  array  $server  the superglobal server
+     * @param  array  $server  the super global server
      * @param  array  $cookies  the cookies
      */
     public function __construct(

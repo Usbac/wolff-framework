@@ -230,7 +230,7 @@ final class Pagination
      *
      * @param  int  $i  the page index
      *
-     * @return array A new page based in the given index
+     * @return array a new page based in the given index
      */
     private function getNewPage(int $i): array
     {

@@ -32,7 +32,7 @@ final class Validation
      *
      * @param  array  $data  the data array
      *
-     * @return this
+     * @return Validation this
      */
     public function setData(array $data): Validation
     {
@@ -47,7 +47,7 @@ final class Validation
      * @param  array  $fields  the associative array
      * with the fields rules
      *
-     * @return this
+     * @return Validation this
      */
     public function setFields(array $fields): Validation
     {
@@ -60,7 +60,7 @@ final class Validation
      * Returns an associative array with all the invalid values.
      * This method runs the isValid method.
      *
-     * @return array an associative array with all the invalid values
+     * @return array the associative array with all the invalid values
      */
     public function getInvalidValues(): array
     {
@@ -190,7 +190,7 @@ final class Validation
      * @return bool true if the current data complies all the fields rules,
      * false otherwise
      */
-    public function check($fields, $data): bool
+    public function check(array $fields, array $data): bool
     {
         return $this->setFields($fields)
                     ->setData($data)

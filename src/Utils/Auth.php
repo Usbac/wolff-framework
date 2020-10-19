@@ -170,17 +170,15 @@ final class Auth extends \Wolff\Core\DB
         $stmt->execute($data);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        $valid = $this->isValidUser($user, $password);
-
-        $this->last_user = $valid ? $user : null;
-        return $valid;
+        $this->last_user = $this->isValidUser($user, $password) ? $user : null;
+        return isset($this->last_user);
     }
 
 
     /**
      * Register a new user into the database.
      * The only required values in the given array
-     * are 'password' and 'password_confirm'
+     * are 'password' and 'password_confirm'.
      *
      * @throws \Wolff\Exception\InvalidArgumentException
      *
@@ -279,7 +277,7 @@ final class Auth extends \Wolff\Core\DB
      * @return bool true if the insertion has been successfully made,
      * false otherwise
      */
-    private function insertUser($data): bool
+    private function insertUser(array $data): bool
     {
         $array_keys = array_keys($data);
 

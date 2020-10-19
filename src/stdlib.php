@@ -312,7 +312,7 @@ namespace {
         /**
          * Returns the given variable as an associative array
          *
-         * @param  string  $obj  the object
+         * @param  mixed  $obj  the object
          *
          * @return mixed the given variable as an associative array
          */

@@ -63,7 +63,9 @@ final class Route
 
 
     /**
-     * Proxy method to the HTTP Methods.
+     * Proxy method to the HTTP Methods
+     *
+     * @throws \Wolff\Exception\InvalidArgumentException
      *
      * @param  string  $name  the method name
      * @param  mixed  $args  the method arguments
@@ -266,7 +268,7 @@ final class Route
      * @return bool true if the route exists and its
      * request method matches the current methods
      */
-    private static function isValidRoute($key): bool
+    private static function isValidRoute(string $key): bool
     {
         return self::$routes[$key]['method'] === '' ||
             self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD'];
@@ -310,7 +312,7 @@ final class Route
      * @param  mixed  $function  the url function or controller name
      * @param  int|null  $status  the HTTP response code
      */
-    private static function addRoute($url, string $method, $function, $status): void
+    private static function addRoute($url, string $method, $function, ?int $status): void
     {
         $content_type = 'text/html';
 
@@ -416,7 +418,7 @@ final class Route
      * @param  string  $key  the variable key
      * @param  string  $value  the variable value
      */
-    private static function setGet(string $key, $value): void
+    private static function setGet(string $key, string $value): void
     {
         $key = preg_replace(self::GET_FORMAT, '$1', $key);
         $_GET[$key] = $value;
@@ -427,7 +429,7 @@ final class Route
      * Set an optional GET variable
      *
      * @param  string  $key  the variable key
-     * @param  string  $value  the variable value
+     * @param  string|null  $value  the variable value
      */
     private static function setOptionalGetVar(string $key, $value = null): void
     {

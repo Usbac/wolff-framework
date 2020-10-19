@@ -126,6 +126,8 @@ final class Template
     /**
      * Returns the view content with the template format applied
      *
+     * @throws \Wolff\Exception\FileNotFoundException
+     *
      * @param  string  $dir  the view directory
      * @param  array  $data  the data array present in the view
      * @param  bool  $cache  load from cache or not
@@ -306,7 +308,9 @@ final class Template
     /**
      * Applies the template extends
      *
-     * @param  string  $content  the view content
+     * @throws \Wolff\Exception\FileNotFoundException
+     *
+     * @param string $content the view content
      *
      * @return string the child view content rendered
      * based on its parent
@@ -335,6 +339,8 @@ final class Template
 
     /**
      * Adds a custom template
+     *
+     * @throws \Wolff\Exception\InvalidArgumentException
      *
      * @param  mixed  $function  the function with the custom template
      */
@@ -372,7 +378,7 @@ final class Template
      *
      * @return string the view content with the language formatted
      */
-    private static function replaceLanguages($content): string
+    private static function replaceLanguages(string $content): string
     {
         preg_match_all(self::FORMAT['language'], $content, $matches, PREG_OFFSET_CAPTURE);
 
@@ -388,11 +394,13 @@ final class Template
     /**
      * Applies the template includes
      *
-     * @param  string  $content  the view content
+     * @throws \Wolff\Exception\FileNotFoundException
+     *
+     * @param string $content the view content
      *
      * @return string the view content with the includes formatted
      */
-    private static function replaceIncludes($content): string
+    private static function replaceIncludes(string $content): string
     {
         preg_match_all(self::FORMAT['include'], $content, $matches, PREG_OFFSET_CAPTURE);
 
@@ -412,7 +420,7 @@ final class Template
      *
      * @return string the view content with the import tags formatted
      */
-    private static function replaceImports($content): string
+    private static function replaceImports(string $content): string
     {
         $content = preg_replace(self::FORMAT['style'], '<link rel="stylesheet" type="text/css" href=$4/>', $content);
         $content = preg_replace(self::FORMAT['script'], '<script type="text/javascript" src=$4></script>', $content);
@@ -429,7 +437,7 @@ final class Template
      *
      * @return string the view content with the functions formatted
      */
-    private static function replaceFunctions($content): string
+    private static function replaceFunctions(string $content): string
     {
         foreach (self::FUNCTIONS as $original => $replacement) {
             $original = str_replace('(.*)', $original, self::FORMAT['function']);
@@ -447,7 +455,7 @@ final class Template
      *
      * @return string the view content with the tags formatted
      */
-    private static function replaceTags($content): string
+    private static function replaceTags(string $content): string
     {
         $content = preg_replace(self::FORMAT['echo'], '<?php echo htmlspecialchars($2, ENT_QUOTES) ?>', $content);
         $content = preg_replace(self::FORMAT['plain_echo'], '<?php echo $2 ?>', $content);
@@ -464,9 +472,29 @@ final class Template
      *
      * @return string the view content with the cycles formatted
      */
-    private static function replaceCycles($content): string
+    private static function replaceCycles(string $content): string
     {
         $content = preg_replace(self::FORMAT['for'], '<?php for ($3 = $6; $3 <= $9; $3++): ?>', $content);
+
+        return $content;
+    }
+
+
+    /**
+     * Removes the raw tag from the rest of the tags
+     *
+     * @param  string  $content  the view content
+     *
+     * @return string the view content with the raw tag removed from the rest of the tags
+     */
+    private static function replaceRaws(string $content): string
+    {
+        foreach (self::FORMAT as $format) {
+            $format = trim($format, '/');
+            $format = str_replace(self::NOT_RAW, '', $format);
+
+            $content = preg_replace('/' . self::RAW . '(' . $format . ')/', '$1', $content);
+        }
 
         return $content;
     }
@@ -479,28 +507,8 @@ final class Template
      *
      * @return string the view content without the comments
      */
-    private static function replaceComments($content): string
+    private static function replaceComments(string $content): string
     {
         return preg_replace(self::FORMAT['comment'], '', $content);
-    }
-
-
-    /**
-     * Removes the raw tag from the rest of the tags
-     *
-     * @param  string  $content  the view content
-     *
-     * @return string the view content with the raw tag removed from the rest of the tags
-     */
-    private static function replaceRaws($content): string
-    {
-        foreach (self::FORMAT as $format) {
-            $format = trim($format, '/');
-            $format = str_replace(self::NOT_RAW, '', $format);
-
-            $content = preg_replace('/' . self::RAW . '(' . $format . ')/', '$1', $content);
-        }
-
-        return $content;
     }
 }

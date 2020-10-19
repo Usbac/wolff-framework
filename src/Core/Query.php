@@ -10,7 +10,7 @@ final class Query
     /**
      * The query statement
      *
-     * @var \PDOStatement
+     * @var PDOStatement
      */
     private $stmt;
 
@@ -18,7 +18,7 @@ final class Query
     /**
      * Default constructor
      *
-     * @param  \PDOStatement  $stmt  the PDO statement
+     * @param  PDOStatement  $stmt  the PDO statement
      */
     public function __construct(PDOStatement $stmt)
     {
@@ -69,6 +69,8 @@ final class Query
 
     /**
      * Returns only the specified column/s of the query result
+     *
+     * @param mixed ...$columns  the columns to pick
      *
      * @return array only the specified column/s of the query result
      */

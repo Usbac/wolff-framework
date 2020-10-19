@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use ReflectionMethod;
 use BadMethodCallException;
 
 class Controller
@@ -14,7 +15,7 @@ class Controller
     /**
      * Returns the controller with the giving name
      *
-     * @param  string  $path  the controller path
+     * @param  string|null  $path  the controller path
      *
      * @return \Wolff\Core\Controller the controller
      */
@@ -78,12 +79,14 @@ class Controller
         $path = self::getClassname($path);
 
         return method_exists($path, $method) &&
-            (new \ReflectionMethod($path, $method))->isPublic();
+            (new ReflectionMethod($path, $method))->isPublic();
     }
 
 
     /**
      * Returns the controller classname of the given path
+     *
+     * @param  string  $path  the controller path
      *
      * @return string The controller classname of the given path
      */

@@ -45,7 +45,7 @@ class Request implements RequestInterface
     private $headers;
 
     /**
-     * Current server superglobal
+     * Current server
      *
      * @var array
      */
@@ -88,7 +88,7 @@ class Request implements RequestInterface
     /**
      * Returns the headers parsed
      *
-     * @param  array  $server  the superglobal server array
+     * @param  array  $server  the super global server array
      *
      * @return array The headers parsed
      */
@@ -130,9 +130,12 @@ class Request implements RequestInterface
 
 
     /**
-     * Sets the options for uploading the files.
+     * Sets the options for uploading the files
      *
-     * @param array $arr the array with the options
+     * @throws \Wolff\Exception\FileNotFoundException
+     * @throws \Wolff\Exception\InvalidArgumentException
+     *
+     * @param  array  $arr  the array with the options
      * (dir, extensions, max_size, override)
      */
     public function fileOptions(array $arr = []): void

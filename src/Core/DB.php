@@ -4,7 +4,6 @@ namespace Wolff\Core;
 
 use PDO;
 use PDOException;
-use Wolff\Core\Query;
 use Wolff\Exception\InvalidArgumentException;
 
 class DB
@@ -289,7 +288,7 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
-     * @param  string  $conditions  the select conditions
+     * @param  string|null  $conditions  the select conditions
      * @param  mixed  ...$args the query arguments
      *
      * @return array the query result as an associative array
@@ -322,7 +321,7 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
-     * @param  string  $conditions  the select conditions
+     * @param  string|null  $conditions  the select conditions
      * @param  mixed  ...$args the query arguments
      *
      * @return int the query result
@@ -354,11 +353,11 @@ class DB
      * @param  string  $src_table  the source table
      * @param  string  $dest_table  the destination table
      * @param  string  $conditions  the conditions
-     * @param  array  $args the query arguments
+     * @param  array|null  $args the query arguments
      *
      * @return bool true if the transaction has been made successfully, false otherwise
      */
-    public function moveRows(string $src_table, string $dest_table, string $conditions = '1', $args = null): bool
+    public function moveRows(string $src_table, string $dest_table, string $conditions = '1', array $args = null): bool
     {
         $src_table = $this->escape($src_table);
         $dest_table = $this->escape($dest_table);
@@ -391,7 +390,7 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
-     * @param  string  $conditions  the select conditions
+     * @param  string|null  $conditions  the select conditions
      * @param  mixed  ...$args  the query arguments
      *
      * @return bool true in case of success, false otherwise
@@ -420,7 +419,7 @@ class DB
      *
      * @return string the string escaped
      */
-    protected function escape($str): string
+    protected function escape(string $str): string
     {
         return preg_replace('/[^A-Za-z0-9_]+/', '', $str);
     }

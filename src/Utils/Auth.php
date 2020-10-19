@@ -44,9 +44,9 @@ final class Auth extends \Wolff\Core\DB
     /**
      * The last inserted user id
      *
-     * @var int
+     * @var int|null
      */
-    private $last_id = 0;
+    private $last_id = null;
 
 
     /**
@@ -102,9 +102,9 @@ final class Auth extends \Wolff\Core\DB
     /**
      * Returns the last inserted id
      *
-     * @return int the last inserted id
+     * @return int|null the last inserted id
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->last_id;
     }
@@ -114,10 +114,10 @@ final class Auth extends \Wolff\Core\DB
      * Returns the currently authenticated
      * user's data
      *
-     * @return array the currently authenticated
+     * @return array|null the currently authenticated
      * user's data
      */
-    public function getUser(): array
+    public function getUser(): ?array
     {
         return $this->last_user;
     }

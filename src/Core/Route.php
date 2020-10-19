@@ -25,22 +25,29 @@ final class Route
         'json:'  => 'application/json',
         'pdf:'   => 'application/pdf',
         'plain:' => 'text/plain',
-        'xml:'   => 'application/xml'
+        'xml:'   => 'application/xml',
     ];
     const HTTP_METHODS = [
         'GET',
         'POST',
         'PUT',
         'PATCH',
-        'DELETE'
+        'DELETE',
     ];
 
     /**
-     * List of routes
+     * List of static routes
      *
      * @var array
      */
-    private static $routes = [];
+    private static $static_routes = [];
+
+    /**
+     * List of dynamic routes
+     *
+     * @var array
+     */
+    private static $dynamic_routes = [];
 
     /**
      * List of routes for status codes
@@ -151,18 +158,28 @@ final class Route
      */
     public static function getFunction(string $url)
     {
+        $url = trim($url, '/');
+
+        //Static routes
+        foreach (self::$static_routes as $key => $val) {
+            if (self::isValidRoute($val) && $key === $url) {
+                return self::processRoute($val);
+            }
+        }
+
+        //Dynamic routes
         $current = array_filter(explode('/', $url));
         $len = count($current) - 1;
 
-        foreach (self::$routes as $key => $val) {
-            if (!self::isValidRoute($key)) {
-                continue;
-            }
+        foreach (self::$dynamic_routes as $key => $val) {
+            if (self::isValidRoute($val)) {
+                $route = array_filter(explode('/', $key));
 
-            $route = array_filter(explode('/', $key));
+                if (self::matchesRoute($current, $len, $route, count($route) - 1)) {
+                    self::mapParameters($current, $route);
 
-            if (self::matchesRoute($current, $len, $route, count($route) - 1)) {
-                return self::processRoute($current, $key, $route);
+                    return self::processRoute($val);
+                }
             }
         }
 
@@ -204,22 +221,15 @@ final class Route
 
 
     /**
-     * Returns the route function after
-     * setting the HTTP response code and the content-type
-     * based on the route
+     * Returns the route function after setting its
+     * response code and content-type
      *
-     * @param  array  $current  the current route array (exploded by /)
-     * @param  string  $key  the route key (the route array imploded)
-     * @param  array  $route  the registered route array which matches the
-     * current route (exploded by /)
+     * @param  array  $route  the route
      *
      * @return mixed the route function
      */
-    private static function processRoute(array $current, string $key, array $route)
+    private static function processRoute(array $route)
     {
-        self::mapParameters($current, $route);
-
-        $route = self::$routes[$key];
         header("Content-Type: $route[content_type]");
         if (isset($route['status'])) {
             http_response_code($route['status']);
@@ -263,15 +273,15 @@ final class Route
      * Returns true if the route exists and its
      * request method matches the current methods
      *
-     * @param  string  $key  the route key
+     * @param  array|null  $route  the route route
      *
      * @return bool true if the route exists and its
      * request method matches the current methods
      */
-    private static function isValidRoute(string $key): bool
+    private static function isValidRoute(?array $route): bool
     {
-        return self::$routes[$key]['method'] === '' ||
-            self::$routes[$key]['method'] === $_SERVER['REQUEST_METHOD'];
+        return isset($route) && ($route['method'] === '' ||
+            $route['method'] === $_SERVER['REQUEST_METHOD']);
     }
 
 
@@ -324,12 +334,18 @@ final class Route
             }
         }
 
-        self::$routes[trim($url, '/')] = [
+        $url = trim($url, '/');
+        $route = [
             'function'     => $function,
             'method'       => $method,
             'status'       => $status,
             'content_type' => $content_type,
         ];
+
+        preg_match(self::GET_FORMAT, $url, $matches);
+        empty($matches) ?
+            self::$static_routes[$url] = $route :
+            self::$dynamic_routes[$url] = $route;
     }
 
 
@@ -375,14 +391,21 @@ final class Route
      */
     public static function exists(string $url): bool
     {
-        $url = preg_replace(self::GET_FORMAT, '{}', $url);
-        $routes = [];
-
-        foreach (array_keys(self::$routes) as $key) {
-            $routes[] = preg_replace(self::GET_FORMAT, '{}', $key);
+        foreach (self::$static_routes as $key => $val) {
+            if ($key === $url) {
+                return true;
+            }
         }
 
-        return in_array($url, $routes);
+        $url = preg_replace(self::GET_FORMAT, '{}', $url);
+
+        foreach (self::$dynamic_routes as $key => $val) {
+            if ($url === preg_replace(self::GET_FORMAT, '{}', $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -444,7 +467,7 @@ final class Route
      */
     public static function getRoutes(): array
     {
-        return self::$routes;
+        return array_merge(self::$static_routes, self::$dynamic_routes);
     }
 
 

@@ -167,9 +167,7 @@ final class Kernel
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
         } else {
-            $access_code = $this->getAccessCode();
-
-            if ($access_code) {
+            if (($access_code = $this->getAccessCode())) {
                 $this->load($access_code);
             } else {
                 http_response_code(404);

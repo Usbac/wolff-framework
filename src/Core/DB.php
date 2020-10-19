@@ -82,8 +82,8 @@ class DB
 
         try {
             $connection = new PDO($data['dsn'],
-                $data['username'] ?? '',
-                $data['password'] ?? '',
+                $data['username'] ?? null,
+                $data['password'] ?? null,
                 $options);
         } catch (PDOException $e) {
             throw $e;
@@ -248,55 +248,12 @@ class DB
         $column = $this->escape($column);
 
         try {
-            $query = $this->connection->query("SHOW COLUMNS FROM $table LIKE '$column'");
+            $query = $this->connection->query("SELECT COUNT($column) FROM $table");
 
             return is_bool($query) ? false : !empty($query->fetchAll());
         } catch (\Exception $e) {
             return false;
         }
-    }
-
-
-    /**
-     * Returns the database schema
-     *
-     * @return array|bool the database schema or false if no tables exist in the database
-     */
-    public function getSchema(string $table = null)
-    {
-        if (isset($table)) {
-            return $this->getTableSchema($table);
-        }
-
-        $tables = $this->connection->query('SHOW TABLES');
-
-        if (is_bool($tables)) {
-            return false;
-        }
-
-        $database = [];
-        while ($table = $tables->fetch(PDO::FETCH_NUM)[0]) {
-            $database[$table] = $this->getTableSchema($table);
-        }
-
-        return $database;
-    }
-
-
-    /**
-     * Returns the table schema from the database
-     *
-     * @param  string  $table  the table name
-     *
-     * @return array|bool the table schema from the database,
-     * or false if the table columns doesn't exists
-     */
-    private function getTableSchema(string $table)
-    {
-        $table = $this->escape($table);
-        $query = $this->connection->query("SHOW COLUMNS FROM $table");
-
-        return is_bool($query) ? false : $query->fetchAll();
     }
 
 
@@ -314,7 +271,7 @@ class DB
      */
     public function insert(string $table, array $data)
     {
-        if (empty($data) || !isAssoc($data)) {
+        if (empty($data) || !Helper::isAssoc($data)) {
             throw new InvalidArgumentException('data', 'a non-empty associative array');
         }
 
@@ -394,22 +351,22 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      * NOTE: In case of errors, the changes are completely rolled back
      *
-     * @param  string  $ori_table  the origin table
+     * @param  string  $src_table  the source table
      * @param  string  $dest_table  the destination table
      * @param  string  $conditions  the conditions
      * @param  array  $args the query arguments
      *
      * @return bool true if the transaction has been made successfully, false otherwise
      */
-    public function moveRows(string $ori_table, string $dest_table, string $conditions = '1', $args = null): bool
+    public function moveRows(string $src_table, string $dest_table, string $conditions = '1', $args = null): bool
     {
-        $ori_table = $this->escape($ori_table);
+        $src_table = $this->escape($src_table);
         $dest_table = $this->escape($dest_table);
 
         try {
             $insert_stat = $this->connection->prepare("INSERT INTO $dest_table
-                SELECT * FROM $ori_table WHERE $conditions");
-            $delete_stat = $this->connection->prepare("DELETE FROM $ori_table WHERE $conditions");
+                SELECT * FROM $src_table WHERE $conditions");
+            $delete_stat = $this->connection->prepare("DELETE FROM $src_table WHERE $conditions");
 
             $this->connection->beginTransaction();
 
@@ -435,7 +392,7 @@ class DB
      *
      * @param  string  $table  the table for the query
      * @param  string  $conditions  the select conditions
-     * @param  mixed  ...$args the query arguments
+     * @param  mixed  ...$args  the query arguments
      *
      * @return bool true in case of success, false otherwise
      */

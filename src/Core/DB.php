@@ -79,16 +79,10 @@ class DB
             return null;
         }
 
-        try {
-            $connection = new PDO($data['dsn'],
-                $data['username'] ?? null,
-                $data['password'] ?? null,
-                $options);
-        } catch (PDOException $e) {
-            throw $e;
-        }
-
-        return $connection;
+        return new PDO($data['dsn'],
+            $data['username'] ?? null,
+            $data['password'] ?? null,
+            $options);
     }
 
 
@@ -288,31 +282,25 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
-     * @param  string|null  $conditions  the select conditions
+     * @param  string|null  $conds  the select conditions
      * @param  mixed  ...$args the query arguments
      *
      * @return array the query result as an associative array
      */
-    public function select(string $table, string $conditions = null, ...$args)
+    public function select(string $table, string $conds = '1', ...$args)
     {
         $arr = explode('.', $table);
         $table = $this->escape($arr[0]);
-        $query = "SELECT * FROM $table";
 
-        if (isset($conditions)) {
-            $query .= " WHERE $conditions";
-        }
-
-        $stmt = $this->connection->prepare($query);
-        $stmt->execute($args);
-        $this->last_stmt = $stmt;
+        $this->last_stmt = $this->connection->prepare("SELECT * FROM $table WHERE $conds");
+        $this->last_stmt->execute($args);
 
         if (isset($arr[1])) {
             $column = $this->escape($arr[1]);
-            return array_column($stmt->fetchAll(), $column);
+            return array_column($this->last_stmt->fetchAll(), $column);
         }
 
-        return $stmt->fetchAll();
+        return $this->last_stmt->fetchAll();
     }
 
 
@@ -321,24 +309,17 @@ class DB
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
-     * @param  string|null  $conditions  the select conditions
+     * @param  string|null  $conds  the select conditions
      * @param  mixed  ...$args the query arguments
      *
      * @return int the query result
      */
-    public function count(string $table, string $conditions = null, ...$args): int
+    public function count(string $table, string $conds = '1', ...$args): int
     {
-        $query = "SELECT COUNT(*) FROM $table";
+        $this->last_stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table WHERE $conds");
+        $this->last_stmt->execute($args);
 
-        if (isset($conditions)) {
-            $query .= " WHERE $conditions";
-        }
-
-        $stmt = $this->connection->prepare($query);
-        $stmt->execute($args);
-        $this->last_stmt = $stmt;
-
-        $result = $stmt->fetchAll();
+        $result = $this->last_stmt->fetchAll();
 
         return empty($result) ? 0 : $result[0]['COUNT(*)'];
     }
@@ -352,25 +333,25 @@ class DB
      *
      * @param  string  $src_table  the source table
      * @param  string  $dest_table  the destination table
-     * @param  string  $conditions  the conditions
+     * @param  string  $conds  the conditions
      * @param  array|null  $args the query arguments
      *
      * @return bool true if the transaction has been made successfully, false otherwise
      */
-    public function moveRows(string $src_table, string $dest_table, string $conditions = '1', array $args = null): bool
+    public function moveRows(string $src_table, string $dest_table, string $conds = '1', array $args = null): bool
     {
         $src_table = $this->escape($src_table);
         $dest_table = $this->escape($dest_table);
 
         try {
-            $insert_stat = $this->connection->prepare("INSERT INTO $dest_table
-                SELECT * FROM $src_table WHERE $conditions");
-            $delete_stat = $this->connection->prepare("DELETE FROM $src_table WHERE $conditions");
+            $insert_stmt = $this->connection->prepare("INSERT INTO $dest_table
+                SELECT * FROM $src_table WHERE $conds");
+            $delete_stmt = $this->connection->prepare("DELETE FROM $src_table WHERE $conds");
 
             $this->connection->beginTransaction();
 
-            $insert_stat->execute($args);
-            $delete_stat->execute($args);
+            $insert_stmt->execute($args);
+            $delete_stmt->execute($args);
 
             $this->connection->commit();
         } catch (\Exception $e) {
@@ -395,19 +376,13 @@ class DB
      *
      * @return bool true in case of success, false otherwise
      */
-    public function delete(string $table, string $conditions = null, ...$args): bool
+    public function delete(string $table, string $conditions = '1', ...$args): bool
     {
         $table = $this->escape($table);
-        $query = "DELETE FROM $table";
 
-        if (isset($conditions)) {
-            $query .= " WHERE $conditions";
-        }
+        $this->last_stmt = $this->connection->prepare("DELETE FROM $table WHERE $conditions");
 
-        $stmt = $this->connection->prepare($query);
-        $this->last_stmt = $stmt;
-
-        return $stmt->execute($args);
+        return $this->last_stmt->execute($args);
     }
 
 

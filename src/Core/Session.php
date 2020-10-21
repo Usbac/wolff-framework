@@ -149,7 +149,7 @@ final class Session
         $remaining = max($remaining, 0);
 
         return $format ?
-            gmdate($format, $remaining) :
+            date($format, $remaining) :
             $remaining;
     }
 
@@ -226,7 +226,7 @@ final class Session
         $remaining = max($end - time(), 0);
 
         return $format ?
-            gmdate($format, $remaining) :
+            date($format, $remaining) :
             $remaining;
     }
 

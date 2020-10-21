@@ -19,8 +19,10 @@ final class Config
 
     /**
      * Initializes the configuration data
+     *
+     * @param  array  $data  the configuration data
      */
-    public static function init(array $data)
+    public static function init(array $data): void
     {
         self::$data = $data;
 
@@ -55,20 +57,17 @@ final class Config
 
     /**
      * Maps the environment variables from the given environment file path.
-     * This is Wolff's own parser, an existing one has not been used
-     * because lol
+     * An existing parser has not been used because lol
      *
      * @param  string  $file_path  the environment file path
      */
     private static function parseEnv(string $file_path): void
     {
-        if (is_readable($file_path)) {
-            $content = file_get_contents($file_path);
-        } else {
+        if (!is_readable($file_path)) {
             throw new FileNotReadableException($file_path);
         }
 
-        array_map('self::parseEnvLine', explode(PHP_EOL, $content));
+        array_map('self::parseEnvLine', explode(PHP_EOL, file_get_contents($file_path)));
     }
 
 
@@ -95,11 +94,11 @@ final class Config
 
 
     /**
-     * Returns the true value of the given string
+     * Returns the value represented by the given string
      *
-     * @param  string  $val  The string
+     * @param  string  $val  the string
      *
-     * @return mixed the true value
+     * @return mixed the value represented by the given string
      */
     private static function getVal(string $val)
     {

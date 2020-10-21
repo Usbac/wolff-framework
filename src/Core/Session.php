@@ -5,9 +5,6 @@ namespace Wolff\Core;
 final class Session
 {
 
-    const DATE_FORMAT = 'Y-m-d H:i:s';
-
-
     /**
      * Starts the session
      */
@@ -137,22 +134,22 @@ final class Session
 
 
     /**
-     * Returns a live time (in minutes) of a session variable
+     * Returns a live time (in seconds) of a session variable
      *
      * @param  string  $key  the variable key
-     * @param  bool  $gmdate  return the time in date format
+     * @param  string|null  $format  the date format to get the live time
      *
      * @return int|string the variable live time
      */
-    public static function getVarTime(string $key, bool $gmdate = false)
+    public static function getVarTime(string $key, string $format = null)
     {
         $remaining = isset($_SESSION['vars_tmp_time'][$key]) ?
             $_SESSION['vars_tmp_time'][$key] - time() :
             0;
         $remaining = max($remaining, 0);
 
-        return $gmdate ?
-            gmdate(self::DATE_FORMAT, $remaining) :
+        return $format ?
+            gmdate($format, $remaining) :
             $remaining;
     }
 
@@ -179,7 +176,7 @@ final class Session
      */
     public static function addVarTime(string $key, int $time): void
     {
-        $_SESSION['vars_tmp_time'][$key] += ($time * 60);
+        $_SESSION['vars_tmp_time'][$key] += $time * 60;
     }
 
 
@@ -217,19 +214,19 @@ final class Session
 
 
     /**
-     * Returns the remaining session live time (in minutes)
+     * Returns the remaining session live time (in seconds)
      *
-     * @param  bool  $gmdate  format the time in H:i:s
+     * @param  bool  $format  the date format to get the live time
      *
-     * @return mixed the remaining session live time (in minutes)
+     * @return mixed the remaining session live time (in seconds)
      */
-    public static function getRemainingTime(bool $gmdate = false)
+    public static function getRemainingTime(string $format = null)
     {
         $end = $_SESSION['end_time'] ?? 0;
         $remaining = max($end - time(), 0);
 
-        return $gmdate ?
-            gmdate(self::DATE_FORMAT, $remaining) :
+        return $format ?
+            gmdate($format, $remaining) :
             $remaining;
     }
 

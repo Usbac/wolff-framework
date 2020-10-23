@@ -2,6 +2,7 @@
 
 namespace Wolff;
 
+use Closure;
 use Wolff\Core\Cache;
 use Wolff\Core\Config;
 use Wolff\Core\Controller;
@@ -18,9 +19,6 @@ use Wolff\Core\Template;
 final class Kernel
 {
 
-    const ACCESS_CLOSURE = 1;
-    const ACCESS_METHOD = 2;
-    const ACCESS_CONTROLLER = 3;
     const DEFAULT_CONFIG = [
         'db'             => [],
         'language'       => 'english',
@@ -54,20 +52,6 @@ final class Kernel
     private $function;
 
     /**
-     * The controller name
-     *
-     * @var string
-     */
-    private $controller;
-
-    /**
-     * The controller method name
-     *
-     * @var string
-     */
-    private $method;
-
-    /**
      * Current request object
      *
      * @var \Wolff\Core\Http\Request
@@ -90,7 +74,7 @@ final class Kernel
     public function __construct(array $config = [])
     {
         $this->initProperties($config);
-        $this->initComponents();
+        $this->initModules();
         $this->setErrors();
         $this->stdlib();
     }
@@ -104,30 +88,60 @@ final class Kernel
     private function initProperties(array $config = []): void
     {
         $this->config = array_merge(self::DEFAULT_CONFIG, $config);
-        $this->url = $this->getUrl();
-        $this->function = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
-
-        if (is_string($this->function)) {
-            $path = explode('@', $this->function);
-            $this->controller = $path[0];
-            $this->method = empty($path[1]) ? 'index' : $path[1];
-        } elseif (($slash_pos = strrpos($this->url, '/')) > 0) {
-            $this->controller = substr($this->url, 0, $slash_pos);
-            $this->method = substr($this->url, $slash_pos + 1);
-        } else {
-            $this->controller = $this->url;
-            $this->method = 'index';
-        }
+        $this->url = $this->getUrl();
+        $this->function = $this->getFunction($this->url);
     }
 
 
     /**
-     * Initializes the main components based
+     * Returns the function for the given url
+     *
+     * @param  string  $url  the request url
+     *
+     * @return  \Closure|null  the function for the given url
+     */
+    private function getFunction(string $url): ?Closure
+    {
+        $func = Route::getFunction($url);
+
+        if ($func instanceof \Closure) {
+            return $func;
+        }
+
+        if (is_string($func)) {
+            return function (...$args) use ($func) {
+                $path = explode('@', $func);
+                Controller::method($path[0], $path[1] ?? 'index', $args);
+            };
+        }
+
+        if (Controller::hasMethod($url, 'index')) {
+            return function (...$args) use ($url) {
+                Controller::method($url, 'index', $args);
+            };
+        }
+
+        $slash_pos = strrpos($url, '/');
+        $controller = substr($url, 0, $slash_pos);
+        $method = substr($url, $slash_pos + 1);
+
+        if (Controller::hasMethod($controller, $method)) {
+            return function (...$args) use ($controller, $method) {
+                Controller::method($controller, $method, $args);
+            };
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Initializes the core framework modules based
      * on the current configuration
      */
-    private function initComponents(): void
+    private function initModules(): void
     {
         Config::init($this->config);
         DB::setCredentials($this->config['db']);
@@ -169,8 +183,8 @@ final class Kernel
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
         } else {
-            if (($access_code = $this->getAccessCode())) {
-                $this->load($access_code);
+            if ($this->function && !Route::isBlocked($this->url)) {
+                $this->load();
             } else {
                 http_response_code(404);
             }
@@ -184,52 +198,17 @@ final class Kernel
 
     /**
      * Loads the current route and its middlewares
-     *
-     * @param  int  $access_code  the access code
      */
-    private function load(int $access_code): void
+    private function load(): void
     {
-        $args = [
-            $this->req,
-            $this->res
-        ];
-
         $this->res->append(Middleware::loadBefore($this->url, $this->req));
 
-        switch ($access_code) {
-            case self::ACCESS_CLOSURE:
-                call_user_func_array($this->function, $args);
-                break;
-            case self::ACCESS_METHOD:
-                Controller::method($this->controller, $this->method, $args);
-                break;
-            case self::ACCESS_CONTROLLER:
-                Controller::method($this->url, 'index', $args);
-                break;
-        }
+        call_user_func_array($this->function, [
+            $this->req,
+            $this->res
+        ]);
 
         $this->res->append(Middleware::loadAfter($this->url, $this->req));
-    }
-
-
-    /**
-     * Returns the access code of the current route
-     *
-     * @return int the access code of the current route
-     */
-    private function getAccessCode(): int
-    {
-        if (Route::isBlocked($this->url)) {
-            return 0;
-        } elseif ($this->function instanceof \Closure) {
-            return self::ACCESS_CLOSURE;
-        } elseif (Controller::hasMethod($this->controller, $this->method)) {
-            return self::ACCESS_METHOD;
-        } elseif (Controller::exists($this->url)) {
-            return self::ACCESS_CONTROLLER;
-        }
-
-        return 0;
     }
 
 

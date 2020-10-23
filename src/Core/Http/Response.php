@@ -59,7 +59,6 @@ class Response implements ResponseInterface
     public function write($content): Response
     {
         $this->content = strval($content);
-
         return $this;
     }
 
@@ -70,7 +69,6 @@ class Response implements ResponseInterface
     public function append($content): Response
     {
         $this->content .= strval($content);
-
         return $this;
     }
 
@@ -90,7 +88,6 @@ class Response implements ResponseInterface
     public function setHeader(string $key, string $value): Response
     {
         $this->headers[trim($key)] = $value;
-
         return $this;
     }
 
@@ -101,7 +98,6 @@ class Response implements ResponseInterface
     public function setCode(int $status): Response
     {
         $this->status_code = $status;
-
         return $this;
     }
 

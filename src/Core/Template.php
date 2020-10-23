@@ -310,7 +310,7 @@ final class Template
      *
      * @throws \Wolff\Exception\FileNotFoundException
      *
-     * @param string $content the view content
+     * @param  string  $content  the view content
      *
      * @return string the child view content rendered
      * based on its parent
@@ -396,7 +396,7 @@ final class Template
      *
      * @throws \Wolff\Exception\FileNotFoundException
      *
-     * @param string $content the view content
+     * @param  string  $content  the view content
      *
      * @return string the view content with the includes formatted
      */

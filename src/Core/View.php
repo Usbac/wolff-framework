@@ -40,9 +40,9 @@ final class View
      *
      * @throws \Wolff\Exception\FileNotFoundException
      *
-     * @param string $dir the view directory
-     * @param array $data the data
-     * @param bool $cache use or not the cache system
+     * @param  string  $dir  the view directory
+     * @param  array  $data  the data
+     * @param  bool  $cache  use or not the cache system
      *
      * @return string the view content with the template format applied
      * over it

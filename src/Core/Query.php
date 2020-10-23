@@ -70,7 +70,7 @@ final class Query
     /**
      * Returns only the specified column/s of the query result
      *
-     * @param mixed ...$columns  the columns to pick
+     * @param  mixed  ...$columns  the columns to pick
      *
      * @return array only the specified column/s of the query result
      */

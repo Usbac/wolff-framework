@@ -23,7 +23,7 @@ final class Container implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public static function add(string $class, $value = null): void
+    public static function add(string $class, $value): void
     {
         self::addService($class, $value, false);
     }
@@ -34,6 +34,12 @@ final class Container implements ContainerInterface
      */
     public static function singleton(string $class, $value = null): void
     {
+        if (!isset($value)) {
+            $value = function () use ($class) {
+                return new $class;
+            };
+        }
+
         self::addService($class, $value, true);
     }
 
@@ -48,12 +54,6 @@ final class Container implements ContainerInterface
      */
     private static function addService(string $class, $value, bool $singleton): void
     {
-        if (is_null($value)) {
-            $value = function () use ($class) {
-                return new $class;
-            };
-        }
-
         self::$services[$class] = [
             'value'     => $value,
             'singleton' => $singleton

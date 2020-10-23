@@ -30,7 +30,7 @@ final class Log
         'warning',
         'notice',
         'info',
-        'debug'
+        'debug',
     ];
 
     /**
@@ -120,7 +120,7 @@ final class Log
      */
     private function log(string $level, string $message, array $values): void
     {
-        if (!$this->isEnabled()) {
+        if (!$this->enabled) {
             return;
         }
 

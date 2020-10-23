@@ -14,7 +14,7 @@ interface ContainerInterface
      * @param  string  $class  the class name
      * @param  mixed  $value  the class value
      */
-    public static function add(string $class, $value = null);
+    public static function add(string $class, $value);
 
 
     /**

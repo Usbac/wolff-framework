@@ -160,7 +160,7 @@ final class Kernel
 
 
     /**
-     * Starts the loading of the page
+     * Starts the page loading
      */
     public function start(): void
     {

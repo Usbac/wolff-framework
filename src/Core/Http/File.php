@@ -21,8 +21,8 @@ class File
     /**
      * Default constructor
      *
-     * @param array $data the file data
-     * @param array $options the array with the file options
+     * @param  array  $data  the file data
+     * @param  array  $options  the array with the file options
      */
     public function __construct(array $data, array &$options)
     {
@@ -34,7 +34,7 @@ class File
     /**
      * Returns the specified file value
      *
-     * @param string $key the value key
+     * @param  string  $key  the value key
      *
      * @return mixed the specified file value
      */
@@ -49,7 +49,7 @@ class File
      * If no path is provided, the file name will be
      * used instead
      *
-     * @param string|null $name the desired file path
+     * @param  string|null  $name  the desired file path
      *
      * @return bool True if the file has been uploaded,
      * false otherwise
@@ -70,7 +70,7 @@ class File
      * Returns true if the current file complies
      * with the current options, false otherwise
      *
-     * @param string $path the path of the file
+     * @param  string  $path  the path of the file
      *
      * @return bool True if the current file complies
      * with the current options, false otherwise
@@ -89,10 +89,6 @@ class File
             return false;
         }
 
-        if (!$this->options['override'] && file_exists($path)) {
-            return false;
-        }
-
-        return true;
+        return !(file_exists($path) && !$this->options['override']);
     }
 }

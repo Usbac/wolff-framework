@@ -84,6 +84,8 @@ final class Kernel
 
     /**
      * Default constructor
+     *
+     * @param  array  $config  the configuration
      */
     public function __construct(array $config = [])
     {

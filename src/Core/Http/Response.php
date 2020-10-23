@@ -117,7 +117,8 @@ class Response implements ResponseInterface
         string $domain = '',
         bool $secure = false,
         bool $http_only = true
-    ): Response {
+    ): Response
+    {
         if (isset($time) && array_key_exists($time, self::COOKIE_TIMES)) {
             $time = self::COOKIE_TIMES[strtoupper($time)];
         }

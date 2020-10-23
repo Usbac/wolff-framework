@@ -115,7 +115,6 @@ final class Pagination
     public function setTotal(int $total): Pagination
     {
         $this->total = $total;
-
         return $this;
     }
 
@@ -130,7 +129,6 @@ final class Pagination
     public function setPageSize(int $per_page): Pagination
     {
         $this->per_page = $per_page;
-
         return $this;
     }
 
@@ -162,7 +160,6 @@ final class Pagination
     public function setSidePages(int $side_pages_n = 5): Pagination
     {
         $this->side_pages_n = $side_pages_n;
-
         return $this;
     }
 
@@ -179,7 +176,6 @@ final class Pagination
     public function setUrl(string $url_format): Pagination
     {
         $this->url_format = $url_format;
-
         return $this;
     }
 
@@ -196,7 +192,6 @@ final class Pagination
     public function showEnds(bool $show_ends = true): Pagination
     {
         $this->show_ends = $show_ends;
-
         return $this;
     }
 

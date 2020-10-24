@@ -158,8 +158,6 @@ final class Route
      */
     public static function getFunction(string $url)
     {
-        $url = trim($url, '/');
-
         //Static routes
         foreach (self::$static_routes as $key => $val) {
             if (self::isValidRoute($val) && $key === $url) {

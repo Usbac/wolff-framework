@@ -135,7 +135,7 @@ final class Cache
      * Deletes all of the cache files.
      * If no seconds parameter is given all files will be deleted.
      *
-     * @param  [int]  $seconds  the minimum time in seconds
+     * @param  int  $seconds  the minimum time in seconds
      * that a file needs to have since its last modification
      * to be deleted
      */

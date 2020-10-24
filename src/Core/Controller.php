@@ -67,19 +67,21 @@ class Controller
 
 
     /**
-     * Returns true if the controller's method exists, false otherwise
+     * Returns true if the controller's method exists and is public,
+     * false otherwise
      *
      * @param  string  $path  the controller path
      * @param  string  $method  the controller method name
      *
-     * @return bool true if the controller's method exists, false otherwise
+     * @return bool true if the controller's method exists and is public,
+     * false otherwise
      */
     public static function hasMethod(string $path, string $method): bool
     {
-        $path = self::getClassname($path);
+        $class = self::getClassname($path);
 
-        return method_exists($path, $method) &&
-            (new ReflectionMethod($path, $method))->isPublic();
+        return method_exists($class, $method) &&
+            (new ReflectionMethod($class, $method))->isPublic();
     }
 
 

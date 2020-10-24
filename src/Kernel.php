@@ -2,7 +2,6 @@
 
 namespace Wolff;
 
-use Closure;
 use Wolff\Core\Cache;
 use Wolff\Core\Config;
 use Wolff\Core\Controller;
@@ -47,7 +46,7 @@ final class Kernel
     /**
      * The function associated to the current url
      *
-     * @var object
+     * @var \Closure|null
      */
     private $function;
 
@@ -102,7 +101,7 @@ final class Kernel
      *
      * @return  \Closure|null  the function for the given url
      */
-    private function getFunction(string $url): ?Closure
+    private function getFunction(string $url): ?\Closure
     {
         $func = Route::getFunction($url);
 
@@ -182,16 +181,13 @@ final class Kernel
     {
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
+        } elseif ($this->function && !Route::isBlocked($this->url)) {
+            $this->handle();
         } else {
-            if ($this->function && !Route::isBlocked($this->url)) {
-                $this->load();
-            } else {
-                http_response_code(404);
-            }
-
-            Route::execCode($this->req, $this->res);
+            http_response_code(404);
         }
 
+        Route::execCode($this->req, $this->res);
         $this->res->send();
     }
 
@@ -199,7 +195,7 @@ final class Kernel
     /**
      * Loads the current route and its middlewares
      */
-    private function load(): void
+    private function handle(): void
     {
         $this->res->append(Middleware::loadBefore($this->url, $this->req));
 

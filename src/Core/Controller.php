@@ -38,7 +38,7 @@ class Controller
      * @return mixed the return value of the controller's method
      * or null in case of errors
      */
-    public static function method(string $path, string $method = 'index', array $args = [])
+    public static function method(string $path, string $method, array $args = [])
     {
         $controller = self::getController($path);
 

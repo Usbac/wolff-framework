@@ -4,7 +4,6 @@ namespace Wolff;
 
 use Wolff\Core\Cache;
 use Wolff\Core\Config;
-use Wolff\Core\Controller;
 use Wolff\Core\DB;
 use Wolff\Core\Helper;
 use Wolff\Core\Http\Request;
@@ -87,54 +86,10 @@ final class Kernel
     private function initProperties(array $config = []): void
     {
         $this->config = array_merge(self::DEFAULT_CONFIG, $config);
+        $this->url = $this->getUrl();
+        $this->function = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
-        $this->url = $this->getUrl();
-        $this->function = $this->getFunction($this->url);
-    }
-
-
-    /**
-     * Returns the function for the given url
-     *
-     * @param  string  $url  the request url
-     *
-     * @return  \Closure|null  the function for the given url
-     */
-    private function getFunction(string $url): ?\Closure
-    {
-        $func = Route::getFunction($url);
-
-        if ($func instanceof \Closure) {
-            return $func;
-        }
-
-        $func[0] = $func[0] ?? '';
-        $func[1] = $func[1] ?? 'index';
-
-        if (is_array($func) && Controller::hasMethod($func[0], $func[1])) {
-            return function (...$args) use ($func) {
-                Controller::method($func[0], $func[1], $args);
-            };
-        }
-
-        if (Controller::hasMethod($url, 'index')) {
-            return function (...$args) use ($url) {
-                Controller::method($url, 'index', $args);
-            };
-        }
-
-        $slash_pos = strrpos($url, '/');
-        $controller = substr($url, 0, $slash_pos);
-        $method = substr($url, $slash_pos + 1);
-
-        if (Controller::hasMethod($controller, $method)) {
-            return function (...$args) use ($controller, $method) {
-                Controller::method($controller, $method, $args);
-            };
-        }
-
-        return null;
     }
 
 
@@ -203,7 +158,7 @@ final class Kernel
 
         call_user_func_array($this->function, [
             $this->req,
-            $this->res
+            $this->res,
         ]);
 
         $this->res->append(Middleware::loadAfter($this->url, $this->req));

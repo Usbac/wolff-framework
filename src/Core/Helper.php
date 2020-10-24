@@ -52,7 +52,7 @@ final class Helper
 
     /**
      * Returns true if the given array is
-     * associative (numbers as keys), false otherwise.
+     * associative (numbers as keys), false otherwise
      *
      * @param  array  $arr  the array
      *
@@ -107,14 +107,14 @@ final class Helper
 
     /**
      * Returns true if the given url array matches the route array,
-     * false otherwise.
+     * false otherwise
      *
-     * @param  string  $route  the route that must be matched.
-     * @param  array  $url  the url to test.
-     * @param  int  $url_len  the url length.
+     * @param  string  $route  the route that must be matched
+     * @param  array  $url  the url to test
+     * @param  int  $url_len  the url length
      *
      * @return bool true if the given url array matches the route array,
-     * false otherwise.
+     * false otherwise
      */
     public static function matchesRoute(string $route, array $url, int $url_len): bool
     {

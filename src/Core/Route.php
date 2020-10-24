@@ -233,7 +233,17 @@ final class Route
             http_response_code($route['status']);
         }
 
-        return $route['function'];
+        if (!is_array($route['action'])) {
+            return $route['action'];
+        }
+
+        if (isset($route['action'][0], $route['action'][1])) {
+            return function (...$args) use ($route) {
+                (new $route['action'][0])->{$route['action'][1]}(...$args);
+            };
+        }
+
+        return null;
     }
 
 
@@ -305,9 +315,10 @@ final class Route
      */
     public static function redirect(string $from, string $to, int $code = self::STATUS_REDIRECT): void
     {
-        self::$redirects[Str::sanitizeURL($from)] = [
-            'destiny' => Str::sanitizeURL($to),
-            'code'    => $code
+        self::$redirects[] = [
+            'from' => $from,
+            'to'   => Str::sanitizeURL($to),
+            'code' => $code
         ];
     }
 
@@ -334,7 +345,7 @@ final class Route
 
         $url = trim($url, '/');
         $route = [
-            'function'     => $function,
+            'action'       => $function,
             'method'       => $method,
             'status'       => $status,
             'content_type' => $content_type,
@@ -367,6 +378,10 @@ final class Route
      */
     public static function isBlocked(string $url): bool
     {
+        if (empty(self::$blocked)) {
+            return false;
+        }
+
         $url = explode('/', $url);
         $url_len = count($url) - 1;
 
@@ -489,7 +504,20 @@ final class Route
      */
     public static function getRedirection(string $url): ?array
     {
-        return self::$redirects[$url] ?? null;
+        if (empty(self::$redirects)) {
+            return null;
+        }
+
+        $url = explode('/', $url);
+        $url_len = count($url) - 1;
+
+        foreach (self::$redirects as $redirect) {
+            if (Helper::matchesRoute($redirect['from'], $url, $url_len)) {
+                return $redirect;
+            }
+        }
+
+        return null;
     }
 
 

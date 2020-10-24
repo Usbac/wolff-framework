@@ -43,7 +43,7 @@ final class Session
      * This is done for preventing session hijacking.
      *
      * @return bool true if the current IP address and the User-Agent are the same
-     * than the IP address and User-Agent of the previous connection.
+     * than the IP address and User-Agent of the previous connection
      */
     private static function isValid(): bool
     {

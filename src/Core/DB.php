@@ -87,7 +87,7 @@ class DB
 
 
     /**
-     * Sets the connection default credentials.
+     * Sets the connection default credentials
      *
      * @param  array  $data  The connection default credentials
      */

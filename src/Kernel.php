@@ -109,10 +109,12 @@ final class Kernel
             return $func;
         }
 
-        if (is_string($func)) {
+        $func[0] = $func[0] ?? '';
+        $func[1] = $func[1] ?? 'index';
+
+        if (is_array($func) && Controller::hasMethod($func[0], $func[1])) {
             return function (...$args) use ($func) {
-                $path = explode('@', $func);
-                Controller::method($path[0], $path[1] ?? 'index', $args);
+                Controller::method($func[0], $func[1], $args);
             };
         }
 
@@ -223,7 +225,7 @@ final class Kernel
             $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
         }
 
-        $url = ltrim($url, '/');
+        $url = trim($url, '/');
 
         //Remove parameters
         if (($q_pos = strpos($url, '?')) !== false) {

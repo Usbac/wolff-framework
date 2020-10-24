@@ -86,8 +86,8 @@ final class Route
 
         if (!isset($args[0]) || !is_string($args[0])) {
             throw new InvalidArgumentException('url', 'of type string');
-        } elseif (!isset($args[1]) || (!is_string($args[1]) && !($args[1] instanceof \Closure))) {
-            throw new InvalidArgumentException('function', 'of type string or an instance of \Closure');
+        } elseif (!isset($args[1]) || (!is_array($args[1]) && !($args[1] instanceof \Closure))) {
+            throw new InvalidArgumentException('function', 'of type array or an instance of \Closure');
         }
 
         $status = isset($args[2]) && is_numeric($args[2]) ?

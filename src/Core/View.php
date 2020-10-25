@@ -29,7 +29,6 @@ final class View
      */
     public static function getSource(string $dir): string
     {
-        $dir = Str::sanitizePath($dir);
         return file_get_contents(self::getPath($dir));
     }
 
@@ -49,7 +48,6 @@ final class View
      */
     public static function get(string $dir, array $data = [], bool $cache = true): string
     {
-        $dir = Str::sanitizePath($dir);
         return Template::get($dir, $data, $cache);
     }
 
@@ -65,7 +63,6 @@ final class View
      */
     public static function getRender(string $dir, array $data = [], bool $cache = true): string
     {
-        $dir = Str::sanitizePath($dir);
         return Template::getRender($dir, $data, $cache);
     }
 

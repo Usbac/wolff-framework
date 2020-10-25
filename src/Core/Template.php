@@ -108,9 +108,11 @@ final class Template
         ob_start();
 
         if ($cache && Cache::isEnabled()) {
-            include(Cache::set($dir, Cache::has($dir) ?
-                Cache::get($dir) :
-                self::getContent($dir)));
+            if (!Cache::has($dir)) {
+                Cache::set($dir, self::getContent($dir));
+            }
+
+            include Cache::getFilename($dir);
         } else {
             $tmp_file = tmpfile();
             fwrite($tmp_file, self::getContent($dir));

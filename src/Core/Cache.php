@@ -162,7 +162,7 @@ final class Cache
      *
      * @return string the cache format name of a file
      */
-    private static function getFilename(string $dir): string
+    public static function getFilename(string $dir): string
     {
         $filename = sprintf(self::FILENAME_FORMAT, str_replace('/', '_', $dir));
         return self::getDir($filename);

@@ -104,35 +104,36 @@ namespace {
         }
     }
 
+    if (!function_exists('val')) {
+
+        /**
+         * Returns the key value of the given array, or null if it doesn't exists.
+         * The key param can use the dot notation, like 'user.name'.
+         *
+         * @param  array  $arr  the array
+         * @param  string|null  $key  the array key to obtain
+         *
+         * @return mixed the value of the specified key in the array
+         */
+        function val(array $arr, string $key = null)
+        {
+            return \Wolff\Core\Helper::val($arr, $key);
+        }
+    }
+
     if (!function_exists('config')) {
 
         /**
-         * Returns the given key of the configuration array or null
-         * if it does not exists.
-         * The key must be in dot syntax, like 'user.name'.
+         * Returns the configuration array or the specified key of it.
+         * The key param can use the dot notation, like 'user.name'.
          *
          * @param  string|null  $key  the configuration array key
          *
-         * @return mixed the given key of the configuration array or null
-         * if it does not exists
+         * @return mixed the configuration array or the specified key of it
          */
         function config(string $key = null)
         {
-            $arr = \Wolff\Core\Config::get();
-
-            if (!isset($key)) {
-                return $arr;
-            }
-
-            foreach (explode('.', $key) as $key) {
-                if (!is_array($arr) || !array_key_exists($key, $arr)) {
-                    return null;
-                }
-
-                $arr = &$arr[$key];
-            }
-
-            return $arr;
+            return \Wolff\Core\Helper::val(\Wolff\Core\Config::get(), $key);
         }
     }
 
@@ -154,8 +155,7 @@ namespace {
     if (!function_exists('isAssoc')) {
 
         /**
-         * Returns true if the given array is
-         * associative (numbers as keys), false otherwise.
+         * Returns true if the given array is associative (numbers as keys), false otherwise
          *
          * @param  array  $arr  the array
          *
@@ -165,38 +165,6 @@ namespace {
         function isAssoc(array $arr): bool
         {
             return \Wolff\Core\Helper::isAssoc($arr);
-        }
-    }
-
-    if (!function_exists('val')) {
-
-        /**
-         * Returns the key value of the
-         * given array, or null if it doesn't exists.
-         * The key param can use the dot notation.
-         *
-         * @param  array  $arr  the array
-         * @param  string|null  $key  the array key to obtain
-         *
-         * @return mixed the value of the specified key in the array
-         */
-        function val(array $arr, string $key = null)
-        {
-            $keys = explode('.', $key);
-
-            if (is_null($key)) {
-                return $arr;
-            }
-
-            foreach ($keys as $key) {
-                if (!is_array($arr) || !array_key_exists($key, $arr)) {
-                    return null;
-                }
-
-                $arr = &$arr[$key];
-            }
-
-            return $arr;
         }
     }
 
@@ -456,8 +424,7 @@ namespace {
     if (!function_exists('isInt')) {
 
         /**
-         * Returns true if the given variable
-         * complies with an int, false otherwise
+         * Returns true if the argument complies with an int, false otherwise
          *
          * @param  mixed  $int  the variable
          */
@@ -470,8 +437,7 @@ namespace {
     if (!function_exists('isFloat')) {
 
         /**
-         * Returns true if the given variable
-         * complies with an float, false otherwise
+         * Returns true if the argument complies with an float, false otherwise
          *
          * @param  mixed  $float  the variable
          */

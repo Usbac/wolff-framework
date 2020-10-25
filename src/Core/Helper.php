@@ -14,6 +14,33 @@ final class Helper
 
 
     /**
+     * Returns the key value of the given array, or null if it doesn't exists.
+     * The key param can use the dot notation.
+     *
+     * @param  array  $arr  the array
+     * @param  string|null  $key  the array key to obtain
+     *
+     * @return mixed the value of the specified key in the array
+     */
+    public static function val(array $arr, string $key = null)
+    {
+        if (is_null($key)) {
+            return $arr;
+        }
+
+        foreach (explode('.', $key) as $key) {
+            if (!is_array($arr) || !array_key_exists($key, $arr)) {
+                return null;
+            }
+
+            $arr = &$arr[$key];
+        }
+
+        return $arr;
+    }
+
+
+    /**
      * Returns the given string without the single or double
      * quotes surrounding it
      *

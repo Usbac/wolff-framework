@@ -2,21 +2,23 @@
 
 namespace Wolff\Utils;
 
+use Wolff\Core\Helper;
 use Wolff\Exception\InvalidArgumentException;
 
 final class Auth extends \Wolff\Core\DB
 {
 
     const DEFAULT_TABLE = 'user';
+    const DEFAULT_OPTIONS = [
+        'cost' => '10',
+    ];
 
     /**
      * The password hashing options
      *
      * @var array
      */
-    private $options = [
-        'cost' => '10',
-    ];
+    private $options = self::DEFAULT_OPTIONS;
 
     /**
      * The database table to be used
@@ -31,7 +33,7 @@ final class Auth extends \Wolff\Core\DB
      *
      * @var string
      */
-    private $unique_column = null;
+    private $unique = null;
 
     /**
      * The last currently authenticated
@@ -127,18 +129,18 @@ final class Auth extends \Wolff\Core\DB
      * Sets the unique column that cannot
      * be repeated
      *
-     * @param  string  $unique_column  the unique column name
+     * @param  string  $unique  the unique column name
      */
-    public function setUnique(string $unique_column): void
+    public function setUnique(string $unique): void
     {
-        $this->unique_column = $unique_column;
+        $this->unique = $unique;
     }
 
 
     /**
      * Returns true if the given user data exists in the database
      * and is valid, false otherwise.
-     * This method updates the current user data array.
+     * This method updates the current user data array
      *
      * @throws \Wolff\Exception\InvalidArgumentException
      *
@@ -149,7 +151,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function login(array $data): bool
     {
-        if (empty($data) || !isAssoc($data) || !array_key_exists('password', $data)) {
+        if (!array_key_exists('password', $data) || !Helper::isAssoc($data)) {
             throw new InvalidArgumentException(
                 'data',
                 'a non-empty associative array with at least a \'password\' key'
@@ -159,14 +161,14 @@ final class Auth extends \Wolff\Core\DB
         $password = $data['password'];
         unset($data['password']);
 
-        $conditions = [];
+        $conds = [];
         foreach (array_keys($data) as $key) {
-            $conditions[] = "$key = :$key";
+            $conds[] = "$key = :$key";
         }
 
-        $conditions = implode(' AND ', $conditions);
+        $conds = implode(' AND ', $conds);
 
-        $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE $conditions");
+        $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $conds");
         $stmt->execute($data);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -189,7 +191,7 @@ final class Auth extends \Wolff\Core\DB
      */
     public function register(array $data): bool
     {
-        if (empty($data) || !isAssoc($data)) {
+        if (empty($data) || !Helper::isAssoc($data)) {
             throw new InvalidArgumentException('data', 'a non-empty associative array');
         } elseif (!$this->passwordMatches($data)) {
             return false;
@@ -199,9 +201,9 @@ final class Auth extends \Wolff\Core\DB
         $data['password'] = $this->getPassword($data['password']);
 
         //Repeated user
-        if (isset($this->unique_column)) {
-            $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $this->unique_column = ?");
-            $stmt->execute([ $data[$this->unique_column] ]);
+        if (isset($this->unique)) {
+            $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $this->unique = ?");
+            $stmt->execute([ $data[$this->unique] ]);
 
             if ($stmt->fetch(\PDO::FETCH_ASSOC) !== false) {
                 return false;
@@ -288,7 +290,6 @@ final class Auth extends \Wolff\Core\DB
 
         $keys = implode(', ', $array_keys);
         $values = implode(', ', $values);
-
         $stmt = $this->connection->prepare("INSERT INTO $this->table ($keys) VALUES ($values)");
 
         return $stmt->execute($data);

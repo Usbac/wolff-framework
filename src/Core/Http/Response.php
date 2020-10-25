@@ -20,21 +20,21 @@ class Response implements ResponseInterface
     private $content;
 
     /**
-     * The HTTP status code.
+     * The HTTP status code
      *
      * @var int|null
      */
     private $status_code;
 
     /**
-     * The header tag list.
+     * The header tag list
      *
      * @var array
      */
     private $headers;
 
     /**
-     * The cookies list.
+     * The cookies list
      *
      * @var array
      */

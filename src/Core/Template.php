@@ -62,6 +62,7 @@ final class Template
 
     /**
      * The template status
+     *
      * @var bool
      */
     private static $enabled = true;

@@ -12,6 +12,7 @@ final class Maintenance
 
     /**
      * The maintenance status
+     *
      * @var bool
      */
     private static $enabled = false;

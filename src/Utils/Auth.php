@@ -125,7 +125,7 @@ final class Auth extends \Wolff\Core\DB
 
     /**
      * Sets the unique column that cannot
-     * be repeated.
+     * be repeated
      *
      * @param  string  $unique_column  the unique column name
      */

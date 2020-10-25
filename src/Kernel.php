@@ -26,11 +26,12 @@ final class Kernel
         'template_on'    => true,
         'cache_on'       => true,
         'stdlib_on'      => true,
-        'maintenance_on' => false
+        'maintenance_on' => false,
     ];
 
     /**
      * The configuration
+     *
      * @var array
      */
     private $config;

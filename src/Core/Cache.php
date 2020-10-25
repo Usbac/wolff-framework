@@ -15,6 +15,7 @@ final class Cache
 
     /**
      * The cache status
+     *
      * @var bool
      */
     private static $enabled = true;

@@ -90,7 +90,7 @@ namespace {
          *
          * @param  string  $path  the absolute path
          *
-         * @return string the path as relative.
+         * @return string the path as relative
          */
         function relativePath(string $path = ''): string
         {
@@ -109,12 +109,12 @@ namespace {
         /**
          * Returns the given key of the configuration array or null
          * if it does not exists.
-         * The key must be in dot syntax. Like 'user.name'.
+         * The key must be in dot syntax, like 'user.name'.
          *
          * @param  string|null  $key  the configuration array key
          *
          * @return mixed the given key of the configuration array or null
-         * if it does not exists.
+         * if it does not exists
          */
         function config(string $key = null)
         {
@@ -174,7 +174,6 @@ namespace {
         /**
          * Returns the key value of the
          * given array, or null if it doesn't exists.
-         *
          * The key param can use the dot notation.
          *
          * @param  array  $arr  the array

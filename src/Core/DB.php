@@ -283,8 +283,7 @@ class DB
 
 
     /**
-     * Returns the result of a select query.
-     * This method accepts dot notation.
+     * Returns the result of a select query, this method accepts dot notation
      * WARNING: The conditions parameter must be manually escaped
      *
      * @param  string  $table  the table for the query
@@ -393,8 +392,8 @@ class DB
 
 
     /**
-     * Returns the string escaped
-     * Any character that is not a letter, number or underscore is removed.
+     * Returns the string escaped.
+     * Any character that is not a letter, number or underscore is removed
      *
      * @param  string  $str  the string
      *

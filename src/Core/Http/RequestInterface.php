@@ -35,12 +35,12 @@ interface RequestInterface
 
     /**
      * Returns true if the specified parameter is set,
-     * false otherwise.
+     * false otherwise
      *
      * @param  string  $key  the parameter key
      *
      * @return bool true if the specified parameter is set,
-     * false otherwise.
+     * false otherwise
      */
     public function hasQuery(string $key);
 

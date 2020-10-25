@@ -35,18 +35,21 @@ final class Log
 
     /**
      * The log status
+     *
      * @var bool
      */
     private $enabled = true;
 
     /**
      * The log folder
+     *
      * @var string
      */
     private $folder = self::DEFAULT_FOLDER;
 
     /**
      * The date format used internally in the files
+     *
      * @var string
      */
     private $date_format = self::DEFAULT_DATE_FORMAT;

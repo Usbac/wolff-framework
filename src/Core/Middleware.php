@@ -40,16 +40,14 @@ final class Middleware
     /**
      * Loads all the middlewares that matches the current route
      *
-     * @param  string  $type  the type of middlewares to load
+     * @param  array  $middlewares  the array of middlewares to load
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
      *
      * @return string the middleware responses joined
      */
-    private static function load(string $type, string $url, Http\Request &$req = null): string
+    private static function load(array $middlewares, string $url, Http\Request &$req = null): string
     {
-        $middlewares = self::${$type};
-
         if (empty($middlewares)) {
             return '';
         }
@@ -93,7 +91,7 @@ final class Middleware
      */
     public static function loadBefore(string $url, Http\Request $req = null): string
     {
-        return self::load('before', $url, $req);
+        return self::load(self::$before, $url, $req);
     }
 
 
@@ -107,7 +105,7 @@ final class Middleware
      */
     public static function loadAfter(string $url, Http\Request $req = null): string
     {
-        return self::load('after', $url, $req);
+        return self::load(self::$after, $url, $req);
     }
 
 

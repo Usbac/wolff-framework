@@ -12,6 +12,7 @@ final class Language
 
     /**
      * The default language to use
+     *
      * @var string
      */
     private static $default;

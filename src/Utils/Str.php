@@ -220,14 +220,14 @@ final class Str
 
     /**
      * Returns the string with the indicated substrings swapped
-     * or false in case of errors.
+     * or false in case of errors
      *
      * @param  string  $str  the string
      * @param  string  $first_str  the first string
      * @param  string  $second_str  the second string
      *
      * @return string the string with the indicated substrings swapped
-     * or false in case of errors.
+     * or false in case of errors
      */
     public static function swap(string $str, string $first_str, string $second_str): string
     {
@@ -282,13 +282,13 @@ final class Str
 
     /**
      * Returns everything after the specified substring,
-     * or false if the substring is not in the string.
+     * or false if the substring is not in the string
      *
      * @param  string  $str  the string
      * @param  string  $needle  substring
      *
      * @return string a string with everything after the specified substring,
-     * or false if the substring is not in the string.
+     * or false if the substring is not in the string
      */
     public static function after(string $str, string $needle): string
     {

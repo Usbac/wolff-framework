@@ -12,6 +12,7 @@ final class Config
 
     /**
      * List of configuration variables
+     *
      * @var array
      */
     private static $data = [];

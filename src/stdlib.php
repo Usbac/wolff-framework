@@ -118,14 +118,13 @@ namespace {
          */
         function config(string $key = null)
         {
-            $keys = explode('.', $key);
             $arr = \Wolff\Core\Config::get();
 
             if (!isset($key)) {
                 return $arr;
             }
 
-            foreach ($keys as $key) {
+            foreach (explode('.', $key) as $key) {
                 if (!is_array($arr) || !array_key_exists($key, $arr)) {
                     return null;
                 }

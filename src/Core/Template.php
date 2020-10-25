@@ -81,6 +81,7 @@ final class Template
 
     /**
      * Returns true if the template system is enabled, false otherwise
+     *
      * @return bool true if the template system is enabled, false otherwise
      */
     public static function isEnabled(): bool
@@ -152,7 +153,7 @@ final class Template
      *
      * @param  string  $dir  the view directory
      *
-     * @return string The content of a view file
+     * @return string the content of a view file
      */
     private static function getContent($dir): string
     {

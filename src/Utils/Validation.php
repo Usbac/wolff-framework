@@ -58,7 +58,7 @@ final class Validation
 
     /**
      * Returns an associative array with all the invalid values.
-     * This method runs the isValid method.
+     * This method runs the isValid method
      *
      * @return array the associative array with all the invalid values
      */
@@ -184,7 +184,6 @@ final class Validation
      *
      * @param  array  $fields  the associative array
      * with the fields rules
-     *
      * @param  array  $data  the data array to validate
      *
      * @return bool true if the current data complies all the fields rules,

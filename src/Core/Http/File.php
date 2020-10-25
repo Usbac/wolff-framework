@@ -51,7 +51,7 @@ class File
      *
      * @param  string|null  $name  the desired file path
      *
-     * @return bool True if the file has been uploaded,
+     * @return bool true if the file has been uploaded,
      * false otherwise
      */
     public function upload(string $name = null): bool
@@ -72,7 +72,7 @@ class File
      *
      * @param  string  $path  the path of the file
      *
-     * @return bool True if the current file complies
+     * @return bool true if the current file complies
      * with the current options, false otherwise
      */
     private function complies(string $path): bool

@@ -51,8 +51,8 @@ class DB
     /**
      * Initializes the database connection
      *
-     * @param  array|null  $data  The array containing database authentication data
-     * @param  array|null  $options  The PDO connection options
+     * @param  array|null  $data  the array containing database authentication data
+     * @param  array|null  $options  the PDO connection options
      */
     public function __construct(array $data = null, array $options = null)
     {
@@ -89,7 +89,7 @@ class DB
     /**
      * Sets the connection default credentials
      *
-     * @param  array  $data  The connection default credentials
+     * @param  array  $data  the connection default credentials
      */
     public static function setCredentials(array $data): void
     {
@@ -99,6 +99,7 @@ class DB
 
     /**
      * Returns the PDO connection
+     *
      * @return PDO the PDO connection
      */
     public function getPdo(): ?PDO
@@ -109,6 +110,7 @@ class DB
 
     /**
      * Returns the last query executed
+     *
      * @return string the last query executed
      */
     public function getLastSql(): string
@@ -119,6 +121,7 @@ class DB
 
     /**
      * Returns the arguments of the last query executed
+     *
      * @return array the arguments of the last query executed
      */
     public function getLastArgs(): array
@@ -129,6 +132,7 @@ class DB
 
     /**
      * Returns the last prepared PDO statement
+     *
      * @return \PDOStatement the last prepared PDO statement
      */
     public function getLastStmt(): \PDOStatement
@@ -139,6 +143,7 @@ class DB
 
     /**
      * Returns the last inserted id in the database
+     *
      * @return string the last inserted id in the database
      */
     public function getLastId(): string
@@ -149,6 +154,7 @@ class DB
 
     /**
      * Returns the number of rows affected by the last query
+     *
      * @return int|null the number of rows affected by the last query
      */
     public function getAffectedRows(): ?int

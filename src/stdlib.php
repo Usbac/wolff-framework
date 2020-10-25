@@ -379,6 +379,7 @@ namespace {
          * Returns the average value of the given array
          *
          * @param  array  $arr  the array with the numeric values
+         *
          * @return float|int the average value of the given array
          */
         function average(array $arr)
@@ -391,6 +392,7 @@ namespace {
 
         /**
          * Returns the current client IP
+         *
          * @return string the current client IP
          */
         function getClientIP(): string
@@ -403,6 +405,7 @@ namespace {
 
         /**
          * Returns the current page relative to the project url
+         *
          * @return string the current page relative to the project url
          */
         function getCurrentPage(): string
@@ -424,6 +427,7 @@ namespace {
 
         /**
          * Returns the current page without arguments
+         *
          * @return string the current page without arguments
          */
         function getPureCurrentPage(): string
@@ -442,6 +446,7 @@ namespace {
 
         /**
          * Returns the time between the page load start and the current time
+         *
          * @return float the time between the page load start and the current time
          */
         function getBenchmark(): float

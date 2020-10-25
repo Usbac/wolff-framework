@@ -55,7 +55,7 @@ final class Log
     /**
      * Sets the log system status
      *
-     * @param  bool  $enabled  True for enabling the log system,
+     * @param  bool  $enabled  true for enabling the log system,
      * false for disabling it
      */
     public function setStatus(bool $enabled = true): void
@@ -66,6 +66,7 @@ final class Log
 
     /**
      * Returns true if the log is enabled, false otherwise
+     *
      * @return bool true if the log is enabled, false otherwise
      */
     public function isEnabled(): bool

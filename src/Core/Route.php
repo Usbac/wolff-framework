@@ -311,7 +311,7 @@ final class Route
      *
      * @param  string  $from  the origin url
      * @param  string  $to  the destiny url
-     * @param  int  $code  The HTTP response code
+     * @param  int  $code  the HTTP response code
      */
     public static function redirect(string $from, string $to, int $code = self::STATUS_REDIRECT): void
     {
@@ -476,6 +476,7 @@ final class Route
 
     /**
      * Returns all the available routes
+     *
      * @return array the available routes
      */
     public static function getRoutes(): array
@@ -486,6 +487,7 @@ final class Route
 
     /**
      * Returns all the available redirects
+     *
      * @return array the available redirects
      */
     public static function getRedirects(): array
@@ -523,6 +525,7 @@ final class Route
 
     /**
      * Returns all the blocked routes
+     *
      * @return array the blocked routes
      */
     public static function getBlocked(): array

@@ -55,6 +55,7 @@ final class Maintenance
 
     /**
      * Returns true if the maintenance mode is enabled, false otherwise
+     *
      * @return bool true if the maintenance mode is enabled, false otherwise
      */
     public static function isEnabled(): bool
@@ -157,6 +158,7 @@ final class Maintenance
     /**
      * Returns true if the current client IP is in the whitelist,
      * false otherwise
+     *
      * @return bool true if the current client IP is in the whitelist,
      * false otherwise
      */

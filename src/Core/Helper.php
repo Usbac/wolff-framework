@@ -38,7 +38,7 @@ final class Helper
      *
      * @param  string  $path  the path (relative to the project root folder)
      *
-     * @return string The absolute path
+     * @return string the absolute path
      */
     public static function getRoot(string $path = ''): string
     {
@@ -88,6 +88,7 @@ final class Helper
 
     /**
      * Returns the current client IP
+     *
      * @return string the current client IP
      */
     public static function getClientIP(): string

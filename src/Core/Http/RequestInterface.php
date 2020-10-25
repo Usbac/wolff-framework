@@ -28,7 +28,7 @@ interface RequestInterface
      *
      * @param  string|null  $key  the parameter key
      *
-     * @return mixed The specified parameter
+     * @return mixed the specified parameter
      */
     public function query(string $key = null);
 
@@ -39,7 +39,7 @@ interface RequestInterface
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool True if the specified parameter is set,
+     * @return bool true if the specified parameter is set,
      * false otherwise.
      */
     public function hasQuery(string $key);
@@ -50,19 +50,19 @@ interface RequestInterface
      *
      * @param  string|null  $key  the body parameter key
      *
-     * @return mixed The specified body parameter
+     * @return mixed the specified body parameter
      */
     public function body(string $key = null);
 
 
     /**
      * Returns true if the specified body parameter is set,
-     * false otherwise.
+     * false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool True if the specified body parameter is set,
-     * false otherwise.
+     * @return bool true if the specified body parameter is set,
+     * false otherwise
      */
     public function has(string $key);
 
@@ -72,19 +72,19 @@ interface RequestInterface
      *
      * @param  string|null  $key  the file key
      *
-     * @return mixed The specified file
+     * @return mixed the specified file
      */
     public function file(string $key = null);
 
 
     /**
      * Returns true if the specified file is set,
-     * false otherwise.
+     * false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool True if the specified file is set,
-     * false otherwise.
+     * @return bool true if the specified file is set,
+     * false otherwise
      */
     public function hasFile(string $key);
 
@@ -101,12 +101,12 @@ interface RequestInterface
 
     /**
      * Returns true if the specified cookie is set,
-     * false otherwise.
+     * false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool True if the specified cookie is set,
-     * false otherwise.
+     * @return bool true if the specified cookie is set,
+     * false otherwise
      */
     public function hasCookie(string $key);
 
@@ -117,7 +117,7 @@ interface RequestInterface
      *
      * @param  string|null  $key  the header key to get
      *
-     * @return mixed The headers array,
+     * @return mixed the headers array,
      * or the specified header key
      */
     public function getHeader(string $key = null);
@@ -126,7 +126,7 @@ interface RequestInterface
     /**
      * Returns the request method
      *
-     * @return string The request method
+     * @return string the request method
      */
     public function getMethod();
 
@@ -134,7 +134,7 @@ interface RequestInterface
     /**
      * Returns the request uri
      *
-     * @return string The request uri
+     * @return string the request uri
      */
     public function getUri();
 
@@ -142,17 +142,17 @@ interface RequestInterface
     /**
      * Returns the full request uri
      *
-     * @return string The request uri
+     * @return string the request uri
      */
     public function getFullUri();
 
 
     /**
      * Returns true if the current protocol is secure (https),
-     * false otherwise.
+     * false otherwise
      *
      * @return bool true if the current protocol is secure (https),
-     * false otherwise.
+     * false otherwise
      */
     public function isSecure();
 }

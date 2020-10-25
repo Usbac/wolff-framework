@@ -29,6 +29,7 @@ final class Session
 
     /**
      * Returns true if the current session has expired, false otherwise
+     *
      * @return bool true if the current session has expired, false otherwise
      */
     public static function expired(): bool
@@ -205,6 +206,7 @@ final class Session
 
     /**
      * Returns the time since the session was created in seconds
+     *
      * @return mixed the time since the session was created in seconds
      */
     public static function getPassedTime()

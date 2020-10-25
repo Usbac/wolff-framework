@@ -43,7 +43,7 @@ final class Config
     /**
      * Returns all the configuration or the specified key
      *
-     * @param  string  [$key]  the key of the configuration array to get
+     * @param  string  $key  the key of the configuration array to get
      *
      * @return mixed all the configuration or the specified key
      */

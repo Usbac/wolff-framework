@@ -44,7 +44,7 @@ final class Middleware
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
      *
-     * @return string The middleware responses joined
+     * @return string the middleware responses joined
      */
     private static function load(string $type, string $url, Http\Request &$req = null): string
     {
@@ -89,7 +89,7 @@ final class Middleware
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
      *
-     * @return string The middleware responses
+     * @return string the middleware responses
      */
     public static function loadBefore(string $url, Http\Request $req = null): string
     {
@@ -103,7 +103,7 @@ final class Middleware
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
      *
-     * @return string The middleware responses
+     * @return string the middleware responses
      */
     public static function loadAfter(string $url, Http\Request $req = null): string
     {

@@ -23,7 +23,7 @@ final class Cache
     /**
      * Sets the cache status
      *
-     * @param  bool  $enabled  True for enabling the cache system,
+     * @param  bool  $enabled  true for enabling the cache system,
      * false for disabling it
      */
     public static function setStatus(bool $enabled = true): void
@@ -34,6 +34,7 @@ final class Cache
 
     /**
      * Returns true if the cache is enabled, false otherwise
+     *
      * @return bool true if the cache is enabled, false otherwise
      */
     public static function isEnabled(): bool

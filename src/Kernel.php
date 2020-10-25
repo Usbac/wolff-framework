@@ -110,7 +110,7 @@ final class Kernel
 
     /**
      * Sets the error reporting state
-     * based on the current configuration.
+     * based on the current configuration
      */
     private function setErrors(): void
     {

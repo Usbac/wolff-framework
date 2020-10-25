@@ -90,7 +90,7 @@ class Request implements RequestInterface
      *
      * @param  array  $server  the super global server array
      *
-     * @return array The headers parsed
+     * @return array the headers parsed
      */
     private function parseHeaders(array $server): array
     {
@@ -114,7 +114,7 @@ class Request implements RequestInterface
      * @param  array  $arr  the array of files
      * @param  array  $options  the array with the file options
      *
-     * @return array The array of files instances based on the
+     * @return array the array of files instances based on the
      * given files array
      */
     private function getFiles(array $arr, array &$options): array

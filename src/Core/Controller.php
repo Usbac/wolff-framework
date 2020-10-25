@@ -90,7 +90,7 @@ class Controller
      *
      * @param  string  $path  the controller path
      *
-     * @return string The controller classname of the given path
+     * @return string the controller classname of the given path
      */
     private static function getClassname(string $path): string
     {

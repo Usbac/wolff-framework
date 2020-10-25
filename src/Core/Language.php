@@ -45,8 +45,8 @@ final class Language
         $lang = $lang ?? self::$default;
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
-            $key = substr($dir, $dot_pos + 1);
             $dir = substr($dir, 0, $dot_pos);
+            $key = substr($dir, $dot_pos + 1);
         }
 
         if (!self::exists($dir, $lang)) {

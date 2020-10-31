@@ -74,8 +74,8 @@ final class Kernel
     {
         $this->initProperties($config);
         $this->initModules();
-        $this->setErrors();
-        $this->stdlib();
+        $this->initErrors();
+        $this->initStdlib();
     }
 
 
@@ -113,7 +113,7 @@ final class Kernel
      * Sets the error reporting state
      * based on the current configuration
      */
-    private function setErrors(): void
+    private function initErrors(): void
     {
         error_reporting($this->config['development_on'] ? E_ALL : 0);
         ini_set('display_errors', strval($this->config['development_on']));
@@ -124,10 +124,10 @@ final class Kernel
      * Includes the standard library if
      * it's active in the current configuration
      */
-    private function stdlib(): void
+    private function initStdlib(): void
     {
         if ($this->config['stdlib_on']) {
-            include_once('stdlib.php');
+            include_once 'stdlib.php';
         }
     }
 

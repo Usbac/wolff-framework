@@ -3,12 +3,9 @@
 namespace Wolff\Core;
 
 use Wolff\Core\Helper;
-use Wolff\Exception\FileNotReadableException;
 
 final class Maintenance
 {
-
-    const DEFAULT_FILE = 'system/maintenance_whitelist.txt';
 
     /**
      * The maintenance status
@@ -18,11 +15,11 @@ final class Maintenance
     private static $enabled = false;
 
     /**
-     * Filename of the ip whitelist file
+     * IPs whitelist
      *
-     * @var string
+     * @var array
      */
-    private static $file = null;
+    private static $ips = [];
 
     /**
      * Function to execute in maintenance mode
@@ -40,17 +37,6 @@ final class Maintenance
     public static function set(\Closure $func): void
     {
         self::$function = $func;
-    }
-
-
-    /**
-     * Sets the ip whitelist file.
-     *
-     * @param  string  $path  the file path
-     */
-    public static function setFile(string $path = self::DEFAULT_FILE): void
-    {
-        self::$file = Helper::getRoot($path);
     }
 
 
@@ -78,81 +64,37 @@ final class Maintenance
 
 
     /**
+     * Sets the IPs whitelist.
+     *
+     * @param  iterable  $ips  the IPs list
+     */
+    public static function setIPs(iterable $ips): void
+    {
+        foreach ($ips as $ip) {
+            self::$ips[] = strval($ip);
+        }
+    }
+
+
+    /**
      * Returns an array of the IPs in the whitelist
      *
      * @return array an array of the IPs in the whitelist
      */
-    public static function getAllowedIPs(): array
+    public static function getIPs(): array
     {
-        if (!isset(self::$file)) {
-            self::setFile();
-        }
-
-        return is_readable(self::$file) ?
-            explode(PHP_EOL, file_get_contents(self::$file)) :
-            [];
+        return self::$ips;
     }
 
 
     /**
-     * Adds an IP to the whitelist
-     *
-     * @param  string  $ip  the IP to add
-     *
-     * @return bool true if the IP has been added, false otherwise
-     */
-    public static function addAllowedIP(string $ip): bool
-    {
-        if (!isset(self::$file)) {
-            self::setFile();
-        }
-
-        if (!($ip = filter_var($ip, FILTER_VALIDATE_IP))) {
-            return false;
-        }
-
-        self::createFile();
-
-        return file_put_contents(self::$file, PHP_EOL . $ip, FILE_APPEND | LOCK_EX) !== false;
-    }
-
-
-    /**
-     * Removes an IP from the whitelist
-     *
-     * @throws \Wolff\Exception\FileNotReadableException
+     * Removes the given IP from the whitelist
      *
      * @param  string  $ip  the IP to remove
-     *
-     * @return bool true if the IP has been removed, false otherwise
      */
-    public static function removeAllowedIP(string $ip): bool
+    public static function removeIP(string $ip): void
     {
-        if (!isset(self::$file)) {
-            self::setFile();
-        }
-
-        if (!($ip = filter_var($ip, FILTER_VALIDATE_IP))) {
-            return false;
-        } elseif (!is_readable(self::$file)) {
-            throw new FileNotReadableException(self::$file);
-        }
-
-        $ips = array_filter(explode(PHP_EOL, file_get_contents(self::$file)));
-        Helper::arrayRemove($ips, $ip);
-
-        return file_put_contents(self::$file, implode(PHP_EOL, $ips)) !== false;
-    }
-
-
-    /**
-     * Create the text file with the IP whitelist
-     */
-    private static function createFile(): void
-    {
-        if (!is_file(self::$file)) {
-            file_put_contents(self::$file, '');
-        }
+        Helper::arrayRemove(self::$ips, $ip);
     }
 
 
@@ -165,7 +107,7 @@ final class Maintenance
      */
     public static function hasAccess(): bool
     {
-        return in_array(Helper::getClientIP(), self::getAllowedIPs());
+        return in_array(Helper::getClientIP(), self::$ips);
     }
 
 
@@ -178,10 +120,7 @@ final class Maintenance
     public static function call(Http\Request &$req, Http\Response &$res): void
     {
         if (isset(self::$function)) {
-            call_user_func_array(self::$function, [
-                $req,
-                $res
-            ]);
+            call_user_func_array(self::$function, [ $req, $res ]);
         }
     }
 }

@@ -156,12 +156,7 @@ final class Kernel
     private function handle(): void
     {
         $this->res->append(Middleware::loadBefore($this->url, $this->req));
-
-        call_user_func_array($this->function, [
-            $this->req,
-            $this->res,
-        ]);
-
+        call_user_func_array($this->function, [ $this->req, $this->res ]);
         $this->res->append(Middleware::loadAfter($this->url, $this->req));
     }
 

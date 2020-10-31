@@ -6,8 +6,8 @@ use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
 /**
- * static @method before(string $url, \Closure $function)
- * static @method after(string $url, \Closure $function)
+ * static @method before(string $url, \Closure $func)
+ * static @method after(string $url, \Closure $func)
  */
 final class Middleware
 {

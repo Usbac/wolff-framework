@@ -26,7 +26,7 @@ final class Maintenance
      *
      * @var \Closure
      */
-    private static $function;
+    private static $func;
 
 
     /**
@@ -36,7 +36,7 @@ final class Maintenance
      */
     public static function set(\Closure $func): void
     {
-        self::$function = $func;
+        self::$func = $func;
     }
 
 
@@ -119,8 +119,8 @@ final class Maintenance
      */
     public static function call(Http\Request &$req, Http\Response &$res): void
     {
-        if (isset(self::$function)) {
-            call_user_func_array(self::$function, [ $req, $res ]);
+        if (isset(self::$func)) {
+            call_user_func_array(self::$func, [ $req, $res ]);
         }
     }
 }

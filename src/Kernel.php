@@ -48,7 +48,7 @@ final class Kernel
      *
      * @var \Closure|null
      */
-    private $function;
+    private $func;
 
     /**
      * Current request object
@@ -88,7 +88,7 @@ final class Kernel
     {
         $this->config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->url = $this->getUrl();
-        $this->function = Route::getFunction($this->url);
+        $this->func = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
     }
@@ -139,7 +139,7 @@ final class Kernel
     {
         if (Maintenance::isEnabled() && !Maintenance::hasAccess()) {
             Maintenance::call($this->req, $this->res);
-        } elseif ($this->function && !Route::isBlocked($this->url)) {
+        } elseif ($this->func && !Route::isBlocked($this->url)) {
             $this->handle();
         } else {
             http_response_code(404);
@@ -156,7 +156,7 @@ final class Kernel
     private function handle(): void
     {
         $this->res->append(Middleware::loadBefore($this->url, $this->req));
-        call_user_func_array($this->function, [ $this->req, $this->res ]);
+        call_user_func_array($this->func, [ $this->req, $this->res ]);
         $this->res->append(Middleware::loadAfter($this->url, $this->req));
     }
 

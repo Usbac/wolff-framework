@@ -143,7 +143,6 @@ final class Pagination
     public function setPage(int $page = 0): Pagination
     {
         $this->page = $page;
-
         return $this;
     }
 

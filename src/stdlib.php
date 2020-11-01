@@ -12,7 +12,7 @@ namespace {
          *
          * @return string the size as a human-readable string
          */
-        function bytesToString($size, $precision = 0): string
+        function bytesToString(int $size, int $precision = 0): string
         {
             $sizes = [ 'YB', 'ZB', 'EB', 'PB', 'TB', 'GB', 'MB', 'KB', 'B' ];
             $total = count($sizes);

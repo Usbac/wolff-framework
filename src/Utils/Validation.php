@@ -44,8 +44,7 @@ final class Validation
     /**
      * Sets the fields rules
      *
-     * @param  array  $fields  the associative array
-     * with the fields rules
+     * @param  array  $fields  the associative array with the fields rules
      *
      * @return Validation this
      */
@@ -89,10 +88,10 @@ final class Validation
 
     /**
      * Returns true if the given data key value matches
-     * the current rules, false otherwise
+     * the current fields rules, false otherwise
      *
      * @param  string  $key  the data key value to evaluate
-     * with the field rules
+     * with the fields rules
      */
     private function validateField(string $key): void
     {
@@ -115,7 +114,7 @@ final class Validation
      *
      * @param  string  $rule  the rule that must be complied
      * @param  mixed  $rule_val  the rule value
-     * @param  mixed  $val the value to check
+     * @param  mixed  $val  the value to check
      *
      * @return bool true if the given value complies with the
      * specified rule, false otherwise
@@ -178,21 +177,18 @@ final class Validation
 
 
     /**
-     * Returns true if the given data matches the fields.
+     * Returns true if the given data complies with the fields.
      * This is a proxy method to the setFields, setData
      * and isValid methods (in that order)
      *
-     * @param  array  $fields  the associative array
-     * with the fields rules
+     * @param  array  $fields  the associative array with the fields rules
      * @param  array  $data  the data array to validate
      *
-     * @return bool true if the current data complies all the fields rules,
+     * @return bool true if the data complies with the fields rules,
      * false otherwise
      */
     public function check(array $fields, array $data): bool
     {
-        return $this->setFields($fields)
-                    ->setData($data)
-                    ->isValid();
+        return $this->setFields($fields)->setData($data)->isValid();
     }
 }

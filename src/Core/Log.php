@@ -5,14 +5,14 @@ namespace Wolff\Core;
 use Wolff\Utils\Str;
 
 /**
- * @method emergency(string $message, array $values = [])
- * @method alert(string $message, array $values = [])
- * @method critical(string $message, array $values = [])
- * @method error(string $message, array $values = [])
- * @method warning(string $message, array $values = [])
- * @method notice(string $message, array $values = [])
- * @method info(string $message, array $values = [])
- * @method debug(string $message, array $values = [])
+ * @method emergency(string $msg, array $values = [])
+ * @method alert(string $msg, array $values = [])
+ * @method critical(string $msg, array $values = [])
+ * @method error(string $msg, array $values = [])
+ * @method warning(string $msg, array $values = [])
+ * @method notice(string $msg, array $values = [])
+ * @method info(string $msg, array $values = [])
+ * @method debug(string $msg, array $values = [])
  */
 final class Log
 {
@@ -48,11 +48,11 @@ final class Log
     private $folder = self::DEFAULT_FOLDER;
 
     /**
-     * The date format used internally in the files
+     * The date format
      *
      * @var string
      */
-    private $date_format = self::DEFAULT_DATE_FORMAT;
+    private $format = self::DEFAULT_DATE_FORMAT;
 
 
     /**
@@ -92,24 +92,24 @@ final class Log
     /**
      * Sets the date format used internally for the files
      *
-     * @param  string  $date_format  the date format
+     * @param  string  $format  the date format
      */
-    public function setDateFormat(string $date_format = self::DEFAULT_DATE_FORMAT): void
+    public function setDateFormat(string $format = self::DEFAULT_DATE_FORMAT): void
     {
-        $this->date_format = $date_format;
+        $this->format = $format;
     }
 
 
     /**
      * Proxy method to log the messages in different levels
      *
-     * @param  string  $method_name  the method name
+     * @param  string  $method  the method name
      * @param  mixed  $args  the method arguments
      */
-    public function __call(string $method_name, $args)
+    public function __call(string $method, $args)
     {
-        if ($this->enabled && in_array($method_name, self::LEVELS) && isset($args[0])) {
-            $this->log(ucfirst($method_name), $args[0], $args[1] ?? []);
+        if ($this->enabled && in_array($method, self::LEVELS) && isset($args[0])) {
+            $this->log(ucfirst($method), $args[0], $args[1] ?? []);
         }
     }
 
@@ -117,20 +117,19 @@ final class Log
     /**
      * Logs a general message
      *
-     * @param  string  $level the message level
-     * @param  string  $message the message
+     * @param  string  $level  the message level
+     * @param  string  $msg  the message
      * @param  array  $values  the values to interpolate
      */
-    private function log(string $level, string $message, array $values): void
+    private function log(string $level, string $msg, array $values): void
     {
-        $log = sprintf(self::MSG_FORMAT,
-            date($this->date_format),
+        $this->mkdir();
+        $this->writeToFile(sprintf(self::MSG_FORMAT,
+            date($this->format),
             Helper::getClientIP(),
             $level,
-            Str::interpolate($message, $values));
-
-        $this->mkdir();
-        $this->writeToFile($log);
+            Str::interpolate($msg, $values))
+        );
     }
 
 

@@ -28,15 +28,14 @@ class Controller
 
 
     /**
-     * Returns the return value of the controller's method
-     * or null in case of errors
+     * Returns the value of the controller's method or false in case of errors
      *
      * @param  string  $path  the controller path
      * @param  string  $method  the controller method
      * @param  array  $args  the method arguments
      *
-     * @return mixed the return value of the controller's method
-     * or null in case of errors
+     * @return mixed the value of the controller's method
+     * or false in case of errors
      */
     public static function method(string $path, string $method, array $args = [])
     {
@@ -89,7 +88,7 @@ class Controller
      *
      * @param  string  $path  the controller path
      *
-     * @return string the controller classname of the given path
+     * @return string the controller classname
      */
     private static function getClassname(string $path): string
     {

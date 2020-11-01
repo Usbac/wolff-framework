@@ -77,15 +77,12 @@ class File
      */
     private function complies(string $path): bool
     {
-        $extension = pathinfo($this->data['name'], PATHINFO_EXTENSION);
+        $ext = pathinfo($this->data['name'], PATHINFO_EXTENSION);
 
-        if (!empty($this->options['extensions']) &&
-            !in_array($extension, $this->options['extensions'])) {
-            return false;
-        }
-
-        if ($this->options['max_size'] > 0 &&
-            $this->options['max_size'] < $this->data['size']) {
+        if ((!empty($this->options['extensions']) &&
+            !in_array($ext, $this->options['extensions'])) ||
+            ($this->options['max_size'] > 0 &&
+            $this->options['max_size'] < $this->data['size'])) {
             return false;
         }
 

@@ -15,7 +15,7 @@ final class Helper
 
     /**
      * Returns the key value of the given array, or null if it doesn't exists.
-     * The key param can use the dot notation.
+     * The key param can use the dot notation, like 'user.name'.
      *
      * @param  array  $arr  the array
      * @param  string|null  $key  the array key to obtain
@@ -41,13 +41,11 @@ final class Helper
 
 
     /**
-     * Returns the given string without the single or double
-     * quotes surrounding it
+     * Returns the given string without single or double quotes surrounding it
      *
      * @param  string  $str  the string
      *
-     * @return string the string without single or double
-     * quotes surrounding it
+     * @return string the string without single or double quotes surrounding it
      */
     public static function removeQuotes(string $str): string
     {
@@ -79,13 +77,11 @@ final class Helper
 
 
     /**
-     * Returns true if the given array is
-     * associative (numbers as keys), false otherwise
+     * Returns true if the given array is associative, false otherwise
      *
      * @param  array  $arr  the array
      *
-     * @return bool true if the given array is associative,
-     * false otherwise
+     * @return bool true if the given array is associative, false otherwise
      */
     public static function isAssoc(array $arr): bool
     {

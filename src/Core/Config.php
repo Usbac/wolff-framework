@@ -58,7 +58,7 @@ final class Config
 
     /**
      * Maps the environment variables from the given environment file path.
-     * An existing parser has not been used because lol
+     * No external env parser has been used because lol
      *
      * @param  string  $file_path  the environment file path
      */

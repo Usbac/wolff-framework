@@ -9,7 +9,7 @@ class Response implements ResponseInterface
         'FOREVER' => 157680000, // Five years
         'MONTH'   => 2629743,
         'DAY'     => 86400,
-        'HOUR'    => 3600
+        'HOUR'    => 3600,
     ];
 
     /**
@@ -135,7 +135,7 @@ class Response implements ResponseInterface
             'path'      => $path,
             'domain'    => $domain,
             'secure'    => $secure,
-            'http_only' => $http_only
+            'http_only' => $http_only,
         ]);
 
         return $this;
@@ -154,7 +154,7 @@ class Response implements ResponseInterface
             'path'      => '',
             'domain'    => '',
             'secure'    => false,
-            'http_only' => false
+            'http_only' => false,
         ]);
 
         return $this;

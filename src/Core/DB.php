@@ -213,11 +213,11 @@ class DB
 
 
     /**
-     * Returns true if the specified table exists in the database, false otherwise
+     * Returns true if the specified table exists, false otherwise
      *
      * @param  string  $table  the table name
      *
-     * @return bool true if the specified table exists in the database, false otherwise
+     * @return bool true if the specified table exists, false otherwise
      */
     public function tableExists(string $table): bool
     {
@@ -232,13 +232,12 @@ class DB
 
 
     /**
-     * Returns true if the specified column and table exists in the table of the database,
-     * false otherwise
+     * Returns true if the specified column and table exists, false otherwise
      *
      * @param  string  $table  the table name
      * @param  string  $column  the column name
      *
-     * @return bool true if the specified column and table exists in the table of the database,
+     * @return bool true if the specified column and table exists,
      * false otherwise
      */
     public function columnExists(string $table, string $column): bool
@@ -330,8 +329,7 @@ class DB
 
 
     /**
-     * Moves rows from one table to another, deleting the rows of the
-     * original table in the process
+     * Migrates rows from one table to another
      * WARNING: The conditions parameter must be manually escaped
      * NOTE: In case of errors, the changes are completely rolled back
      *
@@ -392,7 +390,7 @@ class DB
 
     /**
      * Returns the string escaped.
-     * Any character that is not a letter, number or underscore is removed
+     * Characters that are not a letter, number or underscore are removed
      *
      * @param  string  $str  the string
      *

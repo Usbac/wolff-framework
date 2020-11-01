@@ -95,8 +95,7 @@ final class Kernel
 
 
     /**
-     * Initializes the core framework modules based
-     * on the current configuration
+     * Initializes the framework modules using the current configuration
      */
     private function initModules(): void
     {
@@ -110,8 +109,7 @@ final class Kernel
 
 
     /**
-     * Sets the error reporting state
-     * based on the current configuration
+     * Sets the error reporting state based on the current configuration
      */
     private function initErrors(): void
     {
@@ -121,8 +119,7 @@ final class Kernel
 
 
     /**
-     * Includes the standard library if
-     * it's active in the current configuration
+     * Includes the standard library if it's active in the current configuration
      */
     private function initStdlib(): void
     {

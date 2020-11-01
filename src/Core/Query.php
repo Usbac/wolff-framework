@@ -16,7 +16,7 @@ final class Query
 
 
     /**
-     * Default constructor
+     * Constructor
      *
      * @param  PDOStatement  $stmt  the PDO statement
      */

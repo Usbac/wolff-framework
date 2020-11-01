@@ -6,7 +6,7 @@ interface RequestInterface
 {
 
     /**
-     * Default constructor
+     * Constructor
      *
      * @param  array  $query  the url parameters
      * @param  array  $body  the body parameters

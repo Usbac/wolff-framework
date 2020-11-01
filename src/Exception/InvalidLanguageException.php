@@ -6,7 +6,7 @@ final class InvalidLanguageException extends \Exception
 {
 
     /**
-     * Default constructor
+     * Constructor
      */
     public function __construct(string $msg, string $language, string $dir)
     {

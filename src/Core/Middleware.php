@@ -13,16 +13,14 @@ final class Middleware
 {
 
     /**
-     * List of middlewares
-     * of type before
+     * List of middlewares of type before
      *
      * @var array
      */
     private static $before = [];
 
     /**
-     * List of middlewares
-     * of type after
+     * List of middlewares of type after
      *
      * @var array
      */

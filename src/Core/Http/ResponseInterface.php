@@ -6,7 +6,7 @@ interface ResponseInterface
 {
 
     /**
-     * Default constructor
+     * Constructor
      */
     public function __construct();
 

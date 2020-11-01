@@ -8,7 +8,7 @@ final class FileNotReadableException extends \Exception
     const MSG = 'The file \'%s\' is not readable or does not exists';
 
     /**
-     * Default constructor
+     * Constructor
      */
     public function __construct(string $file_path)
     {

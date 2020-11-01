@@ -19,7 +19,7 @@ class File
 
 
     /**
-     * Default constructor
+     * Constructor
      *
      * @param  array  $data  the file data
      * @param  array  $options  the array with the file options

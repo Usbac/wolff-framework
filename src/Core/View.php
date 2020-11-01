@@ -2,8 +2,6 @@
 
 namespace Wolff\Core;
 
-use Wolff\Utils\Str;
-
 final class View
 {
 

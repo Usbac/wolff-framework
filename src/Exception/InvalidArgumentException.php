@@ -8,7 +8,7 @@ final class InvalidArgumentException extends \Exception
     const MSG = '\'%s\' must be %s';
 
     /**
-     * Default constructor
+     * Constructor
      */
     public function __construct($name, $type)
     {

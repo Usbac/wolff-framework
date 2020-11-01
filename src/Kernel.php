@@ -37,14 +37,14 @@ final class Kernel
     private $config;
 
     /**
-     * The current url
+     * Current url
      *
      * @var string
      */
     private $url;
 
     /**
-     * The function associated to the current url
+     * Function associated to the current url
      *
      * @var \Closure|null
      */
@@ -66,7 +66,7 @@ final class Kernel
 
 
     /**
-     * Default constructor
+     * Constructor
      *
      * @param  array  $config  the configuration
      */

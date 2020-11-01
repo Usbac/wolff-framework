@@ -114,8 +114,8 @@ final class Maintenance
     /**
      * Loads the maintenance page
      *
-     * @param \Wolff\Core\Http\Request $req Reference to the request object
-     * @param \Wolff\Core\Http\Response $res Reference to the response object
+     * @param  \Wolff\Core\Http\Request  $req  Reference to the request object
+     * @param  \Wolff\Core\Http\Response  $res  Reference to the response object
      */
     public static function call(Http\Request &$req, Http\Response &$res): void
     {

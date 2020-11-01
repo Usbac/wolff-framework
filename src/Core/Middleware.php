@@ -27,8 +27,7 @@ final class Middleware
     private static $after = [];
 
     /**
-     * Continue or not to the
-     * next middleware
+     * Continue or not to the next middleware
      *
      * @var bool
      */
@@ -50,16 +49,13 @@ final class Middleware
             return '';
         }
 
-        $args = [
-            $req,
-            function () {
-                self::$next = true;
-            }
-        ];
-
-        $results = [];
         $url = explode('/', rtrim($url, '/'));
         $url_len = count($url) - 1;
+        $data = [];
+        $args = [
+            $req,
+            function () { self::$next = true; },
+        ];
 
         foreach ($middlewares as $middleware) {
             if (!Helper::matchesRoute($middleware['url'], $url, $url_len)) {
@@ -67,15 +63,15 @@ final class Middleware
             }
 
             self::$next = false;
-            $result = call_user_func_array($middleware['function'], $args);
-            array_push($results, $result);
+
+            array_push($data, call_user_func_array($middleware['func'], $args));
 
             if (!self::$next) {
                 break;
             }
         }
 
-        return implode('', $results);
+        return implode('', $data);
     }
 
 
@@ -124,15 +120,13 @@ final class Middleware
 
         if (!is_string($args[0])) {
             throw new InvalidArgumentException('url', 'of type string');
-        }
-
-        if (!($args[1] instanceof \Closure)) {
-            throw new InvalidArgumentException('function', 'an instance of \Closure');
+        } elseif (!($args[1] instanceof \Closure)) {
+            throw new InvalidArgumentException('func', 'an instance of \Closure');
         }
 
         array_push(self::${$type}, [
-            'url'      => Str::sanitizeURL($args[0]),
-            'function' => $args[1]
+            'url'  => Str::sanitizeURL($args[0]),
+            'func' => $args[1],
         ]);
     }
 }

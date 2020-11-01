@@ -21,7 +21,7 @@ final class Language
     /**
      * Sets the default language to use
      *
-     * @param  string  $lang  the default language to use
+     * @param  string  $lang  the default language
      */
     public static function setDefault(string $lang): void
     {
@@ -30,8 +30,7 @@ final class Language
 
 
     /**
-     * Returns the content of a language, or null if
-     * it doesn't exists
+     * Returns the content of a language, or null if it doesn't exists
      *
      * @throws \Wolff\Exception\InvalidLanguageException
      *
@@ -80,14 +79,12 @@ final class Language
 
 
     /**
-     * Returns true if the specified language exists,
-     * false otherwise
+     * Returns true if the given language exists, false otherwise
      *
      * @param  string  $dir  the language directory
      * @param  string|null  $lang  the language selected
      *
-     * @return bool true if the specified language exists,
-     * false otherwise
+     * @return bool true if the given language exists, false otherwise
      */
     public static function exists(string $dir, string $lang = null): bool
     {

@@ -258,7 +258,6 @@ class DB
 
     /**
      * Inserts an array into the specified table
-     * or null in case of errors
      *
      * @throws \Wolff\Exception\InvalidArgumentException
      *

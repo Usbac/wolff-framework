@@ -68,7 +68,9 @@ final class Config
             throw new FileNotReadableException($file_path);
         }
 
-        array_map('self::parseEnvLine', explode(PHP_EOL, file_get_contents($file_path)));
+        foreach (explode(PHP_EOL, file_get_contents($file_path)) as $line) {
+            self::parseEnvLine($line);
+        }
     }
 
 

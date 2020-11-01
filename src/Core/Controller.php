@@ -53,8 +53,7 @@ class Controller
 
 
     /**
-     * Returns true if the controller exists,
-     * false otherwise
+     * Returns true if the controller exists, false otherwise
      *
      * @param  string  $path  the path of the controller
      *

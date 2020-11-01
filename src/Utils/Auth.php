@@ -29,15 +29,13 @@ final class Auth extends \Wolff\Core\DB
 
     /**
      * The name of the unique column
-     * that cannot be repeated
      *
      * @var string
      */
     private $unique = null;
 
     /**
-     * The last currently authenticated
-     * user's data
+     * The last currently authenticated user's data
      *
      * @var array
      */
@@ -52,8 +50,7 @@ final class Auth extends \Wolff\Core\DB
 
 
     /**
-     * Initializes the database connection for
-     * the authentication utility
+     * Initializes the database connection for the authentication utility
      *
      * @param  array|null  $credentials  the database credentials
      * @param  array|null  $options  the PDO connection options
@@ -113,8 +110,7 @@ final class Auth extends \Wolff\Core\DB
 
 
     /**
-     * Returns the currently authenticated
-     * user's data
+     * Returns the currently authenticated user's data
      *
      * @return array|null the currently authenticated
      * user's data
@@ -126,8 +122,7 @@ final class Auth extends \Wolff\Core\DB
 
 
     /**
-     * Sets the unique column that cannot
-     * be repeated
+     * Sets the unique column that cannot be repeated
      *
      * @param  string  $unique  the unique column name
      */

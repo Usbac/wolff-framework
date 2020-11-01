@@ -400,11 +400,11 @@ namespace {
         {
             $host = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 
-            if (($q_pos = strpos($_SERVER['REQUEST_URI'], '?')) === false) {
-                return $host . $_SERVER['REQUEST_URI'];
+            if (($q_pos = strpos($_SERVER['REQUEST_URI'], '?')) !== false) {
+                $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, $q_pos);
             }
 
-            return $host . substr($_SERVER['REQUEST_URI'], 0, $q_pos);
+            return $host . $_SERVER['REQUEST_URI'];
         }
     }
 

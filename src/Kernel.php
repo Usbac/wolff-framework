@@ -87,10 +87,10 @@ final class Kernel
     private function initProperties(array $config = []): void
     {
         $this->config = array_merge(self::DEFAULT_CONFIG, $config);
-        $this->url = $this->getUrl();
-        $this->func = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
+        $this->url = $this->getUrl();
+        $this->func = Route::getFunction($this->url);
     }
 
 
@@ -142,10 +142,10 @@ final class Kernel
         } elseif ($this->func && !Route::isBlocked($this->url)) {
             $this->handle();
         } else {
-            http_response_code(404);
+            $this->res->setCode(404);
         }
 
-        Route::execCode($this->req, $this->res);
+        Route::execCode($this->res->getCode(), $this->req, $this->res);
         $this->res->send();
     }
 
@@ -176,18 +176,13 @@ final class Kernel
             $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
         }
 
-        $url = trim($url, '/');
-
-        //Remove parameters
-        if (($q_pos = strpos($url, '?')) !== false) {
-            $url = substr($url, 0, $q_pos);
-        }
+        $url = strtok(trim($url, '/'), '?');
 
         //Redirection
         $redirect = Route::getRedirection($url);
         if (isset($redirect)) {
-            http_response_code($redirect['code']);
-            return $redirect['destiny'];
+            $this->res->setCode($redirect['code']);
+            return $redirect['to'];
         }
 
         return $url;

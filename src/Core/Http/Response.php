@@ -22,7 +22,7 @@ class Response implements ResponseInterface
     /**
      * The HTTP status code
      *
-     * @var int|null
+     * @var int
      */
     private $status_code;
 
@@ -47,7 +47,7 @@ class Response implements ResponseInterface
     public function __construct()
     {
         $this->content = '';
-        $this->status_code = null;
+        $this->status_code = 200;
         $this->headers = [];
         $this->cookies = [];
     }
@@ -99,6 +99,15 @@ class Response implements ResponseInterface
     {
         $this->status_code = $status;
         return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCode(): int
+    {
+        return $this->status_code;
     }
 
 
@@ -157,9 +166,7 @@ class Response implements ResponseInterface
      */
     public function send(bool $return = false)
     {
-        if (isset($this->status_code)) {
-            http_response_code($this->status_code);
-        }
+        http_response_code($this->status_code);
 
         foreach ($this->headers as $key => $val) {
             header("$key: $val");

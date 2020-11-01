@@ -62,6 +62,14 @@ interface ResponseInterface
 
 
     /**
+     * Returns the HTTP status code
+     *
+     * @return int the HTTP status code
+     */
+    public function getCode();
+
+
+    /**
      * Sets a cookie
      *
      * @param  string  $key  the cookie key

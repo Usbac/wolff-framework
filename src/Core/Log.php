@@ -101,15 +101,14 @@ final class Log
 
 
     /**
-     * Proxy method to log the messages in
-     * different levels
+     * Proxy method to log the messages in different levels
      *
-     * @param  string  $method_name the method name
+     * @param  string  $method_name  the method name
      * @param  mixed  $args  the method arguments
      */
     public function __call(string $method_name, $args)
     {
-        if (in_array($method_name, self::LEVELS) && isset($args[0])) {
+        if ($this->enabled && in_array($method_name, self::LEVELS) && isset($args[0])) {
             $this->log(ucfirst($method_name), $args[0], $args[1] ?? []);
         }
     }
@@ -124,10 +123,6 @@ final class Log
      */
     private function log(string $level, string $message, array $values): void
     {
-        if (!$this->enabled) {
-            return;
-        }
-
         $log = sprintf(self::MSG_FORMAT,
             date($this->date_format),
             Helper::getClientIP(),

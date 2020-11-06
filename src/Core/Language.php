@@ -60,9 +60,7 @@ final class Language
             throw new InvalidLanguageException(self::ERROR_FILE, $lang, $dir);
         }
 
-        return !isset($key) ?
-            $data :
-            ($data[$key] ?? null);
+        return !isset($key) ? $data : ($data[$key] ?? null);
     }
 
 

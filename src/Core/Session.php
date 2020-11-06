@@ -15,7 +15,6 @@ final class Session
         if (self::expired()) {
             self::empty();
             self::kill();
-
             return;
         }
 
@@ -96,9 +95,7 @@ final class Session
      */
     public static function get(string $key = null)
     {
-        return !isset($key) ?
-            $_SESSION :
-            ($_SESSION[$key] ?? null);
+        return !isset($key) ? $_SESSION : ($_SESSION[$key] ?? null);
     }
 
 

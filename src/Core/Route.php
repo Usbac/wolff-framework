@@ -102,17 +102,18 @@ final class Route
      * Adds a route that renders a view
      *
      * @param  string  $url  the url
-     * @param  string  $view_path  the view path
+     * @param  string  $view  the view path
      * @param  array  $data  the view data
      * @param  bool  $cache  use or not the cache system
      */
-    public static function view(string $url, string $view_path, array $data = [], bool $cache = true): void
+    public static function view(string $url, string $view, array $data = [], bool $cache = true): void
     {
-        $func = function () use ($view_path, $data, $cache) {
-            View::render($view_path, $data, $cache);
-        };
-
-        self::addRoute($url, 'GET', $func, null);
+        self::addRoute($url,
+            'GET',
+            function () use ($view, $data, $cache) {
+                View::render($view, $data, $cache);
+            },
+            null);
     }
 
 
@@ -188,8 +189,7 @@ final class Route
      * @param  array  $route  the route array to test
      * @param  int  $route_len  the size of the route array to test
      *
-     * @return bool true if the current route matches the given one, false
-     * otherwise
+     * @return bool true if the current route matches the given one, false otherwise
      */
     private static function matchesRoute(array $current, int $current_len, array $route, int $route_len)
     {
@@ -221,7 +221,7 @@ final class Route
      */
     private static function processRoute(array $route)
     {
-        header("Content-Type: $route[content_type]");
+        header('Content-Type: ' . $route['content_type']);
         if (isset($route['status'])) {
             http_response_code($route['status']);
         }
@@ -244,9 +244,7 @@ final class Route
      * Maps the current route GET parameters
      *
      * @param  array  $current  the current route array
-     * (exploded by /)
-     * @param  array  $route  the registered route array
-     * (exploded by /) which matches the current route
+     * @param  array  $route  the route array which matches the current route
      */
     private static function mapParameters(array $current, array $route)
     {
@@ -275,8 +273,7 @@ final class Route
      *
      * @param  array|null  $route  the route route
      *
-     * @return bool true if the route exists and its
-     * method matches the current methods
+     * @return bool true if the route exists and its method matches the current method
      */
     private static function isValidRoute(?array $route): bool
     {
@@ -289,7 +286,7 @@ final class Route
      * Adds a route that works for any method
      *
      * @param  string  $url  the url
-     * @param  mixed  $func  mixed the function that must be executed when accessing the route
+     * @param  mixed  $func  mixed the function to call
      * @param  int  $status  the HTTP response code
      */
     public static function any(string $url, $func, int $status = self::STATUS_OK): void
@@ -310,7 +307,7 @@ final class Route
         self::$redirects[] = [
             'from' => $from,
             'to'   => Str::sanitizeURL($to),
-            'code' => $code
+            'code' => $code,
         ];
     }
 
@@ -320,7 +317,7 @@ final class Route
      *
      * @param  mixed  $url  the url
      * @param  string  $method  the url HTTP method
-     * @param  mixed  $function  the url function or controller name
+     * @param  mixed  $function  the url function
      * @param  int|null  $status  the HTTP response code
      */
     private static function addRoute($url, string $method, $function, ?int $status): void

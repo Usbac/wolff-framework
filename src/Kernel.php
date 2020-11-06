@@ -74,8 +74,8 @@ final class Kernel
     {
         $this->initProperties($config);
         $this->initModules();
-        $this->initErrors();
         $this->initStdlib();
+        $this->initErrors();
     }
 
 

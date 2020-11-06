@@ -337,6 +337,21 @@ namespace {
         }
     }
 
+    if (!function_exists('local')) {
+
+        /**
+         * Returns true if running in localhost, false otherwise
+         *
+         * @param  array  $whitelist  the optional list of local IPs to check
+         *
+         * @return bool true if running in localhost, false otherwise
+         */
+        function local($whitelist = [ '127.0.0.1', '::1' ])
+        {
+            return in_array($_SERVER['REMOTE_ADDR'] ?? '::1', $whitelist);
+        }
+    }
+
     if (!function_exists('average')) {
 
         /**

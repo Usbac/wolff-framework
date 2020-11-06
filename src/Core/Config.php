@@ -27,13 +27,13 @@ final class Config
     {
         self::$data = $data;
 
-        if (!isset($data['env_file']) || empty($data['env_file'])) {
+        if (empty($data['env']['file'])) {
             return;
         }
 
-        self::parseEnv(Helper::getRoot($data['env_file']));
+        self::parseEnv(Helper::getRoot($data['env']['file']));
 
-        if ($data['env_override'] ?? false) {
+        if ($data['env']['override'] ?? false) {
             foreach ($_ENV as $key => $val) {
                 self::$data[strtolower($key)] = $val;
             }
@@ -50,9 +50,7 @@ final class Config
      */
     public static function get(string $key = null)
     {
-        return !isset($key) ?
-            self::$data :
-            self::$data[$key];
+        return Helper::val(self::$data, $key);
     }
 
 

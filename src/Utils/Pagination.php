@@ -56,8 +56,8 @@ final class Pagination
      * @param  int  $total  the total of elements
      * @param  int  $per_page  the total of elements per page
      * @param  int  $page  the current page
-     * @param  int  $side_pages_n  the number of pages that will
-     * be beside the current page
+     * @param  int  $side_pages_n  the number of pages that will be
+     * around the current page
      * @param  string  $url_format  the url format
      */
     public function __construct(
@@ -150,7 +150,7 @@ final class Pagination
      * Set the number of pages that will be around the current page
      *
      * @param  int  $side_pages_n  the number of pages that will
-     * be beside the current page
+     * be around the current page
      *
      * @return Pagination this
      */
@@ -163,8 +163,7 @@ final class Pagination
 
     /**
      * Sets the pages url
-     * The placeholder for the page number in the string
-     * must have the format: {page}
+     * The placeholder for the page number must have the format: {page}
      *
      * @param  string  $url_format  the pages url
      *
@@ -227,7 +226,7 @@ final class Pagination
         return [
             'index'        => $i,
             'current_page' => $i === $this->page,
-            'url'          => str_replace(self::PLACEHOLDER, $i, $this->url_format)
+            'url'          => str_replace(self::PLACEHOLDER, $i, $this->url_format),
         ];
     }
 }

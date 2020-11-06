@@ -95,7 +95,7 @@ final class Kernel
 
 
     /**
-     * Initializes the framework modules using the current configuration
+     * Initializes the framework modules with the current configuration
      */
     private function initModules(): void
     {

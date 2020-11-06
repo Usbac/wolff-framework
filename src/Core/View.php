@@ -32,8 +32,7 @@ final class View
 
 
     /**
-     * Returns the view content with the template format applied
-     * over it
+     * Returns the view content with the template format applied over it
      *
      * @throws \Wolff\Exception\FileNotFoundException
      *
@@ -79,8 +78,7 @@ final class View
 
 
     /**
-     * Returns true if the given view exists,
-     * false otherwise
+     * Returns true if the given view exists, false otherwise
      *
      * @param  string  $dir  the directory of the view
      *

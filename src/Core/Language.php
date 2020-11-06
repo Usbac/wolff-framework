@@ -2,6 +2,7 @@
 
 namespace Wolff\Core;
 
+use Exception;
 use Wolff\Exception\InvalidLanguageException;
 
 final class Language
@@ -49,11 +50,12 @@ final class Language
             $dir = substr($dir, 0, $dot_pos);
         }
 
-        if (!self::exists($dir, $lang)) {
+        try {
+            $data = (include self::getPath($dir, $lang));
+        } catch (Exception $e) {
             return null;
         }
 
-        $data = (include self::getPath($dir, $lang));
         if (!is_array($data)) {
             throw new InvalidLanguageException(self::ERROR_FILE, $lang, $dir);
         }

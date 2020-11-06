@@ -7,8 +7,8 @@ use Wolff\Exception\FileNotFoundException;
 final class Cache
 {
 
-    const EXISTS_ERROR = 'Cache file \'%s\' doesn\'t exists';
-    const FOLDER = 'cache';
+    const ERROR_EXISTS = 'Cache file \'%s\' doesn\'t exists';
+    const FOLDER = 'cache/';
     const FILE_EXT = 'tmp';
     const FILENAME_FORMAT = '%s.' . self::FILE_EXT;
     const FOLDER_PERMISSIONS = 0755;
@@ -59,7 +59,7 @@ final class Cache
 
         if (!file_exists($file_path)) {
             throw new FileNotFoundException(
-                sprintf(self::EXISTS_ERROR, $file_path)
+                sprintf(self::ERROR_EXISTS, $file_path)
             );
         }
 
@@ -178,6 +178,6 @@ final class Cache
      */
     private static function getDir(string $path = ''): string
     {
-        return Helper::getRoot(self::FOLDER . '/' . $path);
+        return Helper::getRoot(self::FOLDER . $path);
     }
 }

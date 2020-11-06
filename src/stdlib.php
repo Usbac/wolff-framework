@@ -46,9 +46,8 @@ namespace {
         /**
          * Returns true if the current request is safe from csrf
          * (cross site request forgery), false otherwise.
-         *
          * This method combined with the 'csrf' tag in the template engine
-         * is perfect for making secure forms that prevent csrf.
+         * is perfect for making forms that prevent csrf
          *
          * @return bool true if the current request is safe from csrf,
          * false otherwise
@@ -69,8 +68,8 @@ namespace {
     if (!function_exists('path')) {
 
         /**
-         * Returns the absolute path of the given relative path (supposed to be relative
-         * to the project root).
+         * Returns the absolute path of the given relative path (supposed
+         * to be relative to the project root)
          *
          * @param  string  $path  the relative path
          *
@@ -86,7 +85,7 @@ namespace {
 
         /**
          * Returns the relative path (based on the project root)
-         * of the given absolute path.
+         * of the given absolute path
          *
          * @param  string  $path  the absolute path
          *
@@ -108,7 +107,7 @@ namespace {
 
         /**
          * Returns the key value of the given array, or null if it doesn't exists.
-         * The key param can use the dot notation, like 'user.name'.
+         * The key param can use the dot notation, like 'user.name'
          *
          * @param  array  $arr  the array
          * @param  string|null  $key  the array key to obtain
@@ -125,7 +124,7 @@ namespace {
 
         /**
          * Returns the configuration array or the specified key of it.
-         * The key param can use the dot notation, like 'user.name'.
+         * The key param can use the dot notation, like 'user.name'
          *
          * @param  string|null  $key  the configuration array key
          *
@@ -155,12 +154,11 @@ namespace {
     if (!function_exists('isAssoc')) {
 
         /**
-         * Returns true if the given array is associative (numbers as keys), false otherwise
+         * Returns true if the given array is associative, false otherwise
          *
          * @param  array  $arr  the array
          *
-         * @return bool true if the given array is associative,
-         * false otherwise
+         * @return bool true if the given array is associative, false otherwise
          */
         function isAssoc(array $arr): bool
         {

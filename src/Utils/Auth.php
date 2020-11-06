@@ -112,8 +112,7 @@ final class Auth extends \Wolff\Core\DB
     /**
      * Returns the currently authenticated user's data
      *
-     * @return array|null the currently authenticated
-     * user's data
+     * @return array|null the currently authenticated user's data
      */
     public function getUser(): ?array
     {

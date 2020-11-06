@@ -29,8 +29,7 @@ final class Pagination
     private $page;
 
     /**
-     * The number of pages that will
-     * be beside the current page
+     * The number of pages that will be around the current page
      *
      * @var int
      */
@@ -148,8 +147,7 @@ final class Pagination
 
 
     /**
-     * Set the number of pages that will
-     * be beside the current page
+     * Set the number of pages that will be around the current page
      *
      * @param  int  $side_pages_n  the number of pages that will
      * be beside the current page
@@ -166,7 +164,7 @@ final class Pagination
     /**
      * Sets the pages url
      * The placeholder for the page number in the string
-     * must have the following format: {page}
+     * must have the format: {page}
      *
      * @param  string  $url_format  the pages url
      *
@@ -180,8 +178,7 @@ final class Pagination
 
 
     /**
-     * Sets if the first and
-     * last page will be shown
+     * Sets if the first and last page will be shown
      *
      * @param  bool  $show_ends  true for showing the first
      * and last page in the pagination, false for not showing it
@@ -220,7 +217,6 @@ final class Pagination
 
     /**
      * Returns a new page based in the given index
-     * in the form of an associative array
      *
      * @param  int  $i  the page index
      *

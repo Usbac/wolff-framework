@@ -86,13 +86,11 @@ final class Str
 
 
     /**
-     * Returns the given string without the single or double
-     * quotes surrounding it
+     * Returns the given string without the single or double quotes surrounding it
      *
      * @param  string  $str  the string
      *
-     * @return string the string without single or double
-     * quotes surrounding it
+     * @return string the string without single or double quotes surrounding it
      */
     public static function removeQuotes(string $str): string
     {
@@ -101,7 +99,7 @@ final class Str
 
 
     /**
-     * Returns a friendly url string based on the given string.
+     * Returns a friendly url string based on the given string
      *
      * @param  string  $str the original string
      *
@@ -137,8 +135,7 @@ final class Str
 
 
     /**
-     * Returns true if the given string is a valid email,
-     * false otherwise
+     * Returns true if the given string is a valid email, false otherwise
      *
      * @param  string  $email the email string
      *
@@ -167,8 +164,7 @@ final class Str
 
 
     /**
-     * Returns true if the given string contains only
-     * letters, false otherwise
+     * Returns true if the given string contains only letters, false otherwise
      *
      * @param  string  $str the string
      *
@@ -182,8 +178,7 @@ final class Str
 
 
     /**
-     * Returns true if a substring is present in another string
-     * or false otherwise
+     * Returns true if a substring is present in another string or false otherwise
      *
      * @param  string  $str  the string
      * @param  string  $needle  the substring you are looking for

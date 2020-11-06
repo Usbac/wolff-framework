@@ -117,8 +117,7 @@ final class Route
 
 
     /**
-     * Adds a route that will work
-     * only for a status code
+     * Adds a route that will work only for a status code
      *
      * @param  int  $code  the status code
      * @param  \Closure  $func  mixed the function that must be executed
@@ -182,8 +181,7 @@ final class Route
 
 
     /**
-     * Returns true if the current route matches the given one, false
-     * otherwise
+     * Returns true if the current route matches the given one, false otherwise
      *
      * @param  array  $current  the current route array
      * @param  int  $current_len  the size of the current route array
@@ -215,8 +213,7 @@ final class Route
 
 
     /**
-     * Returns the route function after setting its
-     * response code and content-type
+     * Sets the route response code and content-type and returns its function
      *
      * @param  array  $route  the route
      *
@@ -274,13 +271,12 @@ final class Route
 
 
     /**
-     * Returns true if the route exists and its
-     * request method matches the current methods
+     * Returns true if the route is set and its method matches the current method
      *
      * @param  array|null  $route  the route route
      *
      * @return bool true if the route exists and its
-     * request method matches the current methods
+     * method matches the current methods
      */
     private static function isValidRoute(?array $route): bool
     {

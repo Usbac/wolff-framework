@@ -9,7 +9,7 @@ class Controller
 {
 
     const NAMESPACE = 'Controller\\';
-    const ERROR_EXISTS = 'The controller class \'%s\' or its method \'%s\'does not exists';
+    const ERROR_EXISTS = 'The controller method \'%s::%s\' does not exists';
 
 
     /**

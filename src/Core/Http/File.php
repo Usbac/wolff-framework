@@ -12,7 +12,7 @@ class File
     private $data;
 
     /**
-     * List of options for uploading files
+     * Options list for uploading files
      * @var array
      */
     private $options;

@@ -30,13 +30,6 @@ final class Kernel
     ];
 
     /**
-     * The configuration
-     *
-     * @var array
-     */
-    private $config;
-
-    /**
      * Current url
      *
      * @var string
@@ -72,60 +65,56 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
-        $this->initProperties($config);
-        $this->initModules();
-        $this->initStdlib();
-        $this->initErrors();
-    }
-
-
-    /**
-     * Initializes the properties
-     *
-     * @param  array  $config  the configuration
-     */
-    private function initProperties(array $config = []): void
-    {
-        $this->config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
         $this->url = $this->getUrl();
         $this->func = Route::getFunction($this->url);
+
+        $config = array_merge(self::DEFAULT_CONFIG, $config);
+        $this->initModules($config);
+        $this->initStdlib($config);
+        $this->initErrors($config);
     }
 
 
     /**
-     * Initializes the framework modules with the current configuration
+     * Initializes the framework modules with the given configuration
+     *
+     * @param  array  $config  the configuration
      */
-    private function initModules(): void
+    private function initModules(array $config): void
     {
-        Config::init($this->config);
-        DB::setCredentials($this->config['db']);
-        Cache::setStatus($this->config['cache_on']);
-        Template::setStatus($this->config['template_on']);
-        Maintenance::setStatus($this->config['maintenance_on']);
-        Language::setDefault($this->config['language']);
+        Config::init($config);
+        DB::setCredentials($config['db']);
+        Cache::setStatus($config['cache_on']);
+        Template::setStatus($config['template_on']);
+        Maintenance::setStatus($config['maintenance_on']);
+        Language::setDefault($config['language']);
     }
 
 
     /**
-     * Sets the error reporting state based on the current configuration
+     * Includes the standard library if it's active in the given configuration
+     *
+     * @param  array  $config  the configuration
      */
-    private function initErrors(): void
+    private function initStdlib(array $config): void
     {
-        error_reporting($this->config['development_on'] ? E_ALL : 0);
-        ini_set('display_errors', strval($this->config['development_on']));
-    }
-
-
-    /**
-     * Includes the standard library if it's active in the current configuration
-     */
-    private function initStdlib(): void
-    {
-        if ($this->config['stdlib_on']) {
+        if ($config['stdlib_on']) {
             include_once 'stdlib.php';
         }
+    }
+
+
+    /**
+     * Sets the error reporting state based on the given configuration
+     *
+     * @param  array  $config  the configuration
+     */
+    private function initErrors(array $config): void
+    {
+        error_reporting($config['development_on'] ? E_ALL : 0);
+        ini_set('display_errors', strval($config['development_on']));
     }
 
 

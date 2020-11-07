@@ -103,8 +103,8 @@ final class Session
      * Sets a session variable
      *
      * @param  string  $key  the variable key
-     * @param  mixed  $value the variable value
-     * @param  int|null  $time the variable live time in minutes
+     * @param  mixed  $value  the variable value
+     * @param  int|null  $time  the variable live time in minutes
      */
     public static function set(string $key, $value, int $time = null): void
     {

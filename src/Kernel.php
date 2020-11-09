@@ -65,10 +65,10 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
-        $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
-        $this->res = new Response();
         $this->url = $this->getUrl();
         $this->func = Route::getFunction($this->url);
+        $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
+        $this->res = new Response();
 
         $config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->initModules($config);
@@ -162,7 +162,11 @@ final class Kernel
             $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
         }
 
-        $url = strtok(trim($url, '/'), '?');
+        //Remove GET parameters
+        $url = trim($url, '/');
+        if (($q_pos = strpos($url, '?')) !== false) {
+            $url = substr($url, 0, $q_pos);
+        }
 
         //Redirection
         $redirect = Route::getRedirection($url);

@@ -22,6 +22,16 @@ interface ResponseInterface
 
 
     /**
+     * Sets the response content as json
+     *
+     * @param  mixed  $content  the json content
+     *
+     * @return \Wolff\Core\Http\Response this
+     */
+    public function writeJson($content);
+
+
+    /**
      * Appends content to the response content
      *
      * @param  mixed  $content  the content

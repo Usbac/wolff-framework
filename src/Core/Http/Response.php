@@ -66,6 +66,16 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
+    public function writeJson($content): Response
+    {
+        $this->content = json_encode($content);
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function append($content): Response
     {
         $this->content .= strval($content);

@@ -154,16 +154,9 @@ final class Kernel
      */
     private function getUrl(): string
     {
-        $url = $_SERVER['REQUEST_URI'];
-        $root = Helper::getRoot();
-
-        //Remove possible project folder from url
-        if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
-            $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
-        }
+        $url = trim(\Wolff\Core\Helper::getCurrentPage(), '/');
 
         //Remove GET parameters
-        $url = trim($url, '/');
         if (($q_pos = strpos($url, '?')) !== false) {
             $url = substr($url, 0, $q_pos);
         }

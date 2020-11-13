@@ -162,6 +162,25 @@ final class Helper
 
 
     /**
+     * Returns the current page relative to the project url
+     *
+     * @return string the current page relative to the project url
+     */
+    public static function getCurrentPage(): string
+    {
+        $url = $_SERVER['REQUEST_URI'];
+        $root = self::getRoot();
+
+        //Remove possible project folder from url
+        if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
+        }
+
+        return $url;
+    }
+
+
+    /**
      * Returns true if a string ends with another string, false otherwise
      *
      * @param  string  $str  the string

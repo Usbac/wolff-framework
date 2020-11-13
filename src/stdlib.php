@@ -389,16 +389,7 @@ namespace {
          */
         function getCurrentPage(): string
         {
-            $url = $_SERVER['REQUEST_URI'];
-            $root = \Wolff\Core\Helper::getRoot();
-
-            //Remove possible project folder from url
-            if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $project_dir = substr($root, strlen($_SERVER['DOCUMENT_ROOT']));
-                $url = substr($url, strlen($project_dir));
-            }
-
-            return $url;
+            return \Wolff\Core\Helper::getCurrentPage();
         }
     }
 

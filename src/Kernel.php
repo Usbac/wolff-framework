@@ -72,7 +72,6 @@ final class Kernel
 
         $config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->initModules($config);
-        $this->initStdlib($config);
         $this->initErrors($config);
     }
 
@@ -90,19 +89,6 @@ final class Kernel
         Template::setStatus($config['template_on']);
         Maintenance::setStatus($config['maintenance_on']);
         Language::setDefault($config['language']);
-    }
-
-
-    /**
-     * Includes the standard library if it's active in the given configuration
-     *
-     * @param  array  $config  the configuration
-     */
-    private function initStdlib(array $config): void
-    {
-        if ($config['stdlib_on']) {
-            include_once 'stdlib.php';
-        }
     }
 
 

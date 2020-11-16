@@ -5,7 +5,6 @@ namespace Wolff;
 use Wolff\Core\Cache;
 use Wolff\Core\Config;
 use Wolff\Core\DB;
-use Wolff\Core\Helper;
 use Wolff\Core\Http\Request;
 use Wolff\Core\Http\Response;
 use Wolff\Core\Language;
@@ -69,10 +68,7 @@ final class Kernel
         $this->func = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
         $this->res = new Response();
-
-        $config = array_merge(self::DEFAULT_CONFIG, $config);
-        $this->initModules($config);
-        $this->initErrors($config);
+        $this->initModules(array_merge(self::DEFAULT_CONFIG, $config));
     }
 
 
@@ -89,18 +85,6 @@ final class Kernel
         Template::setStatus($config['template_on']);
         Maintenance::setStatus($config['maintenance_on']);
         Language::setDefault($config['language']);
-    }
-
-
-    /**
-     * Sets the error reporting state based on the given configuration
-     *
-     * @param  array  $config  the configuration
-     */
-    private function initErrors(array $config): void
-    {
-        error_reporting($config['development_on'] ? E_ALL : 0);
-        ini_set('display_errors', strval($config['development_on']));
     }
 
 

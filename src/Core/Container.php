@@ -49,7 +49,7 @@ final class Container implements ContainerInterface
      *
      * @param  string  $class  the class name
      * @param  mixed  $value  the class value
-     * @param  bool  $singleton  true if the class will be treated as singleton,
+     * @param  bool  $singleton  true if the class will be a singleton,
      * false otherwise
      */
     private static function addService(string $class, $value, bool $singleton): void

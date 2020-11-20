@@ -28,14 +28,13 @@ class Controller
 
 
     /**
-     * Returns the value of the controller's method or false in case of errors
+     * Returns the controller's method value or false in case of errors
      *
      * @param  string  $path  the controller path
      * @param  string  $method  the controller method
      * @param  array  $args  the method arguments
      *
-     * @return mixed the value of the controller's method
-     * or false in case of errors
+     * @return mixed the controller's method value or false in case of errors
      */
     public static function method(string $path, string $method, array $args = [])
     {

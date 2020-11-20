@@ -135,11 +135,10 @@ final class Cache
 
     /**
      * Deletes all of the cache files.
-     * If no seconds parameter is given all files will be deleted.
+     * If the seconds parameter isn't given, all files will be deleted.
      *
-     * @param  int  $seconds  the minimum time in seconds
-     * that a file needs to have since its last modification
-     * to be deleted
+     * @param  int  $seconds  the minimum time in seconds that a file
+     * needs to have since its last modification to be deleted
      */
     public static function clear(int $seconds = 0): void
     {

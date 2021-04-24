@@ -17,7 +17,6 @@ use Wolff\Exception\InvalidArgumentException;
 final class Route
 {
 
-    const STATUS_OK = 200;
     const STATUS_REDIRECT = 301;
     const GET_FORMAT = '/\{(.*)\}/';
     const OPTIONAL_GET_FORMAT = '/\{(.*)\?\}/';
@@ -173,7 +172,6 @@ final class Route
 
                 if (self::matchesRoute($current, $len, $route)) {
                     self::mapParameters($current, $route);
-
                     return self::processRoute($val);
                 }
             }

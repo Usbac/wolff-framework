@@ -5,6 +5,7 @@ namespace Wolff\Core\Http;
 class Response implements ResponseInterface
 {
 
+    const DEFAULT_STATUS = 200;
     const COOKIE_TIMES = [
         'FOREVER' => 157680000, // Five years
         'MONTH'   => 2629743,
@@ -47,7 +48,7 @@ class Response implements ResponseInterface
     public function __construct()
     {
         $this->content = '';
-        $this->status_code = 200;
+        $this->status_code = self::DEFAULT_STATUS;
         $this->headers = [];
         $this->cookies = [];
     }

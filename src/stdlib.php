@@ -230,7 +230,7 @@ namespace {
          */
         function redirect(string $url = null, int $status = 302): void
         {
-            //Set url to the homepage when null
+            // Set url to the homepage when null
             if (!isset($url)) {
                 $http = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
 

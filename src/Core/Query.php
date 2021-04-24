@@ -79,12 +79,12 @@ final class Query
         $rows = [];
         $result = $this->get();
 
-        //Only one column to pick
+        // Only one column to pick
         if (count($columns) === 1) {
             return array_column($result, $columns[0]);
         }
 
-        //Multiple columns to pick
+        // Multiple columns to pick
         foreach ($result as $row) {
             $new_row = [];
             foreach ($columns as $column) {

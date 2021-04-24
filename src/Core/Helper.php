@@ -171,7 +171,7 @@ final class Helper
         $url = $_SERVER['REQUEST_URI'];
         $root = self::getRoot();
 
-        //Remove possible project folder from url
+        // Remove possible project folder from url
         if (strpos($root, $_SERVER['DOCUMENT_ROOT']) === 0) {
             $url = substr($url, strlen($root) - strlen($_SERVER['DOCUMENT_ROOT']));
         }

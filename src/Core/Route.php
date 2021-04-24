@@ -155,14 +155,14 @@ final class Route
      */
     public static function getFunction(string $url)
     {
-        //Static routes
+        // Static routes
         foreach (self::$static_routes as $key => $val) {
             if (self::isValidRoute($val) && $key == $url) {
                 return self::processRoute($val);
             }
         }
 
-        //Dynamic routes
+        // Dynamic routes
         $current = array_filter(explode('/', $url));
         $len = count($current) - 1;
 
@@ -259,7 +259,7 @@ final class Route
                 self::setGet($route[$i], $current[$i]);
             }
 
-            //Finish if last GET variable from url is optional
+            // Finish if last GET variable from url is optional
             if ($i + 1 === $route_len && $i === $current_len &&
                 self::isOptionalGet($route[$i + 1])) {
                 self::setOptionalGetVar($route[$i], $current[$i]);
@@ -312,7 +312,7 @@ final class Route
     {
         $content_type = 'text/html';
 
-        //Remove content-type prefix from route
+        // Remove content-type prefix from route
         foreach (self::PREFIXES as $key => $val) {
             if (strpos($url, $key) === 0) {
                 $url = substr($url, strlen($key));

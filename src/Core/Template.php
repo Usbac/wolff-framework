@@ -333,7 +333,7 @@ final class Template
         $content = self::replaceParentBlockImports($content, $parent_content);
         $parent_content = self::replaceParentBlocksWithChildContent($content, $parent_content);
 
-        //Remove remaining blocks tags
+        // Remove remaining blocks tags
         $parent_content = preg_replace(self::FORMAT['block'], '', $parent_content);
         $parent_content = preg_replace(self::FORMAT['parent_block'], '', $parent_content);
 

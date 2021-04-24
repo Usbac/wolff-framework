@@ -194,7 +194,7 @@ final class Auth extends \Wolff\Core\DB
         unset($data['password_confirm']);
         $data['password'] = $this->getPassword($data['password']);
 
-        //Repeated user
+        // Existing user
         if (isset($this->unique)) {
             $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE $this->unique = ?");
             $stmt->execute([ $data[$this->unique] ]);

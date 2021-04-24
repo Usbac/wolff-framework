@@ -74,7 +74,7 @@ final class Container implements ContainerInterface
             return null;
         }
 
-        //Service
+        // Service
         if (!$service['singleton']) {
             if (is_callable($service['value'])) {
                 return call_user_func_array($service['value'], $args);
@@ -83,7 +83,7 @@ final class Container implements ContainerInterface
             return new $service['value'];
         }
 
-        //Singleton
+        // Singleton
         if (!isset(self::$singletons[$key])) {
             self::$singletons[$key] = is_callable($service['value']) ?
                 call_user_func_array($service['value'], $args) :

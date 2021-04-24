@@ -126,12 +126,12 @@ final class Kernel
     {
         $url = trim(\Wolff\Core\Helper::getCurrentPage(), '/');
 
-        //Remove GET parameters
+        // Remove GET parameters
         if (($q_pos = strpos($url, '?')) !== false) {
             $url = substr($url, 0, $q_pos);
         }
 
-        //Redirection
+        // Redirection
         $redirect = Route::getRedirection($url);
         if (isset($redirect)) {
             $this->res->setCode($redirect['code']);

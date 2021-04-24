@@ -7,6 +7,7 @@ use Wolff\Utils\Str;
 use Wolff\Exception\InvalidArgumentException;
 
 /**
+ * @method static $this any(string $url, $func, int $status = null)
  * @method static $this get(string $url, $func, int $status = null)
  * @method static $this post(string $url, $func, int $status = null)
  * @method static $this put(string $url, $func, int $status = null)
@@ -28,11 +29,12 @@ final class Route
         'xml:'   => 'application/xml',
     ];
     const HTTP_METHODS = [
-        'GET',
-        'POST',
-        'PUT',
-        'PATCH',
-        'DELETE',
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete',
+        'any',
     ];
 
     /**
@@ -79,8 +81,7 @@ final class Route
      */
     public static function __callStatic(string $name, $args): void
     {
-        $http_method = strtoupper($name);
-        if (!in_array($http_method, self::HTTP_METHODS)) {
+        if (!in_array($name, self::HTTP_METHODS)) {
             return;
         }
 
@@ -90,11 +91,12 @@ final class Route
             throw new InvalidArgumentException('function', 'of type array or an instance of \Closure');
         }
 
-        $status = isset($args[2]) && is_numeric($args[2]) ?
-            (int)$args[2] :
-            null;
-
-        self::addRoute(Str::sanitizeURL($args[0]), $http_method, $args[1], $status);
+        self::addRoute(
+            Str::sanitizeURL($args[0]),
+            $name !== 'any' ? strtoupper($name) : '',
+            $args[1],
+            is_numeric($args[2] ?? '') ? (int) $args[2] : null
+        );
     }
 
 
@@ -156,7 +158,7 @@ final class Route
     {
         //Static routes
         foreach (self::$static_routes as $key => $val) {
-            if (self::isValidRoute($val) && $key === $url) {
+            if (self::isValidRoute($val) && $key == $url) {
                 return self::processRoute($val);
             }
         }
@@ -169,7 +171,7 @@ final class Route
             if (self::isValidRoute($val)) {
                 $route = array_filter(explode('/', $key));
 
-                if (self::matchesRoute($current, $len, $route, count($route) - 1)) {
+                if (self::matchesRoute($current, $len, $route)) {
                     self::mapParameters($current, $route);
 
                     return self::processRoute($val);
@@ -187,15 +189,16 @@ final class Route
      * @param  array  $current  the current route array
      * @param  int  $current_len  the size of the current route array
      * @param  array  $route  the route array to test
-     * @param  int  $route_len  the size of the route array to test
      *
      * @return bool true if the current route matches the given one, false otherwise
      */
-    private static function matchesRoute(array $current, int $current_len, array $route, int $route_len)
+    private static function matchesRoute(array $current, int $current_len, array $route)
     {
         if (empty($current) && empty($route)) {
             return true;
         }
+
+        $route_len = count($route) - 1;
 
         for ($i = 0; $i <= $route_len && $i <= $current_len; $i++) {
             if ($current[$i] !== $route[$i] && !self::isGet($route[$i])) {
@@ -279,19 +282,6 @@ final class Route
     {
         return isset($route) && ($route['method'] === '' ||
             $route['method'] === $_SERVER['REQUEST_METHOD']);
-    }
-
-
-    /**
-     * Adds a route that works for any method
-     *
-     * @param  string  $url  the url
-     * @param  mixed  $func  mixed the function to call
-     * @param  int  $status  the HTTP response code
-     */
-    public static function any(string $url, $func, int $status = self::STATUS_OK): void
-    {
-        self::addRoute(Str::sanitizeURL($url), '', $func, $status);
     }
 
 
@@ -394,7 +384,7 @@ final class Route
     public static function exists(string $url): bool
     {
         foreach (self::$static_routes as $key => $val) {
-            if ($key === $url) {
+            if ($key == $url) {
                 return true;
             }
         }

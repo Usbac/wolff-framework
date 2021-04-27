@@ -34,13 +34,11 @@ interface RequestInterface
 
 
     /**
-     * Returns true if the specified parameter is set,
-     * false otherwise
+     * Returns true if the specified parameter is set, false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool true if the specified parameter is set,
-     * false otherwise
+     * @return bool true if the specified parameter is set, false otherwise
      */
     public function hasQuery(string $key);
 
@@ -78,13 +76,11 @@ interface RequestInterface
 
 
     /**
-     * Returns true if the specified file is set,
-     * false otherwise
+     * Returns true if the specified file is set, false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool true if the specified file is set,
-     * false otherwise
+     * @return bool true if the specified file is set, false otherwise
      */
     public function hasFile(string $key);
 
@@ -100,25 +96,21 @@ interface RequestInterface
 
 
     /**
-     * Returns true if the specified cookie is set,
-     * false otherwise
+     * Returns true if the specified cookie is set, false otherwise
      *
      * @param  string  $key  the parameter key
      *
-     * @return bool true if the specified cookie is set,
-     * false otherwise
+     * @return bool true if the specified cookie is set, false otherwise
      */
     public function hasCookie(string $key);
 
 
     /**
-     * Returns the headers array,
-     * or the specified header key
+     * Returns the headers array, or the specified header key
      *
      * @param  string|null  $key  the header key to get
      *
-     * @return mixed the headers array,
-     * or the specified header key
+     * @return mixed the headers array, or the specified header key
      */
     public function getHeader(string $key = null);
 
@@ -148,8 +140,7 @@ interface RequestInterface
 
 
     /**
-     * Returns true if the current protocol is secure (https),
-     * false otherwise
+     * Returns true if the current protocol is secure (https), false otherwise
      *
      * @return bool true if the current protocol is secure (https),
      * false otherwise

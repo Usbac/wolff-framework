@@ -92,12 +92,16 @@ final class Cache
 
     /**
      * Creates the cache folder if it doesn't exists
+     *
+     * @return bool true if the cache folder exists or has been created, false otherwise
      */
-    public static function mkdir(): void
+    public static function mkdir(): bool
     {
         if (!file_exists(self::getDir())) {
-            mkdir(self::getDir(), self::FOLDER_PERMISSIONS, true);
+            return mkdir(self::getDir(), self::FOLDER_PERMISSIONS, true);
         }
+
+        return true;
     }
 
 

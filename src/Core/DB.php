@@ -263,8 +263,7 @@ class DB
      * @param  string  $table  the table for the query
      * @param  array  $data  the data to insert
      *
-     * @return mixed the query result object or null in
-     * case of errors
+     * @return mixed the query result object
      */
     public function insert(string $table, array $data)
     {

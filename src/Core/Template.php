@@ -221,13 +221,11 @@ final class Template
 
 
     /**
-     * Applies the inputs that prevent csrf
-     * (cross site request forgery)
+     * Applies the inputs that prevent csrf (cross site request forgery)
      *
      * @param  string  $content  the view content
      *
-     * @return string the view content with
-     * the inputs that prevent csrf
+     * @return string the view content with the inputs that prevent csrf
      */
     private static function replaceCsrf(string $content): string
     {
@@ -316,8 +314,7 @@ final class Template
      *
      * @param  string  $content  the view content
      *
-     * @return string the child view content rendered
-     * based on its parent
+     * @return string the child view content rendered based on its parent
      */
     private static function replaceExtend(string $content): string
     {

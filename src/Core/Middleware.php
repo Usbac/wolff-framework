@@ -104,8 +104,7 @@ final class Middleware
 
 
     /**
-     * Proxy to call the middlewares of type
-     * before and after
+     * Proxy to call the middlewares of type before and after
      *
      * @throws \Wolff\Exception\InvalidArgumentException
      *

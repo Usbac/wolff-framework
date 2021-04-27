@@ -21,9 +21,7 @@ class Controller
      */
     public static function get(string $path = null)
     {
-        return isset($path) ?
-            self::getController($path) :
-            new Controller;
+        return isset($path) ? self::getController($path) : new Controller;
     }
 
 

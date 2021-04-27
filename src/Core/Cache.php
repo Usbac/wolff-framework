@@ -93,7 +93,8 @@ final class Cache
     /**
      * Creates the cache folder if it doesn't exists
      *
-     * @return bool true if the cache folder exists or has been created, false otherwise
+     * @return bool true if the cache folder exists or has been created,
+     * false otherwise
      */
     public static function mkdir(): bool
     {

@@ -40,8 +40,7 @@ final class View
      * @param  array  $data  the data
      * @param  bool  $cache  use or not the cache system
      *
-     * @return string the view content with the template format applied
-     * over it
+     * @return string the view content with the template format applied over it
      */
     public static function get(string $dir, array $data = [], bool $cache = true): string
     {

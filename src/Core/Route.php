@@ -92,7 +92,7 @@ final class Route
 
         self::addRoute(
             Str::sanitizeURL($args[0]),
-            $name !== 'any' ? strtoupper($name) : '',
+            strtoupper($name),
             $args[1],
             is_numeric($args[2] ?? '') ? (int) $args[2] : null
         );
@@ -278,7 +278,7 @@ final class Route
      */
     private static function isValidRoute(?array $route): bool
     {
-        return isset($route) && ($route['method'] === '' ||
+        return isset($route) && ($route['method'] === 'ANY' ||
             $route['method'] === $_SERVER['REQUEST_METHOD']);
     }
 

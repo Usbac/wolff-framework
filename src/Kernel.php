@@ -18,7 +18,7 @@ final class Kernel
 
     const DEFAULT_CONFIG = [
         'db'             => [],
-        'language'       => 'english',
+        'language'       => 'en',
         'env_file'       => '',
         'env_override'   => false,
         'development_on' => true,

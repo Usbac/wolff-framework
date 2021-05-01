@@ -135,7 +135,7 @@ class DB
      *
      * @return \PDOStatement the last prepared PDO statement
      */
-    public function getLastStmt(): \PDOStatement
+    public function getLastStmt(): ?\PDOStatement
     {
         return $this->last_stmt;
     }
@@ -144,11 +144,11 @@ class DB
     /**
      * Returns the last inserted id in the database
      *
-     * @return string the last inserted id in the database
+     * @return string|null the last inserted id in the database
      */
-    public function getLastId(): string
+    public function getLastId(): ?string
     {
-        return $this->connection->lastInsertId();
+        return $this->connection ? $this->connection->lastInsertId() : null;
     }
 
 

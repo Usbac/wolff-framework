@@ -152,7 +152,7 @@ final class Cache
         foreach (glob(self::getDir('*.' . self::FILE_EXT)) as $file) {
             $mod_time = filemtime($file);
 
-            if ($mod_time !== false && ($time - $mod_time) > $seconds) {
+            if ($mod_time !== false && (($time - $mod_time) > $seconds) || $seconds === 0) {
                 unlink($file);
             }
         }

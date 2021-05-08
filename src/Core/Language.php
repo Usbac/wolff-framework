@@ -18,6 +18,21 @@ final class Language
      */
     private static $default;
 
+    /**
+     * The current language in use
+     *
+     * @var string
+     */
+    private $language;
+
+    /**
+     * Initializes the language
+     */
+    public function __construct(string $lang = null)
+    {
+        $this->language = $lang ?? self::$default;
+    }
+
 
     /**
      * Sets the default language to use
@@ -41,9 +56,9 @@ final class Language
      * @return mixed the content of a language, or null if
      * it doesn't exists
      */
-    public static function get(string $dir, string $lang = null)
+    public function get(string $dir, string $lang = null)
     {
-        $lang = $lang ?? self::$default;
+        $lang = $lang ?? $this->language;
 
         if (($dot_pos = strpos($dir, '.')) !== false) {
             $key = substr($dir, $dot_pos + 1);
@@ -51,7 +66,7 @@ final class Language
         }
 
         try {
-            $data = (include self::getPath($dir, $lang));
+            $data = (include $this->getPath($dir, $lang));
         } catch (Exception $e) {
             return null;
         }
@@ -72,7 +87,7 @@ final class Language
      *
      * @return string the path of a language file
      */
-    private static function getPath(string $dir, string $lang): string
+    private function getPath(string $dir, string $lang): string
     {
         return Helper::getRoot(sprintf(self::PATH_FORMAT, $lang, $dir));
     }
@@ -86,8 +101,8 @@ final class Language
      *
      * @return bool true if the given language exists, false otherwise
      */
-    public static function exists(string $dir, string $lang = null): bool
+    public function exists(string $dir, string $lang = null): bool
     {
-        return file_exists(self::getPath($dir, $lang ?? self::$default));
+        return file_exists($this->getPath($dir, $lang ?? $this->language));
     }
 }

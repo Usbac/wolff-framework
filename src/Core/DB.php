@@ -17,7 +17,7 @@ class DB
     /**
      * The default connection credentials
      */
-    protected static $credentials;
+    protected static $default_credentials;
 
     /**
      * DB connection
@@ -56,8 +56,8 @@ class DB
      */
     public function __construct(array $data = null, array $options = null)
     {
-        $this->connection = self::getConnection(
-            $data ?? self::$credentials,
+        $this->connection = $this->getConnection(
+            $data ?? self::$default_credentials,
             $options ?? self::DEFAULT_OPTIONS
         );
     }
@@ -73,7 +73,7 @@ class DB
      *
      * @return PDO|null the PDO connection
      */
-    private static function getConnection(array $data, array $options): ?PDO
+    private function getConnection(array $data, array $options): ?PDO
     {
         if (empty($data['dsn']) || empty($options)) {
             return null;
@@ -93,7 +93,7 @@ class DB
      */
     public static function setCredentials(array $data): void
     {
-        self::$credentials = $data;
+        self::$default_credentials = $data;
     }
 
 

@@ -112,7 +112,7 @@ final class Route
         self::addRoute($url,
             'GET',
             function () use ($view, $data, $cache) {
-                View::render($view, $data, $cache);
+                (new View())->render($view, $data, $cache);
             },
             null);
     }

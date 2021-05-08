@@ -3,7 +3,6 @@
 namespace Wolff\Core;
 
 use Wolff\Core\Helper;
-use Wolff\Core\Language;
 use Wolff\Utils\Str;
 use Wolff\Exception\FileNotFoundException;
 use Wolff\Exception\InvalidArgumentException;
@@ -29,7 +28,6 @@ final class Template
         'tag'        => '/' . self::NOT_RAW . '\{%( ?){1,}(.*?)( ?){1,}%\}/',
         'function'   => '/' . self::NOT_RAW . '(.*)( ?){1,}\|([^\}!]{1,})/',
         'include'    => '/' . self::NOT_RAW . '@include\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
-        'language'   => '/' . self::NOT_RAW . '@lang\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
         'for'        => '/' . self::NOT_RAW . '\{%( ?){1,}for( ){1,}(.*)( ){1,}in( ){1,}\((.*)( ?){1,},( ?){1,}(.*)( ?){1,}\)( ?){1,}%\}/',
         'csrf'       => '/' . self::NOT_RAW . '@csrf/',
 
@@ -209,7 +207,6 @@ final class Template
         $content = self::replaceIncludes($content);
         $content = self::replaceImports($content);
         $content = self::replaceComments($content);
-        $content = self::replaceLanguages($content);
         $content = self::replaceFunctions($content);
         $content = self::replaceCycles($content);
         $content = self::replaceTags($content);
@@ -366,26 +363,6 @@ final class Template
     {
         foreach (self::$templates as $template) {
             $content = $template($content);
-        }
-
-        return $content;
-    }
-
-
-    /**
-     * Applies the template language
-     *
-     * @param  string  $content  the view content
-     *
-     * @return string the view content with the language formatted
-     */
-    private static function replaceLanguages(string $content): string
-    {
-        preg_match_all(self::FORMAT['language'], $content, $matches, PREG_OFFSET_CAPTURE);
-
-        foreach ($matches[1] as $key => $val) {
-            $lang = trim($val[0], '"\'');
-            $content = str_replace($matches[0][$key][0], Language::get($lang) ?? '', $content);
         }
 
         return $content;

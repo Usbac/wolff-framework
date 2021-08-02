@@ -64,10 +64,10 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
+        $this->res = new Response();
         $this->url = $this->getUrl();
         $this->func = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
-        $this->res = new Response();
         $this->initModules(array_merge(self::DEFAULT_CONFIG, $config));
     }
 

@@ -34,7 +34,7 @@ final class Template
         'csrf'       => '/' . self::NOT_RAW . '@csrf/',
 
         'extends'      => '/' . self::NOT_RAW . '@extends\([ ]{0,}(\'.*\'|".*")[ ]{0,}\)/',
-        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s]/',
+        'block'        => '/' . self::NOT_RAW . '{\[[ ?]{1,}block[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}([\s\S]*?){\[[ ?]{1,}endblock[ ?]{1,}]}[\s?]/',
         'parent_block' => '/' . self::NOT_RAW . '{\[[ ?]{1,}parent[ ]{1,}(' . self::BLOCK_NAME . ')[ ?]{1,}]}/'
     ];
     const FUNCTIONS = [

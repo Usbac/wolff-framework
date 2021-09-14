@@ -40,10 +40,11 @@ final class Middleware
      * @param  array  $middlewares  the array of middlewares to load
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
+     * @param  Http\Response|null  $res  the response object
      *
      * @return string the middleware responses joined
      */
-    private static function load(array $middlewares, string $url, Http\Request &$req = null): string
+    private static function load(array $middlewares, string $url, Http\Request &$req = null, Http\Response &$res = null): string
     {
         if (empty($middlewares)) {
             return '';
@@ -55,6 +56,7 @@ final class Middleware
         $args = [
             $req,
             function () { self::$next = true; },
+            $res,
         ];
 
         foreach ($middlewares as $middleware) {
@@ -80,12 +82,13 @@ final class Middleware
      *
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
+     * @param  Http\Response|null  $req  the response object
      *
      * @return string the middleware responses
      */
-    public static function loadBefore(string $url, Http\Request $req = null): string
+    public static function loadBefore(string $url, Http\Request $req = null, Http\Response $res = null): string
     {
-        return self::load(self::$before, $url, $req);
+        return self::load(self::$before, $url, $req, $res);
     }
 
 
@@ -94,12 +97,13 @@ final class Middleware
      *
      * @param  string  $url  the url to match the middlewares
      * @param  Http\Request|null  $req  the request object
+     * @param  Http\Response|null  $req  the response object
      *
      * @return string the middleware responses
      */
-    public static function loadAfter(string $url, Http\Request $req = null): string
+    public static function loadAfter(string $url, Http\Request $req = null, Http\Response $res = null): string
     {
-        return self::load(self::$after, $url, $req);
+        return self::load(self::$after, $url, $req, $res);
     }
 
 

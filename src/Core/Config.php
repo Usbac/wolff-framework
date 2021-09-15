@@ -22,13 +22,15 @@ final class Config
      * Initializes the configuration data
      *
      * @param  array  $data  the configuration data
+     *
+     * @return array the configuration data
      */
-    public static function init(array $data): void
+    public static function init(array $data): array
     {
         self::$data = $data;
 
         if (empty($data['env']['file'])) {
-            return;
+            return self::$data;
         }
 
         self::parseEnv(Helper::getRoot($data['env']['file']));
@@ -38,6 +40,8 @@ final class Config
                 self::$data[strtolower($key)] = $val;
             }
         }
+
+        return self::$data;
     }
 
 

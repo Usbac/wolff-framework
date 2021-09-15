@@ -320,10 +320,9 @@ class DB
     {
         $this->last_stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table WHERE $conds");
         $this->last_stmt->execute($args);
+        $result = $this->last_stmt->fetch(PDO::FETCH_NUM);
 
-        $result = $this->last_stmt->fetchAll();
-
-        return empty($result) ? 0 : $result[0]['COUNT(*)'];
+        return empty($result) ? 0 : $result[0];
     }
 
 

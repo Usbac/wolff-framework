@@ -64,10 +64,10 @@ final class Kernel
      */
     public function __construct(array $config = [])
     {
+        $this->res = new Response();
         $this->url = $this->getUrl();
         $this->func = Route::getFunction($this->url);
         $this->req = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
-        $this->res = new Response();
         $this->initModules(array_merge(self::DEFAULT_CONFIG, $config));
     }
 
@@ -79,7 +79,7 @@ final class Kernel
      */
     private function initModules(array $config): void
     {
-        Config::init($config);
+        $config = Config::init($config);
         DB::setCredentials($config['db']);
         Cache::setStatus($config['cache_on']);
         Template::setStatus($config['template_on']);
@@ -111,9 +111,9 @@ final class Kernel
      */
     private function handle(): void
     {
-        $this->res->append(Middleware::loadBefore($this->url, $this->req));
+        $this->res->append(Middleware::loadBefore($this->url, $this->req, $this->res));
         call_user_func_array($this->func, [ $this->req, $this->res ]);
-        $this->res->append(Middleware::loadAfter($this->url, $this->req));
+        $this->res->append(Middleware::loadAfter($this->url, $this->req, $this->res));
     }
 
 
